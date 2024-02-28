@@ -14,7 +14,7 @@ const BADGES = [
   
 ];
 
-const USER_ID = ""; // Your Discord Id Here | You need to join Lanyard Discord for it to work! [https://discord.gg/z2xW3zxYdt]
+
 
 const STATUS = {
   dnd: {
