@@ -15,7 +15,7 @@ const BADGES = [
 ];
 
 const USER_ID = ""; // Your Discord Id Here | You need to join Lanyard Discord for it to work! [https://discord.gg/z2xW3zxYdt]
-const BACKGROUND_IMAGE = "assets/images/sematary.gif"; // Here is the background of the site, behind your profile
+
 const STATUS = {
   dnd: {
     name: "Vai se foder", // Discord Status
