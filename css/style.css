@@ -55,7 +55,8 @@ video {
     left: 0;
     margin: auto;
     overflow: hidden;
-    position: absolute;
+    margin-top: 30px;
+    margin-bottom:30px;
     right: 0;
     top: 0;
     width: 220px;
