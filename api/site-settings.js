@@ -13,7 +13,7 @@ const DEFAULT_SETTINGS = {
   cardRadius: 50,
   avatarSize: 146,
   fontFamily: "arial",
-  musicUrl: "lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
+  musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
   musicVolume: 0.08,
 };
 
@@ -55,16 +55,26 @@ function validateMediaUrl(value, name) {
     throw new TypeError(`Invalid ${name}`);
   }
   if (!value) return "";
-  if (/^\/(?!\/)/.test(value) || value.startsWith("./")) return value;
 
+  const localOrigin = "https://site-settings.invalid";
+  const isAbsoluteHttpsUrl = /^https:\/\//i.test(value);
   let url;
   try {
-    url = new URL(value);
+    url = new URL(value, `${localOrigin}/`);
   } catch {
     throw new TypeError(`Invalid ${name}`);
   }
-  if (url.protocol !== "https:") throw new TypeError(`Invalid ${name}`);
-  return url.href;
+
+  if (
+    url.protocol !== "https:" ||
+    (url.origin !== localOrigin && !isAbsoluteHttpsUrl)
+  ) {
+    throw new TypeError(`Invalid ${name}`);
+  }
+
+  return url.origin === localOrigin
+    ? `${url.pathname}${url.search}${url.hash}`
+    : url.href;
 }
 
 function validateSettings(value) {

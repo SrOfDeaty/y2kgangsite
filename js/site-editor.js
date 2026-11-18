@@ -12,7 +12,7 @@ const DEFAULT_SETTINGS = {
   cardRadius: 50,
   avatarSize: 146,
   fontFamily: "arial",
-  musicUrl: "lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
+  musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
   musicVolume: 0.08,
 };
 
