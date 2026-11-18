@@ -174,10 +174,23 @@ function endPreviewDrag(event) {
   if (previewStage.hasPointerCapture(event.pointerId)) previewStage.releasePointerCapture(event.pointerId);
 }
 
+const IMAGE_EXTENSIONS = new Set([
+  "avif", "bmp", "gif", "heic", "heif", "ico", "jfif", "jpe", "jpeg", "jpg",
+  "jxl", "png", "svg", "tif", "tiff", "webp",
+]);
+
+function isImageFile(file) {
+  const extension = file.name.split(".").pop()?.toLowerCase();
+  return file.type.startsWith("image/") || IMAGE_EXTENSIONS.has(extension);
+}
+
 async function uploadMedia(input, settingName, acceptedTypes) {
   const file = input.files?.[0];
   if (!file) return;
-  if (!acceptedTypes.includes(file.type)) {
+  const isAccepted = acceptedTypes.includes("image/*")
+    ? isImageFile(file)
+    : acceptedTypes.includes(file.type);
+  if (!isAccepted) {
     showNotice("Formato de arquivo não aceito para este campo.", true);
     input.value = "";
     return;
@@ -189,7 +202,7 @@ async function uploadMedia(input, settingName, acceptedTypes) {
   }
 
   input.disabled = true;
-  showNotice("Enviando arquivo para o armazenamento seguro…");
+  showNotice("Enviando arquivo para o armazenamento…");
   try {
     const token = await getSessionToken();
     if (!token) throw new Error("session_required");
@@ -210,9 +223,16 @@ async function uploadMedia(input, settingName, acceptedTypes) {
     const settings = readSettings();
     updateOutputs(settings);
     applySettings(settings);
-    showNotice("Upload concluído. Salve as alterações para publicar.");
-  } catch {
-    showNotice("Não foi possível enviar o arquivo. Confira sua sessão e tente novamente.", true);
+    if (await saveSettings()) showNotice("Imagem enviada, salva e publicada no site.");
+  } catch (error) {
+    const messages = {
+      admin_access_required: "Sua sessão administrativa expirou. Entre novamente para enviar imagens.",
+      blob_not_configured: "O armazenamento de imagens não está configurado no projeto.",
+      file_too_large: "O arquivo deve ter no máximo 4 MB.",
+      unsupported_file_type: "Este formato de arquivo não é suportado.",
+      upload_failed: "O armazenamento não conseguiu salvar o arquivo. Tente novamente.",
+    };
+    showNotice(messages[error?.message] || "Não foi possível enviar a imagem. Verifique sua sessão e tente novamente.", true);
   } finally {
     input.disabled = false;
     input.value = "";
@@ -600,7 +620,7 @@ async function handleVerification(event) {
 }
 
 async function saveSettings(event) {
-  event.preventDefault();
+  event?.preventDefault();
   const saveButton = settingsForm.querySelector('[type="submit"]');
   saveButton.disabled = true;
 
@@ -622,7 +642,8 @@ async function saveSettings(event) {
     }
     fillForm(payload.settings);
     applySettings(payload.settings);
-    showNotice("Alterações salvas e publicadas no site.");
+    if (event) showNotice("Alterações salvas e publicadas no site.");
+    return true;
   } catch (error) {
     showNotice(
       error?.message === "admin_access_required"
@@ -630,6 +651,7 @@ async function saveSettings(event) {
         : "Não foi possível salvar. Verifique a conexão e tente novamente.",
       true,
     );
+    return false;
   } finally {
     saveButton.disabled = false;
   }
@@ -781,10 +803,10 @@ function connectFormPreview() {
   });
 
   const uploadFields = [
-    ["upload-background-image", "backgroundImage", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
-    ["upload-card-media", "cardGifUrl", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
-    ["upload-presence-background", "presenceBackgroundImage", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
-    ["upload-cursor-image", "cursorImageUrl", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
+    ["upload-background-image", "backgroundImage", ["image/*"]],
+    ["upload-card-media", "cardGifUrl", ["image/*"]],
+    ["upload-presence-background", "presenceBackgroundImage", ["image/*"]],
+    ["upload-cursor-image", "cursorImageUrl", ["image/*"]],
     ["upload-music", "musicUrl", ["audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/ogg", "audio/mp4", "audio/aac"]],
   ];
   uploadFields.forEach(([inputId, settingName, acceptedTypes]) => {

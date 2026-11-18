@@ -6,10 +6,25 @@ import { randomUUID } from "node:crypto";
 
 const MAX_FILE_SIZE = 4 * 1024 * 1024;
 const pool = process.env.DATABASE_URL ? new Pool({ connectionString: process.env.DATABASE_URL, max: 2 }) : null;
-const MIME_TYPES = new Set([
-  "image/png", "image/jpeg", "image/gif", "image/webp",
+const AUDIO_MIME_TYPES = new Set([
   "audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/ogg", "audio/mp4", "audio/aac",
 ]);
+const IMAGE_EXTENSIONS = new Set([
+  "avif", "bmp", "gif", "heic", "heif", "ico", "jfif", "jpe", "jpeg", "jpg",
+  "jxl", "png", "svg", "tif", "tiff", "webp",
+]);
+const IMAGE_MIME_BY_EXTENSION = {
+  avif: "image/avif", bmp: "image/bmp", gif: "image/gif", heic: "image/heic", heif: "image/heif",
+  ico: "image/x-icon", jfif: "image/jpeg", jpe: "image/jpeg", jpeg: "image/jpeg",
+  jpg: "image/jpeg", jxl: "image/jxl", png: "image/png", svg: "image/svg+xml",
+  tif: "image/tiff", tiff: "image/tiff", webp: "image/webp",
+};
+
+function isSupportedFile(mimeType, filename) {
+  if (mimeType.startsWith("image/") || AUDIO_MIME_TYPES.has(mimeType)) return true;
+  const extension = filename.split(".").pop()?.toLowerCase();
+  return (!mimeType || mimeType === "application/octet-stream") && IMAGE_EXTENSIONS.has(extension);
+}
 let jwks;
 
 async function isAdmin(request) {
@@ -64,8 +79,14 @@ function readUpload(request) {
       });
       stream.on("limit", () => { failure = new Error("file_too_large"); });
       stream.on("end", () => {
-        if (!MIME_TYPES.has(info.mimeType)) failure = new Error("unsupported_file_type");
-        else if (!failure) fileResult = { buffer: Buffer.concat(chunks), filename: info.filename, mimeType: info.mimeType, size };
+        if (!isSupportedFile(info.mimeType, info.filename)) failure = new Error("unsupported_file_type");
+        else if (!failure) {
+          const extension = info.filename.split(".").pop()?.toLowerCase();
+          const mimeType = (!info.mimeType || info.mimeType === "application/octet-stream")
+            ? IMAGE_MIME_BY_EXTENSION[extension] || info.mimeType || "application/octet-stream"
+            : info.mimeType;
+          fileResult = { buffer: Buffer.concat(chunks), filename: info.filename, mimeType, size };
+        }
       });
     });
     parser.on("filesLimit", () => { failure = new Error("too_many_files"); });
