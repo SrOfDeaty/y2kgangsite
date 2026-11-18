@@ -7,9 +7,10 @@ if (presenceCard) {
   const trackNode = presenceCard.querySelector("[data-discord-track]");
   const trackTitleNode = presenceCard.querySelector("[data-discord-track-title]");
   const trackArtistNode = presenceCard.querySelector("[data-discord-track-artist]");
-  const displayNameNode = document.querySelector("[data-discord-display-name]");
+  const trackCoverNode = presenceCard.querySelector("[data-discord-cover]");
+  const displayNameNodes = document.querySelectorAll("[data-discord-display-name]");
   const usernameNode = document.querySelector("[data-discord-username]");
-  const avatarNode = document.querySelector("[data-discord-avatar]");
+  const avatarNodes = document.querySelectorAll("[data-discord-avatar]");
   const statusLabels = {
     online: "Online",
     idle: "Ausente",
@@ -32,6 +33,8 @@ if (presenceCard) {
     setText(noteNode, message);
     noteNode.hidden = false;
     trackNode.hidden = true;
+    trackCoverNode.hidden = true;
+    trackCoverNode.removeAttribute("src");
   }
 
   function renderPresenceResponse(payload) {
@@ -64,19 +67,21 @@ if (presenceCard) {
     setStatus(statusLabels[status] ?? "Status desconhecido", status);
 
     if (presence.displayName) {
-      setText(displayNameNode, presence.displayName);
+      displayNameNodes.forEach((node) => setText(node, presence.displayName));
     }
 
     if (presence.username) {
       setText(usernameNode, `@${presence.username}`);
     }
 
-    if (presence.avatarUrl && avatarNode) {
+    if (presence.avatarUrl) {
       try {
         const avatarUrl = new URL(presence.avatarUrl);
         if (avatarUrl.protocol === "https:" && avatarUrl.hostname === "cdn.discordapp.com") {
-          avatarNode.src = avatarUrl.href;
-          avatarNode.alt = `Avatar de ${presence.displayName || presence.username || "Discord"}`;
+          avatarNodes.forEach((avatarNode) => {
+            avatarNode.src = avatarUrl.href;
+            avatarNode.alt = `Avatar de ${presence.displayName || presence.username || "Discord"}`;
+          });
         }
       } catch {
         // Ignore invalid avatar URLs returned by an unavailable or stale payload.
@@ -88,6 +93,21 @@ if (presenceCard) {
       noteNode.hidden = true;
       setText(trackTitleNode, presence.activity.title);
       setText(trackArtistNode, presence.activity.artist || "Artista não informado");
+
+      trackCoverNode.hidden = true;
+      trackCoverNode.removeAttribute("src");
+
+      try {
+        const coverUrl = new URL(presence.activity.coverUrl);
+        if (coverUrl.protocol === "https:" && coverUrl.hostname === "i.scdn.co") {
+          trackCoverNode.src = coverUrl.href;
+          trackCoverNode.alt = `Capa do álbum ${presence.activity.album || presence.activity.title}`;
+          trackCoverNode.hidden = false;
+        }
+      } catch {
+        // Ignore missing or invalid Spotify cover URLs.
+      }
+
       return;
     }
 

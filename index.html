@@ -43,17 +43,22 @@
                    </div>
 
                 <section class="discord-presence" data-discord-presence aria-label="Presença no Discord">
-                  <p class="discord-presence-title">STATUS NO DISCORD</p>
-                  <div class="discord-presence-status">
-                    <span class="discord-presence-dot" data-discord-status-dot data-status="unknown" aria-hidden="true"></span>
-                    <span data-discord-status role="status" aria-live="polite">Verificando Discord…</span>
+                  <div class="discord-presence-layout">
+                    <div class="discord-presence-avatar-wrap">
+                      <img class="discord-presence-avatar" src="opium.jpg" alt="Foto de perfil do Discord" data-discord-avatar>
+                      <span class="discord-presence-dot" data-discord-status-dot data-status="unknown" aria-hidden="true"></span>
+                    </div>
+                    <div class="discord-presence-copy">
+                      <p class="discord-presence-name" data-discord-display-name>Carregando perfil…</p>
+                      <span class="sr-only" data-discord-status role="status" aria-live="polite">Verificando Discord…</span>
+                      <div class="discord-track" data-discord-track hidden>
+                        <p class="discord-track-title"><span>Ouvindo </span><span data-discord-track-title></span></p>
+                        <p class="discord-track-artist"><span>por </span><span data-discord-track-artist></span></p>
+                      </div>
+                      <p class="discord-presence-note" data-discord-note>Carregando atividade…</p>
+                    </div>
+                    <img class="discord-track-cover" data-discord-cover alt="" hidden>
                   </div>
-                  <div class="discord-track" data-discord-track hidden>
-                    <span class="discord-track-label">OUVINDO NO SPOTIFY</span>
-                    <p class="discord-track-title" data-discord-track-title></p>
-                    <p class="discord-track-artist" data-discord-track-artist></p>
-                  </div>
-                  <p class="discord-presence-note" data-discord-note>Carregando atividade…</p>
                 </section>
 
                <div class="badges">
