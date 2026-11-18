@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS = {
   fontFamily: "arial",
   siteEffect: "none",
   cursorStyle: "default",
+  cursorImageUrl: "",
   presencePositionMode: "inline",
   presenceX: 50,
   presenceY: 50,
@@ -67,6 +68,69 @@ const root = document.documentElement;
 
 let authMode = "sign-in";
 let verificationEmail = "";
+const previewStage = document.getElementById("editor-preview");
+
+function renderEditorPreview(settings) {
+  if (!previewStage) return;
+  previewStage.dataset.presencePosition = settings.presencePositionMode;
+  const originalCard = document.querySelector(".discord-profile");
+  if (!originalCard) return;
+  const previewCard = originalCard.cloneNode(true);
+  previewCard.querySelectorAll("[data-discord-status]").forEach((element) => element.remove());
+  previewCard.querySelectorAll("[data-discord-note]").forEach((element) => {
+    element.textContent = "Atividade no Discord";
+  });
+  previewCard.querySelectorAll("[data-discord-display-name]").forEach((element) => {
+    element.textContent = "Prévia do perfil";
+  });
+  previewStage.replaceChildren(previewCard);
+}
+
+async function uploadMedia(input, settingName, acceptedTypes) {
+  const file = input.files?.[0];
+  if (!file) return;
+  if (!acceptedTypes.includes(file.type)) {
+    showNotice("Formato de arquivo não aceito para este campo.", true);
+    input.value = "";
+    return;
+  }
+  if (file.size > 4 * 1024 * 1024) {
+    showNotice("O arquivo deve ter no máximo 4 MB.", true);
+    input.value = "";
+    return;
+  }
+
+  input.disabled = true;
+  showNotice("Enviando arquivo para o armazenamento seguro…");
+  try {
+    const token = await getSessionToken();
+    if (!token) throw new Error("session_required");
+    const data = new FormData();
+    data.append("file", file);
+    const response = await fetch("/api/site-upload", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: data,
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || "upload_failed");
+    const field = settingsForm.elements.namedItem(settingName);
+    field.value = payload.url;
+    if (settingName === "cursorImageUrl") {
+      settingsForm.elements.namedItem("cursorStyle").value = "custom";
+    }
+    const settings = readSettings();
+    updateOutputs(settings);
+    applySettings(settings);
+    showNotice("Upload concluído. Salve as alterações para publicar.");
+  } catch {
+    showNotice("Não foi possível enviar o arquivo. Confira sua sessão e tente novamente.", true);
+  } finally {
+    input.disabled = false;
+    input.value = "";
+  }
+}
+
 function showNotice(message, isError = false) {
   notice.textContent = message;
   notice.dataset.state = isError ? "error" : "success";
@@ -124,7 +188,10 @@ function applySettings(settings) {
       : "none",
   );
 
-  if (activeSettings.cursorStyle === "default") {
+  if (activeSettings.cursorStyle === "custom" && activeSettings.cursorImageUrl) {
+    root.dataset.editorCursor = "custom";
+    root.style.setProperty("--editor-cursor", `url("${safeCssUrl(activeSettings.cursorImageUrl)}") 4 4, auto`);
+  } else if (activeSettings.cursorStyle === "default") {
     delete root.dataset.editorCursor;
     root.style.removeProperty("--editor-cursor");
   } else {
@@ -145,12 +212,14 @@ function applySettings(settings) {
 
   if (audio) {
     if (activeSettings.musicUrl) {
-      audio.src = new URL(activeSettings.musicUrl, window.location.href).href;
+      const nextAudioUrl = new URL(activeSettings.musicUrl, window.location.href).href;
+      if (audio.src !== nextAudioUrl) audio.src = nextAudioUrl;
     } else {
       audio.removeAttribute("src");
     }
     audio.volume = activeSettings.musicVolume;
   }
+  renderEditorPreview(activeSettings);
 }
 
 function readSettings() {
@@ -174,6 +243,7 @@ function readSettings() {
     fontFamily: values.get("fontFamily"),
     siteEffect: values.get("siteEffect"),
     cursorStyle: values.get("cursorStyle"),
+    cursorImageUrl: String(values.get("cursorImageUrl") || "").trim(),
     presencePositionMode: values.get("presencePositionMode"),
     presenceX: Number(values.get("presenceX")),
     presenceY: Number(values.get("presenceY")),
@@ -447,6 +517,19 @@ function connectFormPreview() {
     showNotice("Padrões restaurados na prévia. Salve para publicar.");
   });
 
+  const uploadFields = [
+    ["upload-background-image", "backgroundImage", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
+    ["upload-card-media", "cardGifUrl", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
+    ["upload-presence-background", "presenceBackgroundImage", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
+    ["upload-cursor-image", "cursorImageUrl", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
+    ["upload-music", "musicUrl", ["audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/ogg", "audio/mp4", "audio/aac"]],
+  ];
+  uploadFields.forEach(([inputId, settingName, acceptedTypes]) => {
+    document.getElementById(inputId).addEventListener("change", (event) => {
+      void uploadMedia(event.currentTarget, settingName, acceptedTypes);
+    });
+  });
+
   document.getElementById("test-music").addEventListener("click", async () => {
     if (!audio) return;
     try {
@@ -469,6 +552,16 @@ async function loadPublicSettings() {
     applySettings(payload.settings);
   } catch {
     applySettings(DEFAULT_SETTINGS);
+  }
+  if (audio) {
+    audio.autoplay = true;
+    const attemptPlayback = () => {
+      audio.play().catch(() => {
+        document.addEventListener("pointerdown", attemptPlayback, { once: true });
+        document.addEventListener("keydown", attemptPlayback, { once: true });
+      });
+    };
+    attemptPlayback();
   }
 }
 

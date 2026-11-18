@@ -20,6 +20,7 @@ const DEFAULT_SETTINGS = {
   fontFamily: "arial",
   siteEffect: "none",
   cursorStyle: "default",
+  cursorImageUrl: "",
   presencePositionMode: "inline",
   presenceX: 50,
   presenceY: 50,
@@ -138,7 +139,8 @@ function validateSettings(value) {
     avatarSize: Math.round(clampNumber(value.avatarSize, 96, 180, "avatar size")),
     fontFamily: ["arial", "yanone"].includes(value.fontFamily) ? value.fontFamily : "arial",
     siteEffect: SITE_EFFECTS.has(value.siteEffect) ? value.siteEffect : "none",
-    cursorStyle: CURSOR_STYLES.has(value.cursorStyle) ? value.cursorStyle : "default",
+    cursorStyle: ["custom", ...CURSOR_STYLES].includes(value.cursorStyle) ? value.cursorStyle : "default",
+    cursorImageUrl: validateMediaUrl(value.cursorImageUrl ?? "", "cursor image URL"),
     presencePositionMode: ["inline", "floating"].includes(value.presencePositionMode)
       ? value.presencePositionMode
       : DEFAULT_SETTINGS.presencePositionMode,

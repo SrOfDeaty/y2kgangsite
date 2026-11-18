@@ -947,6 +947,15 @@ body {
   transform: translate(-50%, -50%);
 }
 
+.site-editor__preview-stage[data-presence-position="floating"] .discord-presence {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
+
 :root[data-editor-cursor] body,
 :root[data-editor-cursor] body * {
   cursor: var(--editor-cursor) !important;
@@ -1103,6 +1112,48 @@ body {
   color: rgba(238, 238, 242, 0.68);
   font-size: 13px;
   line-height: 1.6;
+}
+
+.site-editor__preview {
+  margin: 0 24px 20px;
+  padding: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: radial-gradient(ellipse at 50% 38%, rgba(255, 255, 255, 0.08), transparent 68%), #09090b;
+}
+
+.site-editor__preview-label {
+  margin: 0 0 10px;
+  color: rgba(239, 239, 243, 0.52);
+  font: 600 9px/1.2 monospace;
+  letter-spacing: 0.14em;
+}
+
+.site-editor__preview-stage {
+  position: relative;
+  display: flex;
+  min-height: 390px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 10px;
+  background-image: var(--editor-background-image);
+  background-size: cover;
+  background-position: center;
+}
+
+.site-editor__preview-stage .discord-profile {
+  width: min(var(--editor-card-width), 100%);
+  margin: 10px auto;
+}
+
+.site-editor__preview-stage .site-card-gif {
+  display: block;
+}
+
+.site-editor__preview-stage .discord-presence {
+  z-index: 1;
 }
 
 .site-editor__auth,

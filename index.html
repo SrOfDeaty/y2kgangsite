@@ -90,26 +90,7 @@
        </div>
      </main>
 
-<script>
-
-  const audio = document.getElementById("audio");
-  if (audio) audio.volume = 0.08;
-
-  function play() {
-    if (!audio) return;
-    const playback = audio.play();
-    if (playback) playback.catch(() => {});
-  }
-</script>
-
-<input type="checkbox" autocomplete="off" id="overlay-toggle">
-<div class="overlay fullscreen">
-    <label for="overlay-toggle" onclick="play()">
-        <span class="overlayno-hover hover" style="font-family: monospace; font-size: 0.6em;"></span>
-        <span class="overlayhover hover" style="font-family: monospace; font-size: 0.6em;">click here</span>         
-        
-      </label>
-</div>
+<audio id="audio" autoplay loop preload="auto" playsinline></audio>
 <script>
   var rev = "fwd";
   function titlebar(val){
@@ -184,6 +165,10 @@
 
   <section class="site-editor__workspace" data-editor-view hidden>
     <p class="site-editor__intro">Ajuste os controles e veja a prévia ao vivo. As mudanças só ficam públicas depois de salvar.</p>
+    <section class="site-editor__preview" aria-label="Prévia ao vivo do perfil">
+      <p class="site-editor__preview-label">PRÉVIA DO PERFIL</p>
+      <div class="site-editor__preview-stage" id="editor-preview"></div>
+    </section>
     <form class="site-editor__form" id="site-settings-form">
       <fieldset class="site-editor__group">
         <legend>Paleta e cores</legend>
@@ -204,7 +189,9 @@
 
       <fieldset class="site-editor__group">
         <legend>Imagem de fundo</legend>
-        <label for="setting-background-image">Link da imagem</label>
+        <label for="upload-background-image">Enviar imagem de fundo</label>
+        <input id="upload-background-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-background-image">Ou usar link da imagem</label>
         <input id="setting-background-image" name="backgroundImage" type="url" placeholder="https://...">
         <label for="setting-background-shade">Escurecimento <output data-output="backgroundShade">16%</output></label>
         <input id="setting-background-shade" name="backgroundShade" type="range" min="0" max="0.65" step="0.01">
@@ -226,7 +213,13 @@
           <option value="crosshair">Mira</option>
           <option value="text">Texto</option>
           <option value="wait">Aguardar</option>
+          <option value="custom">Imagem personalizada</option>
         </select>
+        <label for="upload-cursor-image">Enviar imagem para o cursor</label>
+        <input id="upload-cursor-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-cursor-image">Ou usar link da imagem</label>
+        <input id="setting-cursor-image" name="cursorImageUrl" type="url" placeholder="https://...">
+        <p class="site-editor__hint">Use um PNG pequeno e transparente (ideal: 32 × 32 px). Ele será aplicado como cursor personalizado.</p>
       </fieldset>
 
       <fieldset class="site-editor__group">
@@ -268,9 +261,10 @@
           <option value="to top">De baixo para cima</option>
           <option value="to top right">Diagonal para cima à direita</option>
         </select>
-        <label for="setting-card-gif-url">GIF sobre o card</label>
-        <input id="setting-card-gif-url" name="cardGifUrl" type="text" autocomplete="off" placeholder="https://... ou /arquivo.gif">
-        <p class="site-editor__hint">Use um link HTTPS ou um arquivo GIF publicado no site.</p>
+        <label for="upload-card-media">Enviar imagem ou GIF para o card</label>
+        <input id="upload-card-media" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-card-gif-url">Ou usar link de imagem/GIF</label>
+        <input id="setting-card-gif-url" name="cardGifUrl" type="url" autocomplete="off" placeholder="https://...">
       </fieldset>
 
       <fieldset class="site-editor__group">
@@ -303,15 +297,19 @@
         <input id="setting-presence-avatar-size" name="presenceAvatarSize" type="range" min="32" max="96" step="2">
         <label for="setting-presence-blur">Desfoque do fundo <output data-output="presenceBlur">18 px</output></label>
         <input id="setting-presence-blur" name="presenceBlur" type="range" min="0" max="32" step="1">
-        <label for="setting-presence-background-image">Imagem de fundo (opcional)</label>
+        <label for="upload-presence-background">Enviar imagem de fundo</label>
+        <input id="upload-presence-background" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-presence-background-image">Ou usar link de imagem</label>
         <input id="setting-presence-background-image" name="presenceBackgroundImage" type="url" placeholder="https://...">
         <p class="site-editor__hint">No modo livre, ajuste as posições horizontal e vertical para mover o cartão. Em telas pequenas, a posição é limitada à área visível.</p>
       </fieldset>
 
       <fieldset class="site-editor__group">
         <legend>Música</legend>
-        <label for="setting-music-url">Link de áudio ou arquivo do site</label>
-        <input id="setting-music-url" name="musicUrl" type="text" autocomplete="off" placeholder="https://... ou arquivo.mp3">
+        <label for="upload-music">Enviar música do computador</label>
+        <input id="upload-music" type="file" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/aac,.mp3,.wav,.ogg,.m4a">
+        <label for="setting-music-url">Ou usar link de áudio</label>
+        <input id="setting-music-url" name="musicUrl" type="url" autocomplete="off" placeholder="https://...">
         <label for="setting-music-volume">Volume <output data-output="musicVolume">8%</output></label>
         <input id="setting-music-volume" name="musicVolume" type="range" min="0" max="0.3" step="0.01">
         <button class="site-editor__secondary" id="test-music" type="button">Testar música</button>
