@@ -19,6 +19,11 @@ const DEFAULT_SETTINGS = {
   cardPositionY: 50,
   cardRadius: 50,
   avatarSize: 146,
+  socialIcons: [
+    { href: "https://www.instagram.com/vinocasof/", image: "imagem_2024-03-06_162937509-removebg-preview.png", x: 0, y: 0 },
+    { href: "https://open.spotify.com/user/31625fveyimletebkwekjkgmzz3y/", image: "image.png", x: 0, y: 0 },
+    { href: "https://www.tiktok.com/@vinocasof", image: "imagem_2024-03-06_163201394-removebg-preview.png", x: 0, y: 0 },
+  ],
   fontFamily: "arial",
   customFontFamily: "",
   customFontUrl: "",
@@ -52,6 +57,7 @@ const DEFAULT_SETTINGS = {
   presenceBorderWidth: 1,
   presencePadding: 12,
   presenceAvatarSize: 50,
+  presenceCoverSize: 88,
   presenceBlur: 18,
   presenceBackgroundImage: "",
   musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
@@ -311,6 +317,16 @@ function applySettings(settings) {
   document.querySelectorAll(".discord-presence-note").forEach((node) => {
     if (activeSettings.presenceNoteOverride) node.textContent = activeSettings.presenceNoteOverride;
   });
+  document.querySelectorAll(".social-button").forEach((button, index) => {
+    const icon = activeSettings.socialIcons?.[index];
+    if (!icon) return;
+    const image = button.querySelector("img");
+    if (icon.href) button.href = icon.href;
+    else button.removeAttribute("href");
+    if (image && icon.image) image.src = icon.image;
+    button.style.setProperty("--social-icon-x", `${icon.x}px`);
+    button.style.setProperty("--social-icon-y", `${icon.y}px`);
+  });
   root.style.setProperty(
     "--editor-background-image",
     activeSettings.backgroundImage ? `url("${safeCssUrl(activeSettings.backgroundImage)}")` : "none",
@@ -333,6 +349,7 @@ function applySettings(settings) {
   root.style.setProperty("--presence-border-width", `${activeSettings.presenceBorderWidth}px`);
   root.style.setProperty("--presence-padding", `${activeSettings.presencePadding}px`);
   root.style.setProperty("--presence-avatar-size", `${activeSettings.presenceAvatarSize}px`);
+  root.style.setProperty("--presence-cover-size", `${activeSettings.presenceCoverSize}px`);
   root.style.setProperty("--presence-blur", `${activeSettings.presenceBlur}px`);
   root.style.setProperty(
     "--presence-background-image",
@@ -396,6 +413,14 @@ function readSettings() {
     cardPositionY: Number(values.get("cardPositionY")),
     cardRadius: Number(values.get("cardRadius")),
     avatarSize: Number(values.get("avatarSize")),
+    socialIcons: [0, 1, 2].map((index) => {
+      return {
+        href: String(values.get(`socialIcon${index}Href`) || "").trim(),
+        image: String(values.get(`socialIcon${index}Image`) || "").trim(),
+        x: Number(values.get(`socialIcon${index}X`)),
+        y: Number(values.get(`socialIcon${index}Y`)),
+      };
+    }),
     fontFamily: values.get("fontFamily"),
     customFontFamily: String(values.get("customFontFamily") || "").trim(),
     customFontUrl: String(values.get("customFontUrl") || "").trim(),
@@ -429,6 +454,7 @@ function readSettings() {
     presenceBorderWidth: Number(values.get("presenceBorderWidth")),
     presencePadding: Number(values.get("presencePadding")),
     presenceAvatarSize: Number(values.get("presenceAvatarSize")),
+    presenceCoverSize: Number(values.get("presenceCoverSize")),
     presenceBlur: Number(values.get("presenceBlur")),
     presenceBackgroundImage: String(values.get("presenceBackgroundImage") || "").trim(),
     musicUrl: String(values.get("musicUrl") || "").trim(),
@@ -466,8 +492,13 @@ function updateOutputs(settings) {
     presenceBorderWidth: `${settings.presenceBorderWidth} px`,
     presencePadding: `${settings.presencePadding} px`,
     presenceAvatarSize: `${settings.presenceAvatarSize} px`,
+    presenceCoverSize: `${settings.presenceCoverSize} px`,
     presenceBlur: `${settings.presenceBlur} px`,
   };
+  settings.socialIcons?.forEach((icon, index) => {
+    values[`socialIcon${index}X`] = `${icon.x} px`;
+    values[`socialIcon${index}Y`] = `${icon.y} px`;
+  });
 
   Object.entries(values).forEach(([name, value]) => {
     const output = settingsForm.querySelector(`[data-output="${name}"]`);
@@ -476,11 +507,18 @@ function updateOutputs(settings) {
 }
 
 function fillForm(settings) {
-  Object.entries({ ...DEFAULT_SETTINGS, ...settings }).forEach(([name, value]) => {
+  const activeSettings = { ...DEFAULT_SETTINGS, ...settings };
+  Object.entries(activeSettings).forEach(([name, value]) => {
     const field = settingsForm.elements.namedItem(name);
     if (field) field.value = String(value);
   });
-  updateOutputs({ ...DEFAULT_SETTINGS, ...settings });
+  activeSettings.socialIcons.forEach((icon, index) => {
+    ["Href", "Image", "X", "Y"].forEach((field) => {
+      const input = settingsForm.elements.namedItem(`socialIcon${index}${field}`);
+      if (input) input.value = String(icon[{ Href: "href", Image: "image", X: "x", Y: "y" }[field]]);
+    });
+  });
+  updateOutputs(activeSettings);
 }
 
 async function getSessionToken() {

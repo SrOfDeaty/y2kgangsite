@@ -20,6 +20,11 @@ const DEFAULT_SETTINGS = {
   cardPositionY: 50,
   cardRadius: 50,
   avatarSize: 146,
+  socialIcons: [
+    { href: "https://www.instagram.com/vinocasof/", image: "imagem_2024-03-06_162937509-removebg-preview.png", x: 0, y: 0 },
+    { href: "https://open.spotify.com/user/31625fveyimletebkwekjkgmzz3y/", image: "image.png", x: 0, y: 0 },
+    { href: "https://www.tiktok.com/@vinocasof", image: "imagem_2024-03-06_163201394-removebg-preview.png", x: 0, y: 0 },
+  ],
   fontFamily: "arial",
   customFontFamily: "",
   customFontUrl: "",
@@ -53,6 +58,7 @@ const DEFAULT_SETTINGS = {
   presenceBorderWidth: 1,
   presencePadding: 12,
   presenceAvatarSize: 50,
+  presenceCoverSize: 88,
   presenceBlur: 18,
   presenceBackgroundImage: "",
   musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
@@ -160,6 +166,21 @@ function validateSettings(value) {
     cardPositionY: clampNumber(value.cardPositionY ?? DEFAULT_SETTINGS.cardPositionY, 0, 100, "card vertical position"),
     cardRadius: Math.round(clampNumber(value.cardRadius, 0, 64, "card radius")),
     avatarSize: Math.round(clampNumber(value.avatarSize, 96, 180, "avatar size")),
+    socialIcons: (() => {
+      const icons = value.socialIcons ?? DEFAULT_SETTINGS.socialIcons;
+      if (!Array.isArray(icons) || icons.length !== DEFAULT_SETTINGS.socialIcons.length) {
+        throw new TypeError("Invalid social icons");
+      }
+      return icons.map((icon, index) => {
+      if (!icon || typeof icon !== "object") throw new TypeError(`Invalid social icon ${index}`);
+      return {
+        href: validateMediaUrl(icon.href ?? "", `social icon ${index} link`),
+        image: validateMediaUrl(icon.image ?? "", `social icon ${index} image`),
+        x: Math.round(clampNumber(icon.x ?? 0, -120, 120, `social icon ${index} horizontal position`)),
+        y: Math.round(clampNumber(icon.y ?? 0, -120, 120, `social icon ${index} vertical position`)),
+      };
+      });
+    })(),
     fontFamily: ["arial", "yanone", "custom"].includes(value.fontFamily) ? value.fontFamily : "arial",
     customFontFamily: typeof value.customFontFamily === "string"
       ? value.customFontFamily.replace(/[^a-zA-Z0-9 _-]/g, "").slice(0, 80)
@@ -171,8 +192,8 @@ function validateSettings(value) {
     presenceNoteOverride: typeof value.presenceNoteOverride === "string" ? value.presenceNoteOverride.slice(0, 160) : "",
     profileNameSize: clampNumber(value.profileNameSize ?? DEFAULT_SETTINGS.profileNameSize, 10, 48, "profile name size"),
     profileUsernameSize: clampNumber(value.profileUsernameSize ?? DEFAULT_SETTINGS.profileUsernameSize, 8, 36, "profile username size"),
-    presenceNameSize: clampNumber(value.presenceNameSize ?? DEFAULT_SETTINGS.presenceNameSize, 8, 36, "presence name size"),
-    presenceBodySize: clampNumber(value.presenceBodySize ?? DEFAULT_SETTINGS.presenceBodySize, 8, 28, "presence text size"),
+    presenceNameSize: clampNumber(value.presenceNameSize ?? DEFAULT_SETTINGS.presenceNameSize, 8, 48, "presence name size"),
+    presenceBodySize: clampNumber(value.presenceBodySize ?? DEFAULT_SETTINGS.presenceBodySize, 8, 48, "presence text size"),
     profileNameX: clampNumber(value.profileNameX ?? 0, -60, 60, "profile name horizontal position"),
     profileNameY: clampNumber(value.profileNameY ?? 0, -60, 60, "profile name vertical position"),
     profileUsernameX: clampNumber(value.profileUsernameX ?? 0, -60, 60, "profile username horizontal position"),
@@ -192,11 +213,12 @@ function validateSettings(value) {
     presenceBackground: value.presenceBackground ?? DEFAULT_SETTINGS.presenceBackground,
     presenceTextColor: value.presenceTextColor ?? DEFAULT_SETTINGS.presenceTextColor,
     presenceBorderColor: value.presenceBorderColor ?? DEFAULT_SETTINGS.presenceBorderColor,
-    presenceOpacity: clampNumber(value.presenceOpacity ?? DEFAULT_SETTINGS.presenceOpacity, 0.2, 1, "Discord card opacity"),
+    presenceOpacity: clampNumber(value.presenceOpacity ?? DEFAULT_SETTINGS.presenceOpacity, 0, 1, "Discord card opacity"),
     presenceRadius: Math.round(clampNumber(value.presenceRadius ?? DEFAULT_SETTINGS.presenceRadius, 0, 48, "Discord card radius")),
     presenceBorderWidth: Math.round(clampNumber(value.presenceBorderWidth ?? DEFAULT_SETTINGS.presenceBorderWidth, 0, 8, "Discord card border width")),
     presencePadding: Math.round(clampNumber(value.presencePadding ?? DEFAULT_SETTINGS.presencePadding, 6, 32, "Discord card padding")),
     presenceAvatarSize: Math.round(clampNumber(value.presenceAvatarSize ?? DEFAULT_SETTINGS.presenceAvatarSize, 32, 96, "Discord avatar size")),
+    presenceCoverSize: Math.round(clampNumber(value.presenceCoverSize ?? DEFAULT_SETTINGS.presenceCoverSize, 48, 112, "Discord track cover size")),
     presenceBlur: Math.round(clampNumber(value.presenceBlur ?? DEFAULT_SETTINGS.presenceBlur, 0, 32, "Discord card blur")),
     presenceBackgroundImage: validateMediaUrl(value.presenceBackgroundImage ?? "", "Discord card background image"),
     musicUrl: validateMediaUrl(value.musicUrl, "music URL"),
