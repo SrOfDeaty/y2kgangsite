@@ -6,14 +6,47 @@ const DEFAULT_SETTINGS = {
   accentColor: "#c7c7c7",
   cardColor: "#17171a",
   cardOpacity: 0.78,
+  cardFillStyle: "solid",
+  cardGradientStart: "#17171a",
+  cardGradientEnd: "#3a1a26",
+  cardGradientDirection: "to bottom right",
+  cardGifUrl: "",
   backgroundImage: "https://i.imgur.com/vMQx7AE.jpeg",
   backgroundShade: 0.16,
   cardWidth: 320,
+  cardHeight: 620,
+  cardPositionX: 50,
+  cardPositionY: 50,
   cardRadius: 50,
   avatarSize: 146,
   fontFamily: "arial",
+  siteEffect: "none",
+  cursorStyle: "default",
+  cursorImageUrl: "",
+  presencePositionMode: "inline",
+  presenceX: 50,
+  presenceY: 50,
+  presenceWidth: 360,
+  presenceHeight: 112,
+  presenceBackground: "#17171d",
+  presenceTextColor: "#f5f5f7",
+  presenceBorderColor: "#ffffff",
+  presenceOpacity: 0.82,
+  presenceRadius: 24,
+  presenceBorderWidth: 1,
+  presencePadding: 12,
+  presenceAvatarSize: 50,
+  presenceBlur: 18,
+  presenceBackgroundImage: "",
   musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
   musicVolume: 0.08,
+};
+
+const CURSOR_VALUES = {
+  pointer: "pointer",
+  crosshair: "crosshair",
+  text: "text",
+  wait: "wait",
 };
 
 const PALETTES = {
@@ -39,6 +72,145 @@ const root = document.documentElement;
 
 let authMode = "sign-in";
 let verificationEmail = "";
+const previewStage = document.getElementById("editor-preview");
+
+let previewDrag = null;
+
+function renderEditorPreview(settings) {
+  if (!previewStage) return;
+  previewStage.dataset.presencePosition = settings.presencePositionMode;
+  const originalCard = document.querySelector(".discord-profile");
+  if (!originalCard) return;
+  const previewCard = originalCard.cloneNode(true);
+  previewCard.style.marginLeft = `${-Math.min(settings.cardWidth, previewStage.clientWidth) / 2}px`;
+  previewCard.dataset.editorPreviewCard = "";
+  previewCard.querySelectorAll("[data-discord-status]").forEach((element) => element.remove());
+  previewCard.querySelectorAll("[data-discord-note]").forEach((element) => {
+    element.textContent = "Atividade no Discord";
+  });
+  previewCard.querySelectorAll("[data-discord-display-name]").forEach((element) => {
+    element.textContent = "Prévia do perfil";
+  });
+
+  const moveCard = document.createElement("span");
+  moveCard.className = "editor-drag-handle";
+  moveCard.textContent = "Mover card";
+  moveCard.setAttribute("aria-hidden", "true");
+  previewCard.append(moveCard, createResizeHandle("card"));
+
+  const presenceCard = previewCard.querySelector(".discord-presence");
+  if (presenceCard) {
+    presenceCard.dataset.editorPreviewPresence = "";
+    const movePresence = document.createElement("span");
+    movePresence.className = "editor-drag-handle editor-drag-handle--presence";
+    movePresence.textContent = "";
+    movePresence.setAttribute("aria-hidden", "true");
+    presenceCard.append(movePresence, createResizeHandle("presence"));
+    if (settings.presencePositionMode === "floating") presenceCard.remove();
+  }
+  previewStage.replaceChildren(
+    previewCard,
+    ...(settings.presencePositionMode === "floating" && presenceCard ? [presenceCard] : []),
+  );
+}
+
+function createResizeHandle(target) {
+  const handle = document.createElement("button");
+  handle.type = "button";
+  handle.className = `editor-resize-handle editor-resize-handle--${target}`;
+  handle.dataset.editorResize = target;
+  handle.setAttribute("aria-label", `Redimensionar ${target === "card" ? "card principal" : "cartão do Discord"}`);
+  handle.title = "Arraste para redimensionar";
+  return handle;
+}
+
+function clamp(value, minimum, maximum) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+function updatePreviewDrag(event) {
+  if (!previewDrag || event.pointerId !== previewDrag.pointerId) return;
+  const bounds = previewStage.getBoundingClientRect();
+  const deltaX = event.clientX - previewDrag.startX;
+  const deltaY = event.clientY - previewDrag.startY;
+  const fields = settingsForm.elements;
+
+  if (previewDrag.target === "card") {
+    if (previewDrag.mode === "move") {
+      fields.namedItem("cardPositionX").value = String(clamp(previewDrag.startValueX + (deltaX / bounds.width) * 100, 5, 95));
+      fields.namedItem("cardPositionY").value = String(clamp(previewDrag.startValueY + (deltaY / bounds.height) * 100, 5, 95));
+    } else {
+      fields.namedItem("cardWidth").value = String(clamp(previewDrag.startWidth + deltaX, 260, 420));
+      fields.namedItem("cardHeight").value = String(clamp(previewDrag.startHeight + deltaY, 360, 760));
+    }
+  } else {
+    fields.namedItem("presencePositionMode").value = "floating";
+    if (previewDrag.mode === "move") {
+      fields.namedItem("presenceX").value = String(clamp(previewDrag.startValueX + (deltaX / bounds.width) * 100, 5, 95));
+      fields.namedItem("presenceY").value = String(clamp(previewDrag.startValueY + (deltaY / bounds.height) * 100, 5, 95));
+    } else {
+      fields.namedItem("presenceWidth").value = String(clamp(previewDrag.startWidth + deltaX, 240, 520));
+      fields.namedItem("presenceHeight").value = String(clamp(previewDrag.startHeight + deltaY, 90, 320));
+    }
+  }
+
+  const settings = readSettings();
+  updateOutputs(settings);
+  applySettings(settings);
+}
+
+function endPreviewDrag(event) {
+  if (!previewDrag || event.pointerId !== previewDrag.pointerId) return;
+  previewDrag = null;
+  previewStage.classList.remove("is-dragging");
+  if (previewStage.hasPointerCapture(event.pointerId)) previewStage.releasePointerCapture(event.pointerId);
+}
+
+async function uploadMedia(input, settingName, acceptedTypes) {
+  const file = input.files?.[0];
+  if (!file) return;
+  if (!acceptedTypes.includes(file.type)) {
+    showNotice("Formato de arquivo não aceito para este campo.", true);
+    input.value = "";
+    return;
+  }
+  if (file.size > 4 * 1024 * 1024) {
+    showNotice("O arquivo deve ter no máximo 4 MB.", true);
+    input.value = "";
+    return;
+  }
+
+  input.disabled = true;
+  showNotice("Enviando arquivo para o armazenamento seguro…");
+  try {
+    const token = await getSessionToken();
+    if (!token) throw new Error("session_required");
+    const data = new FormData();
+    data.append("file", file);
+    const response = await fetch("/api/site-upload", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: data,
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || "upload_failed");
+    const field = settingsForm.elements.namedItem(settingName);
+    field.value = payload.url;
+    if (settingName === "cursorImageUrl") {
+      settingsForm.elements.namedItem("cursorStyle").value = "custom";
+    }
+    const settings = readSettings();
+    updateOutputs(settings);
+    applySettings(settings);
+    showNotice("Upload concluído. Salve as alterações para publicar.");
+  } catch {
+    showNotice("Não foi possível enviar o arquivo. Confira sua sessão e tente novamente.", true);
+  } finally {
+    input.disabled = false;
+    input.value = "";
+  }
+}
+
 function showNotice(message, isError = false) {
   notice.textContent = message;
   notice.dataset.state = isError ? "error" : "success";
@@ -61,6 +233,11 @@ function applySettings(settings) {
   root.style.setProperty("--editor-card-opacity", `${activeSettings.cardOpacity * 100}%`);
   root.style.setProperty("--editor-background-shade", activeSettings.backgroundShade);
   root.style.setProperty("--editor-card-width", `${activeSettings.cardWidth}px`);
+  root.style.setProperty("--editor-card-height", `${activeSettings.cardHeight}px`);
+  root.style.setProperty("--editor-card-x", `${activeSettings.cardPositionX}%`);
+  root.style.setProperty("--editor-card-y", `${activeSettings.cardPositionY}%`);
+  root.style.setProperty("--editor-card-margin-x", `${-activeSettings.cardWidth / 2}px`);
+  root.style.setProperty("--editor-card-margin-y", `${-activeSettings.cardHeight / 2}px`);
   root.style.setProperty("--editor-card-radius", `${activeSettings.cardRadius}px`);
   root.style.setProperty("--editor-avatar-size", `${activeSettings.avatarSize}px`);
   root.style.setProperty(
@@ -71,15 +248,64 @@ function applySettings(settings) {
     "--editor-background-image",
     activeSettings.backgroundImage ? `url("${safeCssUrl(activeSettings.backgroundImage)}")` : "none",
   );
+  root.style.setProperty("--editor-card-gradient-start", activeSettings.cardGradientStart);
+  root.style.setProperty("--editor-card-gradient-end", activeSettings.cardGradientEnd);
+  root.style.setProperty("--editor-card-gradient-direction", activeSettings.cardGradientDirection);
+  root.dataset.cardFillStyle = activeSettings.cardFillStyle;
+  root.dataset.siteEffect = activeSettings.siteEffect;
+  root.dataset.presencePosition = activeSettings.presencePositionMode;
+  root.style.setProperty("--presence-x", `${activeSettings.presenceX}%`);
+  root.style.setProperty("--presence-y", `${activeSettings.presenceY}%`);
+  root.style.setProperty("--presence-width", `${activeSettings.presenceWidth}px`);
+  root.style.setProperty("--presence-height", `${activeSettings.presenceHeight}px`);
+  root.style.setProperty("--presence-background", activeSettings.presenceBackground);
+  root.style.setProperty("--presence-text-color", activeSettings.presenceTextColor);
+  root.style.setProperty("--presence-border-color", activeSettings.presenceBorderColor);
+  root.style.setProperty("--presence-opacity", `${activeSettings.presenceOpacity * 100}%`);
+  root.style.setProperty("--presence-radius", `${activeSettings.presenceRadius}px`);
+  root.style.setProperty("--presence-border-width", `${activeSettings.presenceBorderWidth}px`);
+  root.style.setProperty("--presence-padding", `${activeSettings.presencePadding}px`);
+  root.style.setProperty("--presence-avatar-size", `${activeSettings.presenceAvatarSize}px`);
+  root.style.setProperty("--presence-blur", `${activeSettings.presenceBlur}px`);
+  root.style.setProperty(
+    "--presence-background-image",
+    activeSettings.presenceBackgroundImage
+      ? `url("${safeCssUrl(activeSettings.presenceBackgroundImage)}")`
+      : "none",
+  );
+
+  if (activeSettings.cursorStyle === "custom" && activeSettings.cursorImageUrl) {
+    root.dataset.editorCursor = "custom";
+    root.style.setProperty("--editor-cursor", `url("${safeCssUrl(activeSettings.cursorImageUrl)}") 4 4, auto`);
+  } else if (activeSettings.cursorStyle === "default") {
+    delete root.dataset.editorCursor;
+    root.style.removeProperty("--editor-cursor");
+  } else {
+    root.dataset.editorCursor = activeSettings.cursorStyle;
+    root.style.setProperty("--editor-cursor", CURSOR_VALUES[activeSettings.cursorStyle] || "auto");
+  }
+
+  const cardGif = document.querySelector("[data-card-gif]");
+  if (cardGif) {
+    if (activeSettings.cardGifUrl) {
+      cardGif.src = activeSettings.cardGifUrl;
+      cardGif.hidden = false;
+    } else {
+      cardGif.removeAttribute("src");
+      cardGif.hidden = true;
+    }
+  }
 
   if (audio) {
     if (activeSettings.musicUrl) {
-      audio.src = new URL(activeSettings.musicUrl, window.location.href).href;
+      const nextAudioUrl = new URL(activeSettings.musicUrl, window.location.href).href;
+      if (audio.src !== nextAudioUrl) audio.src = nextAudioUrl;
     } else {
       audio.removeAttribute("src");
     }
     audio.volume = activeSettings.musicVolume;
   }
+  renderEditorPreview(activeSettings);
 }
 
 function readSettings() {
@@ -90,12 +316,38 @@ function readSettings() {
     accentColor: values.get("accentColor"),
     cardColor: values.get("cardColor"),
     cardOpacity: Number(values.get("cardOpacity")),
+    cardFillStyle: values.get("cardFillStyle"),
+    cardGradientStart: values.get("cardGradientStart"),
+    cardGradientEnd: values.get("cardGradientEnd"),
+    cardGradientDirection: values.get("cardGradientDirection"),
+    cardGifUrl: String(values.get("cardGifUrl") || "").trim(),
     backgroundImage: String(values.get("backgroundImage") || "").trim(),
     backgroundShade: Number(values.get("backgroundShade")),
     cardWidth: Number(values.get("cardWidth")),
+    cardHeight: Number(values.get("cardHeight")),
+    cardPositionX: Number(values.get("cardPositionX")),
+    cardPositionY: Number(values.get("cardPositionY")),
     cardRadius: Number(values.get("cardRadius")),
     avatarSize: Number(values.get("avatarSize")),
     fontFamily: values.get("fontFamily"),
+    siteEffect: values.get("siteEffect"),
+    cursorStyle: values.get("cursorStyle"),
+    cursorImageUrl: String(values.get("cursorImageUrl") || "").trim(),
+    presencePositionMode: values.get("presencePositionMode"),
+    presenceX: Number(values.get("presenceX")),
+    presenceY: Number(values.get("presenceY")),
+    presenceWidth: Number(values.get("presenceWidth")),
+    presenceHeight: Number(values.get("presenceHeight")),
+    presenceBackground: values.get("presenceBackground"),
+    presenceTextColor: values.get("presenceTextColor"),
+    presenceBorderColor: values.get("presenceBorderColor"),
+    presenceOpacity: Number(values.get("presenceOpacity")),
+    presenceRadius: Number(values.get("presenceRadius")),
+    presenceBorderWidth: Number(values.get("presenceBorderWidth")),
+    presencePadding: Number(values.get("presencePadding")),
+    presenceAvatarSize: Number(values.get("presenceAvatarSize")),
+    presenceBlur: Number(values.get("presenceBlur")),
+    presenceBackgroundImage: String(values.get("presenceBackgroundImage") || "").trim(),
     musicUrl: String(values.get("musicUrl") || "").trim(),
     musicVolume: Number(values.get("musicVolume")),
   };
@@ -105,10 +357,23 @@ function updateOutputs(settings) {
   const values = {
     backgroundShade: `${Math.round(settings.backgroundShade * 100)}%`,
     cardWidth: `${settings.cardWidth} px`,
+    cardHeight: `${settings.cardHeight} px`,
+    cardPositionX: `${Math.round(settings.cardPositionX)}%`,
+    cardPositionY: `${Math.round(settings.cardPositionY)}%`,
     cardRadius: `${settings.cardRadius} px`,
     avatarSize: `${settings.avatarSize} px`,
     cardOpacity: `${Math.round(settings.cardOpacity * 100)}%`,
     musicVolume: `${Math.round(settings.musicVolume * 100)}%`,
+    presenceX: `${settings.presenceX}%`,
+    presenceY: `${settings.presenceY}%`,
+    presenceWidth: `${settings.presenceWidth} px`,
+    presenceHeight: `${settings.presenceHeight} px`,
+    presenceOpacity: `${Math.round(settings.presenceOpacity * 100)}%`,
+    presenceRadius: `${settings.presenceRadius} px`,
+    presenceBorderWidth: `${settings.presenceBorderWidth} px`,
+    presencePadding: `${settings.presencePadding} px`,
+    presenceAvatarSize: `${settings.presenceAvatarSize} px`,
+    presenceBlur: `${settings.presenceBlur} px`,
   };
 
   Object.entries(values).forEach(([name, value]) => {
@@ -164,9 +429,9 @@ async function showEditorForSession() {
     }
 
     fillForm(payload.settings);
-    applySettings(payload.settings);
     authView.hidden = true;
     editorView.hidden = false;
+    applySettings(payload.settings);
     showNotice("Acesso administrativo confirmado.");
   } catch {
     authView.hidden = false;
@@ -313,10 +578,45 @@ async function signOut() {
 }
 
 function connectFormPreview() {
-  settingsForm.addEventListener("input", (event) => {
+  previewStage.addEventListener("pointerdown", (event) => {
+    if (!(event.target instanceof Element) || event.button !== 0) return;
+    const resizeHandle = event.target.closest("[data-editor-resize]");
+    const presence = event.target.closest("[data-editor-preview-presence]");
+    const card = event.target.closest("[data-editor-preview-card]");
+    const target = resizeHandle?.dataset.editorResize || (presence ? "presence" : card ? "card" : null);
+    if (!target) return;
+
+    const settings = readSettings();
+    previewDrag = {
+      pointerId: event.pointerId,
+      target,
+      mode: resizeHandle ? "resize" : "move",
+      startX: event.clientX,
+      startY: event.clientY,
+      startWidth: target === "card" ? settings.cardWidth : settings.presenceWidth,
+      startHeight: target === "card" ? settings.cardHeight : settings.presenceHeight,
+      startValueX: target === "card" ? settings.cardPositionX : settings.presenceX,
+      startValueY: target === "card" ? settings.cardPositionY : settings.presenceY,
+    };
+    event.preventDefault();
+    previewStage.setPointerCapture(event.pointerId);
+    previewStage.classList.add("is-dragging");
+  });
+  previewStage.addEventListener("pointermove", updatePreviewDrag);
+  previewStage.addEventListener("pointerup", endPreviewDrag);
+  previewStage.addEventListener("pointercancel", endPreviewDrag);
+
+  settingsForm.addEventListener("input",  (event) => {
     if (["backgroundColor", "accentColor", "cardColor"].includes(event.target.name)) {
       settingsForm.elements.namedItem("palette").value = "custom";
     }
+    const settings = readSettings();
+    updateOutputs(settings);
+    applySettings(settings);
+  });
+
+  settingsForm.addEventListener("change", (event) => {
+    if (!(event.target instanceof HTMLSelectElement) || event.target.name === "palette") return;
     const settings = readSettings();
     updateOutputs(settings);
     applySettings(settings);
@@ -337,6 +637,19 @@ function connectFormPreview() {
     fillForm(DEFAULT_SETTINGS);
     applySettings(DEFAULT_SETTINGS);
     showNotice("Padrões restaurados na prévia. Salve para publicar.");
+  });
+
+  const uploadFields = [
+    ["upload-background-image", "backgroundImage", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
+    ["upload-card-media", "cardGifUrl", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
+    ["upload-presence-background", "presenceBackgroundImage", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
+    ["upload-cursor-image", "cursorImageUrl", ["image/png", "image/jpeg", "image/gif", "image/webp"]],
+    ["upload-music", "musicUrl", ["audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/ogg", "audio/mp4", "audio/aac"]],
+  ];
+  uploadFields.forEach(([inputId, settingName, acceptedTypes]) => {
+    document.getElementById(inputId).addEventListener("change", (event) => {
+      void uploadMedia(event.currentTarget, settingName, acceptedTypes);
+    });
   });
 
   document.getElementById("test-music").addEventListener("click", async () => {
@@ -361,6 +674,16 @@ async function loadPublicSettings() {
     applySettings(payload.settings);
   } catch {
     applySettings(DEFAULT_SETTINGS);
+  }
+  if (audio) {
+    audio.autoplay = true;
+    const attemptPlayback = () => {
+      audio.play().catch(() => {
+        document.addEventListener("pointerdown", attemptPlayback, { once: true });
+        document.addEventListener("keydown", attemptPlayback, { once: true });
+      });
+    };
+    attemptPlayback();
   }
 }
 

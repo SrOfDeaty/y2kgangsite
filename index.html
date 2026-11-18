@@ -17,21 +17,14 @@
 </head>
 <body>
   <div class="site-background-shade" aria-hidden="true"></div>
+  <div class="site-effects-layer" aria-hidden="true"></div>
 
-
-
-  <audio id="audio" loop preload="auto">
-    <source src="/lil-peep-wanna-be-lyrics_1T09YWa6.mp3" type="audio/mpeg">
-    Seu navegador não suporta o elemento de áudio.
-  </audio>
-
-
-  
   <main class="divcont">
 
 
 
      <div class="discord-profile">
+         <img class="site-card-gif" data-card-gif alt="" aria-hidden="true" hidden>
          <div class="profile">
               <div class="pfp">
                   <img src="opium.jpg" alt="Foto de perfil do Discord" data-discord-avatar>
@@ -97,26 +90,7 @@
        </div>
      </main>
 
-<script>
-
-  const audio = document.getElementById("audio");
-  audio.volume = 0.08;
-
-  function play() {
-    if (!audio) return;
-    const playback = audio.play();
-    if (playback) playback.catch(() => {});
-  }
-</script>
-
-<input type="checkbox" autocomplete="off" id="overlay-toggle">
-<div class="overlay fullscreen">
-    <label for="overlay-toggle" onclick="play()">
-        <span class="overlayno-hover hover" style="font-family: monospace; font-size: 0.6em;"></span>
-        <span class="overlayhover hover" style="font-family: monospace; font-size: 0.6em;">click here</span>         
-        
-      </label>
-</div>
+<audio id="audio" autoplay loop preload="auto" playsinline></audio>
 <script>
   var rev = "fwd";
   function titlebar(val){
@@ -191,6 +165,10 @@
 
   <section class="site-editor__workspace" data-editor-view hidden>
     <p class="site-editor__intro">Ajuste os controles e veja a prévia ao vivo. As mudanças só ficam públicas depois de salvar.</p>
+    <section class="site-editor__preview" aria-label="Prévia ao vivo do perfil">
+      <p class="site-editor__preview-label">PRÉVIA DO PERFIL</p>
+      <div class="site-editor__preview-stage" id="editor-preview"></div>
+    </section>
     <form class="site-editor__form" id="site-settings-form">
       <fieldset class="site-editor__group">
         <legend>Paleta e cores</legend>
@@ -211,16 +189,50 @@
 
       <fieldset class="site-editor__group">
         <legend>Imagem de fundo</legend>
-        <label for="setting-background-image">Link da imagem</label>
+        <label for="upload-background-image">Enviar imagem de fundo</label>
+        <input id="upload-background-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-background-image">Ou usar link da imagem</label>
         <input id="setting-background-image" name="backgroundImage" type="url" placeholder="https://...">
         <label for="setting-background-shade">Escurecimento <output data-output="backgroundShade">16%</output></label>
         <input id="setting-background-shade" name="backgroundShade" type="range" min="0" max="0.65" step="0.01">
       </fieldset>
 
       <fieldset class="site-editor__group">
+        <legend>Efeitos do site</legend>
+        <label for="setting-site-effect">Efeito global</label>
+        <select id="setting-site-effect" name="siteEffect">
+          <option value="none">Sem efeito</option>
+          <option value="snow">Neve</option>
+          <option value="rain">Chuva</option>
+          <option value="glitch">Glitch</option>
+        </select>
+        <label for="setting-cursor-style">Cursor</label>
+        <select id="setting-cursor-style" name="cursorStyle">
+          <option value="default">Padrão do navegador</option>
+          <option value="pointer">Mão</option>
+          <option value="crosshair">Mira</option>
+          <option value="text">Texto</option>
+          <option value="wait">Aguardar</option>
+          <option value="custom">Imagem personalizada</option>
+        </select>
+        <label for="upload-cursor-image">Enviar imagem para o cursor</label>
+        <input id="upload-cursor-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-cursor-image">Ou usar link da imagem</label>
+        <input id="setting-cursor-image" name="cursorImageUrl" type="url" placeholder="https://...">
+        <p class="site-editor__hint">Use um PNG pequeno e transparente (ideal: 32 × 32 px). Ele será aplicado como cursor personalizado.</p>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
         <legend>Card e perfil</legend>
         <label for="setting-card-width">Largura do card <output data-output="cardWidth">320 px</output></label>
         <input id="setting-card-width" name="cardWidth" type="range" min="260" max="420" step="2">
+        <label for="setting-card-height">Altura do card <output data-output="cardHeight">620 px</output></label>
+        <input id="setting-card-height" name="cardHeight" type="range" min="360" max="760" step="4">
+        <label for="setting-card-position-x">Posição horizontal <output data-output="cardPositionX">50%</output></label>
+        <input id="setting-card-position-x" name="cardPositionX" type="range" min="5" max="95" step="1">
+        <label for="setting-card-position-y">Posição vertical <output data-output="cardPositionY">50%</output></label>
+        <input id="setting-card-position-y" name="cardPositionY" type="range" min="5" max="95" step="1">
+        <p class="site-editor__hint">Na prévia, arraste o card para posicionar e use o canto inferior direito para ajustar largura e altura.</p>
         <label for="setting-card-radius">Formato <output data-output="cardRadius">50 px</output></label>
         <input id="setting-card-radius" name="cardRadius" type="range" min="0" max="64" step="1">
         <label for="setting-avatar-size">Tamanho da foto <output data-output="avatarSize">146 px</output></label>
@@ -235,9 +247,79 @@
       </fieldset>
 
       <fieldset class="site-editor__group">
+        <legend>Visual do card</legend>
+        <label for="setting-card-fill-style">Preenchimento do card</label>
+        <select id="setting-card-fill-style" name="cardFillStyle">
+          <option value="solid">Cor sólida</option>
+          <option value="gradient">Gradiente</option>
+        </select>
+        <div class="site-editor__color-grid site-editor__gradient-colors">
+          <label for="setting-card-gradient-start">Cor inicial <input id="setting-card-gradient-start" name="cardGradientStart" type="color"></label>
+          <label for="setting-card-gradient-end">Cor final <input id="setting-card-gradient-end" name="cardGradientEnd" type="color"></label>
+        </div>
+        <label for="setting-card-gradient-direction">Direção do gradiente</label>
+        <select id="setting-card-gradient-direction" name="cardGradientDirection">
+          <option value="to right">Esquerda para direita</option>
+          <option value="to bottom right">Diagonal para baixo à direita</option>
+          <option value="to bottom">De cima para baixo</option>
+          <option value="to bottom left">Diagonal para baixo à esquerda</option>
+          <option value="to left">Direita para esquerda</option>
+          <option value="to top left">Diagonal para cima à esquerda</option>
+          <option value="to top">De baixo para cima</option>
+          <option value="to top right">Diagonal para cima à direita</option>
+        </select>
+        <label for="upload-card-media">Enviar imagem ou GIF para o card</label>
+        <input id="upload-card-media" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-card-gif-url">Ou usar link de imagem/GIF</label>
+        <input id="setting-card-gif-url" name="cardGifUrl" type="url" autocomplete="off" placeholder="https://...">
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Cartão de integração do Discord</legend>
+        <label for="setting-presence-position-mode">Posicionamento</label>
+        <select id="setting-presence-position-mode" name="presencePositionMode">
+          <option value="inline">Dentro do perfil</option>
+          <option value="floating">Livre pela tela</option>
+        </select>
+        <label for="setting-presence-x">Posição horizontal <output data-output="presenceX">50%</output></label>
+        <input id="setting-presence-x" name="presenceX" type="range" min="0" max="100" step="1">
+        <label for="setting-presence-y">Posição vertical <output data-output="presenceY">50%</output></label>
+        <input id="setting-presence-y" name="presenceY" type="range" min="0" max="100" step="1">
+        <label for="setting-presence-width">Largura <output data-output="presenceWidth">360 px</output></label>
+        <input id="setting-presence-width" name="presenceWidth" type="range" min="240" max="520" step="4">
+        <label for="setting-presence-height">Altura <output data-output="presenceHeight">112 px</output></label>
+        <input id="setting-presence-height" name="presenceHeight" type="range" min="90" max="320" step="2">
+        <p class="site-editor__hint">Arraste o cartão Discord na prévia para movê-lo; o arraste o solta do perfil e o posiciona na tela.</p>
+        <div class="site-editor__color-grid">
+          <label for="setting-presence-background">Fundo <input id="setting-presence-background" name="presenceBackground" type="color"></label>
+          <label for="setting-presence-text-color">Texto <input id="setting-presence-text-color" name="presenceTextColor" type="color"></label>
+          <label for="setting-presence-border-color">Borda <input id="setting-presence-border-color" name="presenceBorderColor" type="color"></label>
+        </div>
+        <label for="setting-presence-opacity">Opacidade <output data-output="presenceOpacity">82%</output></label>
+        <input id="setting-presence-opacity" name="presenceOpacity" type="range" min="0.2" max="1" step="0.01">
+        <label for="setting-presence-radius">Arredondamento <output data-output="presenceRadius">24 px</output></label>
+        <input id="setting-presence-radius" name="presenceRadius" type="range" min="0" max="48" step="1">
+        <label for="setting-presence-border-width">Espessura da borda <output data-output="presenceBorderWidth">1 px</output></label>
+        <input id="setting-presence-border-width" name="presenceBorderWidth" type="range" min="0" max="8" step="1">
+        <label for="setting-presence-padding">Espaçamento interno <output data-output="presencePadding">12 px</output></label>
+        <input id="setting-presence-padding" name="presencePadding" type="range" min="6" max="32" step="1">
+        <label for="setting-presence-avatar-size">Tamanho do avatar <output data-output="presenceAvatarSize">50 px</output></label>
+        <input id="setting-presence-avatar-size" name="presenceAvatarSize" type="range" min="32" max="96" step="2">
+        <label for="setting-presence-blur">Desfoque do fundo <output data-output="presenceBlur">18 px</output></label>
+        <input id="setting-presence-blur" name="presenceBlur" type="range" min="0" max="32" step="1">
+        <label for="upload-presence-background">Enviar imagem de fundo</label>
+        <input id="upload-presence-background" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-presence-background-image">Ou usar link de imagem</label>
+        <input id="setting-presence-background-image" name="presenceBackgroundImage" type="url" placeholder="https://...">
+        <p class="site-editor__hint">Na prévia, arraste o cartão Discord para movê-lo e use o canto inferior direito para mudar largura e altura.</p>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
         <legend>Música</legend>
-        <label for="setting-music-url">Link de áudio ou arquivo do site</label>
-        <input id="setting-music-url" name="musicUrl" type="text" autocomplete="off" placeholder="https://... ou arquivo.mp3">
+        <label for="upload-music">Enviar música do computador</label>
+        <input id="upload-music" type="file" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/aac,.mp3,.wav,.ogg,.m4a">
+        <label for="setting-music-url">Ou usar link de áudio</label>
+        <input id="setting-music-url" name="musicUrl" type="url" autocomplete="off" placeholder="https://...">
         <label for="setting-music-volume">Volume <output data-output="musicVolume">8%</output></label>
         <input id="setting-music-volume" name="musicVolume" type="range" min="0" max="0.3" step="0.01">
         <button class="site-editor__secondary" id="test-music" type="button">Testar música</button>
