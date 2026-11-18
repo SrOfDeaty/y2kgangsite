@@ -663,6 +663,7 @@ body {
     }
 
     .discord-track-title {
+      display: -webkit-box;
       overflow: hidden;
       margin: 0 0 2px;
       color: #f2f2f3;
@@ -670,7 +671,9 @@ body {
       font-weight: 600;
       line-height: 1.35;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: normal;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
     }
 
     .discord-track-artist,
@@ -891,8 +894,9 @@ body {
   position: relative;
   isolation: isolate;
   width: min(var(--presence-width), calc(100vw - 24px));
-  height: var(--presence-height);
-  max-width: calc(100vw - 24px);
+  height: auto;
+  min-height: var(--presence-height);
+  max-width: min(calc(100vw - 24px), calc(100% + var(--profile-gutter) + var(--profile-gutter)));
   box-sizing: border-box;
   margin: 18px calc(0px - var(--profile-gutter)) 0;
   padding: var(--presence-padding);
@@ -923,9 +927,9 @@ body {
   pointer-events: none;
 }
 
-.discord-presence-layout {
-  grid-template-columns: var(--presence-avatar-size) minmax(0, 1fr) min(68px, var(--presence-avatar-size));
-}
+  .discord-presence-layout {
+  grid-template-columns: var(--presence-avatar-size) minmax(0, 1fr) min(var(--presence-cover-size, 72px), 112px);
+  }
 
 .discord-presence-avatar-wrap,
 .discord-presence-avatar {
@@ -933,11 +937,11 @@ body {
   height: var(--presence-avatar-size);
 }
 
-.discord-track-cover {
-  width: min(68px, var(--presence-avatar-size));
-  height: min(68px, var(--presence-avatar-size));
+  .discord-track-cover {
+  width: min(var(--presence-cover-size, 72px), 112px);
+  height: min(var(--presence-cover-size, 72px), 112px);
   border-radius: max(8px, calc(var(--presence-radius) / 2));
-}
+  }
 
 .discord-presence-name,
 .discord-track-title {

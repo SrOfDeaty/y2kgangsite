@@ -52,6 +52,7 @@ const DEFAULT_SETTINGS = {
   presenceBorderWidth: 1,
   presencePadding: 12,
   presenceAvatarSize: 50,
+  presenceCoverSize: 88,
   presenceBlur: 18,
   presenceBackgroundImage: "",
   musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
@@ -333,6 +334,7 @@ function applySettings(settings) {
   root.style.setProperty("--presence-border-width", `${activeSettings.presenceBorderWidth}px`);
   root.style.setProperty("--presence-padding", `${activeSettings.presencePadding}px`);
   root.style.setProperty("--presence-avatar-size", `${activeSettings.presenceAvatarSize}px`);
+  root.style.setProperty("--presence-cover-size", `${activeSettings.presenceCoverSize}px`);
   root.style.setProperty("--presence-blur", `${activeSettings.presenceBlur}px`);
   root.style.setProperty(
     "--presence-background-image",
@@ -429,6 +431,7 @@ function readSettings() {
     presenceBorderWidth: Number(values.get("presenceBorderWidth")),
     presencePadding: Number(values.get("presencePadding")),
     presenceAvatarSize: Number(values.get("presenceAvatarSize")),
+    presenceCoverSize: Number(values.get("presenceCoverSize")),
     presenceBlur: Number(values.get("presenceBlur")),
     presenceBackgroundImage: String(values.get("presenceBackgroundImage") || "").trim(),
     musicUrl: String(values.get("musicUrl") || "").trim(),
@@ -466,6 +469,7 @@ function updateOutputs(settings) {
     presenceBorderWidth: `${settings.presenceBorderWidth} px`,
     presencePadding: `${settings.presencePadding} px`,
     presenceAvatarSize: `${settings.presenceAvatarSize} px`,
+    presenceCoverSize: `${settings.presenceCoverSize} px`,
     presenceBlur: `${settings.presenceBlur} px`,
   };
 

@@ -265,10 +265,6 @@
         <input id="setting-profile-name-size" name="profileNameSize" type="range" min="10" max="48" step="1">
         <label for="setting-profile-username-size">Tamanho do usuário principal <output data-output="profileUsernameSize">14 px</output></label>
         <input id="setting-profile-username-size" name="profileUsernameSize" type="range" min="8" max="36" step="1">
-        <label for="setting-presence-name-size">Tamanho do nome Discord <output data-output="presenceNameSize">14 px</output></label>
-        <input id="setting-presence-name-size" name="presenceNameSize" type="range" min="8" max="36" step="1">
-        <label for="setting-presence-body-size">Tamanho da atividade/música <output data-output="presenceBodySize">12 px</output></label>
-        <input id="setting-presence-body-size" name="presenceBodySize" type="range" min="8" max="28" step="1">
         <label for="setting-profile-name-x">Deslocamento horizontal do nome <output data-output="profileNameX">0 px</output></label>
         <input id="setting-profile-name-x" name="profileNameX" type="range" min="-60" max="60" step="1">
         <label for="setting-profile-name-y">Deslocamento vertical do nome <output data-output="profileNameY">0 px</output></label>
@@ -324,16 +320,23 @@
         <input id="setting-presence-y" name="presenceY" type="range" min="0" max="100" step="1">
         <label for="setting-presence-width">Largura <output data-output="presenceWidth">360 px</output></label>
         <input id="setting-presence-width" name="presenceWidth" type="range" min="240" max="520" step="4">
-        <label for="setting-presence-height">Altura <output data-output="presenceHeight">112 px</output></label>
+        <label for="setting-presence-height">Altura mínima <output data-output="presenceHeight">112 px</output></label>
         <input id="setting-presence-height" name="presenceHeight" type="range" min="90" max="320" step="2">
+        <label for="setting-presence-cover-size">Tamanho da capa da música <output data-output="presenceCoverSize">88 px</output></label>
+        <input id="setting-presence-cover-size" name="presenceCoverSize" type="range" min="48" max="112" step="2">
+        <label for="setting-presence-name-size">Tamanho do nome Discord <output data-output="presenceNameSize">14 px</output></label>
+        <input id="setting-presence-name-size" name="presenceNameSize" type="range" min="8" max="48" step="1">
+        <label for="setting-presence-body-size">Tamanho do texto da música/atividade <output data-output="presenceBodySize">12 px</output></label>
+        <input id="setting-presence-body-size" name="presenceBodySize" type="range" min="8" max="48" step="1">
+        <p class="site-editor__hint">Aumente a capa e o texto para dar mais destaque ao que está tocando. O cartão cresce se o conteúdo exceder a altura mínima.</p>
         <p class="site-editor__hint">Arraste o cartão Discord na prévia para movê-lo; o arraste o solta do perfil e o posiciona na tela.</p>
         <div class="site-editor__color-grid">
           <label for="setting-presence-background">Fundo <input id="setting-presence-background" name="presenceBackground" type="color"></label>
           <label for="setting-presence-text-color">Texto <input id="setting-presence-text-color" name="presenceTextColor" type="color"></label>
           <label for="setting-presence-border-color">Borda <input id="setting-presence-border-color" name="presenceBorderColor" type="color"></label>
         </div>
-        <label for="setting-presence-opacity">Opacidade <output data-output="presenceOpacity">82%</output></label>
-        <input id="setting-presence-opacity" name="presenceOpacity" type="range" min="0.2" max="1" step="0.01">
+        <label for="setting-presence-opacity">Opacidade do cartão <output data-output="presenceOpacity">82%</output></label>
+        <input id="setting-presence-opacity" name="presenceOpacity" type="range" min="0" max="1" step="0.01">
         <label for="setting-presence-radius">Arredondamento <output data-output="presenceRadius">24 px</output></label>
         <input id="setting-presence-radius" name="presenceRadius" type="range" min="0" max="48" step="1">
         <label for="setting-presence-border-width">Espessura da borda <output data-output="presenceBorderWidth">1 px</output></label>
