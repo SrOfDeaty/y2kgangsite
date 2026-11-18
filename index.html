@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>y2kgang</title>
+    <title>Y2KGANG — perfil</title>
+    <meta name="description" content="Perfil pessoal, presença no Discord e música do Y2KGANG.">
+
     <link rel="icon" href="berserk.png" />
     <meta property="og:title" content="fodase">
     <meta property="og:description" content="Fvck all">
@@ -11,11 +13,11 @@
     <meta property="og:url" content="https://www.y2kgang.tech">
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-    <body style="background-image: url('https://i.imgur.com/vMQx7AE.jpeg'); background-size: cover; background-position: center; background-attachment: fixed;">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body style="background-image: url('sua-imagem.jpg'); background-size: cover;">
-</body>
+<body>
+  <div class="site-background-shade" aria-hidden="true"></div>
+
 
 
   <audio id="audio" loop preload="auto">
@@ -25,7 +27,8 @@
 
 
   
-  <div class="divcont">
+  <main class="divcont">
+
 
 
      <div class="discord-profile">
@@ -63,22 +66,26 @@
 
                <div class="badges">
 
-                    <div class="badge" style="background-image: url('https://i.imgur.com/9jCPaux.png');" data-tooltip="FuckYou"></div>
+                    <div class="badge" role="img" aria-label="Emblema FuckYou" style="background-image: url('https://i.imgur.com/9jCPaux.png');" data-tooltip="FuckYou"></div>
+
                 </div>
 
 
 
                 <div class="social-buttons"> 
 
-                         <a href="https://www.instagram.com/vinocasof/" target="_blank" class="social-button">
-                              <img src="imagem_2024-03-06_162937509-removebg-preview.png" width="115%" >
+<a href="https://www.instagram.com/vinocasof/" target="_blank" rel="noopener noreferrer" class="social-button" aria-label="Instagram">
+                              <img src="imagem_2024-03-06_162937509-removebg-preview.png" width="115%" alt="Instagram">
+
                          </a>
                          
-                         <a href="https://open.spotify.com/user/31625fveyimletebkwekjkgmzz3y/" target="_blank" class="social-button">
-                              <img src="image.png" width="70%" >
+<a href="https://open.spotify.com/user/31625fveyimletebkwekjkgmzz3y/" target="_blank" rel="noopener noreferrer" class="social-button" aria-label="Spotify">
+                              <img src="image.png" width="70%" alt="Spotify">
+
                           </a>
-                          <a href="https://www.tiktok.com/@vinocasof" target="_blank" class="social-button">
-                              <img src="imagem_2024-03-06_163201394-removebg-preview.png" width="70%" >
+<a href="https://www.tiktok.com/@vinocasof" target="_blank" rel="noopener noreferrer" class="social-button" aria-label="TikTok">
+                              <img src="imagem_2024-03-06_163201394-removebg-preview.png" width="70%" alt="TikTok">
+
                           </a>   
                 </div>
                 <div class="server-button">
@@ -87,10 +94,11 @@
                     我</div>
                 </div>
                 
-       </div> 
-     </div>
+       </div>
+     </main>
 
 <script>
+
   const audio = document.getElementById("audio");
   audio.volume = 0.08;
 
@@ -146,4 +154,102 @@
   }
   titlebar(0);
   </script>
-<script src="js/discord-presence.js" defer></script>
+<script type="module" src="/js/discord-presence.js"></script>
+<script type="module" src="/js/site-editor.js"></script>
+
+<button class="site-admin-trigger" type="button" aria-label="Abrir painel de administração" title="Abrir editor do site">
+  ADM
+</button>
+
+<dialog class="site-editor" id="site-editor" aria-labelledby="editor-title">
+  <div class="site-editor__header">
+    <div>
+      <p class="site-editor__eyebrow">Y2KGANG / SISTEMA</p>
+      <h2 id="editor-title">Editor de aparência</h2>
+    </div>
+    <button class="site-editor__icon-button" type="button" data-close-editor aria-label="Fechar editor">Fechar</button>
+  </div>
+
+  <p class="site-editor__notice" id="editor-notice" role="status" aria-live="polite"></p>
+
+  <section class="site-editor__auth" data-auth-view>
+    <p class="site-editor__intro">Entre com sua conta administrativa para personalizar o site.</p>
+    <form class="site-editor__form" id="admin-auth-form">
+      <label for="admin-email">Email</label>
+      <input id="admin-email" name="email" type="email" autocomplete="email" required>
+      <label for="admin-password">Senha</label>
+      <input id="admin-password" name="password" type="password" autocomplete="current-password" minlength="8" required>
+      <button class="site-editor__primary" id="auth-submit" type="submit">Entrar</button>
+    </form>
+    <button class="site-editor__text-button" id="auth-mode-toggle" type="button">Primeiro acesso? Criar conta</button>
+    <form class="site-editor__form" id="verify-email-form" hidden>
+      <label for="admin-otp">Código enviado por email</label>
+      <input id="admin-otp" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="12" required>
+      <button class="site-editor__primary" type="submit">Verificar email</button>
+    </form>
+  </section>
+
+  <section class="site-editor__workspace" data-editor-view hidden>
+    <p class="site-editor__intro">Ajuste os controles e veja a prévia ao vivo. As mudanças só ficam públicas depois de salvar.</p>
+    <form class="site-editor__form" id="site-settings-form">
+      <fieldset class="site-editor__group">
+        <legend>Paleta e cores</legend>
+        <label for="setting-palette">Paleta rápida</label>
+        <select id="setting-palette" name="palette">
+          <option value="basalto">Basalto</option>
+          <option value="sangue">Sangue</option>
+          <option value="violeta">Violeta</option>
+          <option value="gelo">Gelo</option>
+          <option value="custom">Personalizada</option>
+        </select>
+        <div class="site-editor__color-grid">
+          <label for="setting-background-color">Fundo <input id="setting-background-color" name="backgroundColor" type="color"></label>
+          <label for="setting-accent-color">Destaque <input id="setting-accent-color" name="accentColor" type="color"></label>
+          <label for="setting-card-color">Card <input id="setting-card-color" name="cardColor" type="color"></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Imagem de fundo</legend>
+        <label for="setting-background-image">Link da imagem</label>
+        <input id="setting-background-image" name="backgroundImage" type="url" placeholder="https://...">
+        <label for="setting-background-shade">Escurecimento <output data-output="backgroundShade">16%</output></label>
+        <input id="setting-background-shade" name="backgroundShade" type="range" min="0" max="0.65" step="0.01">
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Card e perfil</legend>
+        <label for="setting-card-width">Largura do card <output data-output="cardWidth">320 px</output></label>
+        <input id="setting-card-width" name="cardWidth" type="range" min="260" max="420" step="2">
+        <label for="setting-card-radius">Formato <output data-output="cardRadius">50 px</output></label>
+        <input id="setting-card-radius" name="cardRadius" type="range" min="0" max="64" step="1">
+        <label for="setting-avatar-size">Tamanho da foto <output data-output="avatarSize">146 px</output></label>
+        <input id="setting-avatar-size" name="avatarSize" type="range" min="96" max="180" step="2">
+        <label for="setting-card-opacity">Transparência do card <output data-output="cardOpacity">78%</output></label>
+        <input id="setting-card-opacity" name="cardOpacity" type="range" min="0.35" max="1" step="0.01">
+        <label for="setting-font-family">Tipografia</label>
+        <select id="setting-font-family" name="fontFamily">
+          <option value="arial">Arial</option>
+          <option value="yanone">Yanone Kaffeesatz</option>
+        </select>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Música</legend>
+        <label for="setting-music-url">Link de áudio ou arquivo do site</label>
+        <input id="setting-music-url" name="musicUrl" type="text" autocomplete="off" placeholder="https://... ou arquivo.mp3">
+        <label for="setting-music-volume">Volume <output data-output="musicVolume">8%</output></label>
+        <input id="setting-music-volume" name="musicVolume" type="range" min="0" max="0.3" step="0.01">
+        <button class="site-editor__secondary" id="test-music" type="button">Testar música</button>
+      </fieldset>
+
+      <div class="site-editor__actions">
+        <button class="site-editor__secondary" id="reset-settings" type="button">Restaurar padrão</button>
+        <button class="site-editor__primary" type="submit">Salvar alterações</button>
+      </div>
+    </form>
+    <button class="site-editor__text-button" id="admin-sign-out" type="button">Sair da conta</button>
+  </section>
+</dialog>
+</body>
+</html>
