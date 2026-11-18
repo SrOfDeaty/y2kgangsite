@@ -190,7 +190,7 @@
       <fieldset class="site-editor__group">
         <legend>Imagem de fundo</legend>
         <label for="upload-background-image">Enviar imagem de fundo</label>
-        <input id="upload-background-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <input id="upload-background-image" type="file" accept="image/*">
         <label for="setting-background-image">Ou usar link da imagem</label>
         <input id="setting-background-image" name="backgroundImage" type="url" placeholder="https://...">
         <label for="setting-background-shade">Escurecimento <output data-output="backgroundShade">16%</output></label>
@@ -216,7 +216,7 @@
           <option value="custom">Imagem personalizada</option>
         </select>
         <label for="upload-cursor-image">Enviar imagem para o cursor</label>
-        <input id="upload-cursor-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <input id="upload-cursor-image" type="file" accept="image/*">
         <label for="setting-cursor-image">Ou usar link da imagem</label>
         <input id="setting-cursor-image" name="cursorImageUrl" type="url" placeholder="https://...">
         <p class="site-editor__hint">Use um PNG pequeno e transparente (ideal: 32 × 32 px). Ele será aplicado como cursor personalizado.</p>
@@ -306,7 +306,7 @@
           <option value="to top right">Diagonal para cima à direita</option>
         </select>
         <label for="upload-card-media">Enviar imagem ou GIF para o card</label>
-        <input id="upload-card-media" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <input id="upload-card-media" type="file" accept="image/*">
         <label for="setting-card-gif-url">Ou usar link de imagem/GIF</label>
         <input id="setting-card-gif-url" name="cardGifUrl" type="url" autocomplete="off" placeholder="https://...">
       </fieldset>
@@ -345,7 +345,7 @@
         <label for="setting-presence-blur">Desfoque do fundo <output data-output="presenceBlur">18 px</output></label>
         <input id="setting-presence-blur" name="presenceBlur" type="range" min="0" max="32" step="1">
         <label for="upload-presence-background">Enviar imagem de fundo</label>
-        <input id="upload-presence-background" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <input id="upload-presence-background" type="file" accept="image/*">
         <label for="setting-presence-background-image">Ou usar link de imagem</label>
         <input id="setting-presence-background-image" name="presenceBackgroundImage" type="url" placeholder="https://...">
         <p class="site-editor__hint">Na prévia, arraste o cartão Discord para movê-lo e use o canto inferior direito para mudar largura e altura.</p>
