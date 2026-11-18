@@ -729,6 +729,9 @@ body {
   --editor-avatar-size: 146px;
   --editor-font: Arial, sans-serif;
   --editor-background-image: url("https://i.imgur.com/vMQx7AE.jpeg");
+  --editor-card-gradient-start: #17171a;
+  --editor-card-gradient-end: #3a1a26;
+  --editor-card-gradient-direction: to bottom right;
 }
 
 body {
@@ -750,18 +753,118 @@ body {
   pointer-events: none;
 }
 
+.site-effects-layer {
+  position: fixed;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-effects-layer::before,
+.site-effects-layer::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+:root[data-site-effect="snow"] .site-effects-layer::before,
+:root[data-site-effect="snow"] .site-effects-layer::after {
+  content: "";
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.55) 0 1.5px, transparent 2px);
+  background-size: 74px 74px, 116px 116px;
+  animation: site-snowfall 12s linear infinite;
+}
+
+:root[data-site-effect="snow"] .site-effects-layer::after {
+  background-position: 31px 37px, 66px 58px;
+  opacity: 0.48;
+  animation-duration: 18s;
+}
+
+:root[data-site-effect="rain"] .site-effects-layer::before {
+  content: "";
+  background-image: repeating-linear-gradient(
+    108deg,
+    transparent 0 20px,
+    rgba(190, 215, 255, 0.42) 21px 22px,
+    transparent 23px 43px
+  );
+  opacity: 0.38;
+  animation: site-rainfall 700ms linear infinite;
+}
+
+:root[data-site-effect="glitch"] .site-effects-layer::before,
+:root[data-site-effect="glitch"] .site-effects-layer::after {
+  content: "";
+  animation: site-glitch 2.6s steps(1, end) infinite;
+}
+
+:root[data-site-effect="glitch"] .site-effects-layer::before {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 18px,
+    rgba(255, 0, 75, 0.2) 19px 20px
+  );
+  mix-blend-mode: screen;
+}
+
+:root[data-site-effect="glitch"] .site-effects-layer::after {
+  background: linear-gradient(90deg, transparent 20%, rgba(0, 255, 255, 0.12) 50%, transparent 80%);
+  mix-blend-mode: screen;
+  animation-delay: 120ms;
+}
+
 .divcont {
   position: relative;
   z-index: 1;
 }
 
 .discord-profile {
+  position: relative;
+  isolation: isolate;
   width: min(var(--editor-card-width), calc(100vw - 24px));
   border: 1px solid color-mix(in srgb, var(--editor-accent) 28%, transparent);
   border-radius: var(--editor-card-radius);
   background: rgba(23, 23, 26, 0.78);
   background: color-mix(in srgb, var(--editor-card-color) var(--editor-card-opacity), transparent);
-  transition: width 180ms ease, border-radius 180ms ease, background-color 180ms ease;
+  transition: width 180ms ease, border-radius 180ms ease, background 180ms ease;
+}
+
+:root[data-card-fill-style="gradient"] .discord-profile {
+  background: linear-gradient(
+    var(--editor-card-gradient-direction),
+    color-mix(in srgb, var(--editor-card-gradient-start) var(--editor-card-opacity), transparent),
+    color-mix(in srgb, var(--editor-card-gradient-end) var(--editor-card-opacity), transparent)
+  );
+}
+
+.discord-profile > .profile {
+  position: relative;
+  z-index: 1;
+}
+
+.site-card-gif {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.site-card-gif[hidden] {
+  display: none;
+}
+
+:root[data-editor-cursor] body,
+:root[data-editor-cursor] body * {
+  cursor: var(--editor-cursor) !important;
 }
 
 .pfp img {
@@ -945,6 +1048,13 @@ body {
   font-weight: 400;
 }
 
+.site-editor__hint {
+  margin: 0;
+  color: rgba(239, 239, 243, 0.58);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
 .site-editor__form input:not([type="range"]):not([type="color"]),
 .site-editor__form select {
   width: 100%;
@@ -1000,6 +1110,10 @@ body {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-top: 8px;
+}
+
+.site-editor__gradient-colors {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .site-editor__color-grid label {
@@ -1084,6 +1198,49 @@ body {
 
 .site-editor__actions button {
   width: 100%;
+}
+
+@keyframes site-snowfall {
+  to {
+    transform: translateY(28vh);
+  }
+}
+
+@keyframes site-rainfall {
+  from {
+    transform: translateY(-12vh);
+  }
+  to {
+    transform: translateY(12vh);
+  }
+}
+
+@keyframes site-glitch {
+  0%,
+  89%,
+  100% {
+    transform: none;
+    opacity: 0.08;
+  }
+  90% {
+    transform: translate(-2px, 1px);
+    opacity: 0.34;
+  }
+  92% {
+    transform: translate(2px, -1px);
+    opacity: 0.16;
+  }
+  94% {
+    transform: translate(-1px, 0);
+    opacity: 0.28;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-effects-layer::before,
+  .site-effects-layer::after {
+    animation: none !important;
+  }
 }
 
 @media (max-width: 600px) {

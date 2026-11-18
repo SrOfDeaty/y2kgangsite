@@ -17,21 +17,14 @@
 </head>
 <body>
   <div class="site-background-shade" aria-hidden="true"></div>
+  <div class="site-effects-layer" aria-hidden="true"></div>
 
-
-
-  <audio id="audio" loop preload="auto">
-    <source src="/lil-peep-wanna-be-lyrics_1T09YWa6.mp3" type="audio/mpeg">
-    Seu navegador não suporta o elemento de áudio.
-  </audio>
-
-
-  
   <main class="divcont">
 
 
 
      <div class="discord-profile">
+         <img class="site-card-gif" data-card-gif alt="" aria-hidden="true" hidden>
          <div class="profile">
               <div class="pfp">
                   <img src="opium.jpg" alt="Foto de perfil do Discord" data-discord-avatar>
@@ -218,6 +211,25 @@
       </fieldset>
 
       <fieldset class="site-editor__group">
+        <legend>Efeitos do site</legend>
+        <label for="setting-site-effect">Efeito global</label>
+        <select id="setting-site-effect" name="siteEffect">
+          <option value="none">Sem efeito</option>
+          <option value="snow">Neve</option>
+          <option value="rain">Chuva</option>
+          <option value="glitch">Glitch</option>
+        </select>
+        <label for="setting-cursor-style">Cursor</label>
+        <select id="setting-cursor-style" name="cursorStyle">
+          <option value="default">Padrão do navegador</option>
+          <option value="pointer">Mão</option>
+          <option value="crosshair">Mira</option>
+          <option value="text">Texto</option>
+          <option value="wait">Aguardar</option>
+        </select>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
         <legend>Card e perfil</legend>
         <label for="setting-card-width">Largura do card <output data-output="cardWidth">320 px</output></label>
         <input id="setting-card-width" name="cardWidth" type="range" min="260" max="420" step="2">
@@ -232,6 +244,33 @@
           <option value="arial">Arial</option>
           <option value="yanone">Yanone Kaffeesatz</option>
         </select>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Visual do card</legend>
+        <label for="setting-card-fill-style">Preenchimento do card</label>
+        <select id="setting-card-fill-style" name="cardFillStyle">
+          <option value="solid">Cor sólida</option>
+          <option value="gradient">Gradiente</option>
+        </select>
+        <div class="site-editor__color-grid site-editor__gradient-colors">
+          <label for="setting-card-gradient-start">Cor inicial <input id="setting-card-gradient-start" name="cardGradientStart" type="color"></label>
+          <label for="setting-card-gradient-end">Cor final <input id="setting-card-gradient-end" name="cardGradientEnd" type="color"></label>
+        </div>
+        <label for="setting-card-gradient-direction">Direção do gradiente</label>
+        <select id="setting-card-gradient-direction" name="cardGradientDirection">
+          <option value="to right">Esquerda para direita</option>
+          <option value="to bottom right">Diagonal para baixo à direita</option>
+          <option value="to bottom">De cima para baixo</option>
+          <option value="to bottom left">Diagonal para baixo à esquerda</option>
+          <option value="to left">Direita para esquerda</option>
+          <option value="to top left">Diagonal para cima à esquerda</option>
+          <option value="to top">De baixo para cima</option>
+          <option value="to top right">Diagonal para cima à direita</option>
+        </select>
+        <label for="setting-card-gif-url">GIF sobre o card</label>
+        <input id="setting-card-gif-url" name="cardGifUrl" type="text" autocomplete="off" placeholder="https://... ou /arquivo.gif">
+        <p class="site-editor__hint">Use um link HTTPS ou um arquivo GIF publicado no site.</p>
       </fieldset>
 
       <fieldset class="site-editor__group">

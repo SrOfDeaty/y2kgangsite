@@ -7,15 +7,35 @@ const DEFAULT_SETTINGS = {
   accentColor: "#c7c7c7",
   cardColor: "#17171a",
   cardOpacity: 0.78,
+  cardFillStyle: "solid",
+  cardGradientStart: "#17171a",
+  cardGradientEnd: "#3a1a26",
+  cardGradientDirection: "to bottom right",
+  cardGifUrl: "",
   backgroundImage: "https://i.imgur.com/vMQx7AE.jpeg",
   backgroundShade: 0.16,
   cardWidth: 320,
   cardRadius: 50,
   avatarSize: 146,
   fontFamily: "arial",
+  siteEffect: "none",
+  cursorStyle: "default",
   musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
   musicVolume: 0.08,
 };
+
+const SITE_EFFECTS = new Set(["none", "snow", "rain", "glitch"]);
+const CURSOR_STYLES = new Set(["default", "crosshair", "pointer", "text", "wait"]);
+const GRADIENT_DIRECTIONS = new Set([
+  "to right",
+  "to bottom right",
+  "to bottom",
+  "to bottom left",
+  "to left",
+  "to top left",
+  "to top",
+  "to top right",
+]);
 
 const pool = process.env.DATABASE_URL
   ? new Pool({
@@ -90,12 +110,21 @@ function validateSettings(value) {
     accentColor: value.accentColor,
     cardColor: value.cardColor,
     cardOpacity: clampNumber(value.cardOpacity, 0.35, 1, "card opacity"),
+    cardFillStyle: ["solid", "gradient"].includes(value.cardFillStyle) ? value.cardFillStyle : "solid",
+    cardGradientStart: value.cardGradientStart ?? DEFAULT_SETTINGS.cardGradientStart,
+    cardGradientEnd: value.cardGradientEnd ?? DEFAULT_SETTINGS.cardGradientEnd,
+    cardGradientDirection: GRADIENT_DIRECTIONS.has(value.cardGradientDirection)
+      ? value.cardGradientDirection
+      : DEFAULT_SETTINGS.cardGradientDirection,
+    cardGifUrl: validateMediaUrl(value.cardGifUrl ?? "", "card GIF URL"),
     backgroundImage: validateMediaUrl(value.backgroundImage, "background image"),
     backgroundShade: clampNumber(value.backgroundShade, 0, 0.65, "background shade"),
     cardWidth: Math.round(clampNumber(value.cardWidth, 260, 420, "card width")),
     cardRadius: Math.round(clampNumber(value.cardRadius, 0, 64, "card radius")),
     avatarSize: Math.round(clampNumber(value.avatarSize, 96, 180, "avatar size")),
     fontFamily: ["arial", "yanone"].includes(value.fontFamily) ? value.fontFamily : "arial",
+    siteEffect: SITE_EFFECTS.has(value.siteEffect) ? value.siteEffect : "none",
+    cursorStyle: CURSOR_STYLES.has(value.cursorStyle) ? value.cursorStyle : "default",
     musicUrl: validateMediaUrl(value.musicUrl, "music URL"),
     musicVolume: clampNumber(value.musicVolume, 0, 0.3, "music volume"),
   };
@@ -103,7 +132,9 @@ function validateSettings(value) {
   if (
     !isHexColor(settings.backgroundColor) ||
     !isHexColor(settings.accentColor) ||
-    !isHexColor(settings.cardColor)
+    !isHexColor(settings.cardColor) ||
+    !isHexColor(settings.cardGradientStart) ||
+    !isHexColor(settings.cardGradientEnd)
   ) {
     throw new TypeError("Invalid color");
   }

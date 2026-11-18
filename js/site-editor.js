@@ -6,14 +6,28 @@ const DEFAULT_SETTINGS = {
   accentColor: "#c7c7c7",
   cardColor: "#17171a",
   cardOpacity: 0.78,
+  cardFillStyle: "solid",
+  cardGradientStart: "#17171a",
+  cardGradientEnd: "#3a1a26",
+  cardGradientDirection: "to bottom right",
+  cardGifUrl: "",
   backgroundImage: "https://i.imgur.com/vMQx7AE.jpeg",
   backgroundShade: 0.16,
   cardWidth: 320,
   cardRadius: 50,
   avatarSize: 146,
   fontFamily: "arial",
+  siteEffect: "none",
+  cursorStyle: "default",
   musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
   musicVolume: 0.08,
+};
+
+const CURSOR_VALUES = {
+  pointer: "pointer",
+  crosshair: "crosshair",
+  text: "text",
+  wait: "wait",
 };
 
 const PALETTES = {
@@ -71,6 +85,30 @@ function applySettings(settings) {
     "--editor-background-image",
     activeSettings.backgroundImage ? `url("${safeCssUrl(activeSettings.backgroundImage)}")` : "none",
   );
+  root.style.setProperty("--editor-card-gradient-start", activeSettings.cardGradientStart);
+  root.style.setProperty("--editor-card-gradient-end", activeSettings.cardGradientEnd);
+  root.style.setProperty("--editor-card-gradient-direction", activeSettings.cardGradientDirection);
+  root.dataset.cardFillStyle = activeSettings.cardFillStyle;
+  root.dataset.siteEffect = activeSettings.siteEffect;
+
+  if (activeSettings.cursorStyle === "default") {
+    delete root.dataset.editorCursor;
+    root.style.removeProperty("--editor-cursor");
+  } else {
+    root.dataset.editorCursor = activeSettings.cursorStyle;
+    root.style.setProperty("--editor-cursor", CURSOR_VALUES[activeSettings.cursorStyle] || "auto");
+  }
+
+  const cardGif = document.querySelector("[data-card-gif]");
+  if (cardGif) {
+    if (activeSettings.cardGifUrl) {
+      cardGif.src = activeSettings.cardGifUrl;
+      cardGif.hidden = false;
+    } else {
+      cardGif.removeAttribute("src");
+      cardGif.hidden = true;
+    }
+  }
 
   if (audio) {
     if (activeSettings.musicUrl) {
@@ -90,12 +128,19 @@ function readSettings() {
     accentColor: values.get("accentColor"),
     cardColor: values.get("cardColor"),
     cardOpacity: Number(values.get("cardOpacity")),
+    cardFillStyle: values.get("cardFillStyle"),
+    cardGradientStart: values.get("cardGradientStart"),
+    cardGradientEnd: values.get("cardGradientEnd"),
+    cardGradientDirection: values.get("cardGradientDirection"),
+    cardGifUrl: String(values.get("cardGifUrl") || "").trim(),
     backgroundImage: String(values.get("backgroundImage") || "").trim(),
     backgroundShade: Number(values.get("backgroundShade")),
     cardWidth: Number(values.get("cardWidth")),
     cardRadius: Number(values.get("cardRadius")),
     avatarSize: Number(values.get("avatarSize")),
     fontFamily: values.get("fontFamily"),
+    siteEffect: values.get("siteEffect"),
+    cursorStyle: values.get("cursorStyle"),
     musicUrl: String(values.get("musicUrl") || "").trim(),
     musicVolume: Number(values.get("musicVolume")),
   };
@@ -317,6 +362,13 @@ function connectFormPreview() {
     if (["backgroundColor", "accentColor", "cardColor"].includes(event.target.name)) {
       settingsForm.elements.namedItem("palette").value = "custom";
     }
+    const settings = readSettings();
+    updateOutputs(settings);
+    applySettings(settings);
+  });
+
+  settingsForm.addEventListener("change", (event) => {
+    if (!(event.target instanceof HTMLSelectElement) || event.target.name === "palette") return;
     const settings = readSettings();
     updateOutputs(settings);
     applySettings(settings);
