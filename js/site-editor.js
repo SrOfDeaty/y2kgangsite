@@ -1,4 +1,13 @@
 import { createAuthClient } from "@neondatabase/neon-js/auth";
+import instagramIconAsset from "../imagem_2024-03-06_162937509-removebg-preview.png";
+import spotifyIconAsset from "../image.png";
+import tiktokIconAsset from "../imagem_2024-03-06_163201394-removebg-preview.png";
+
+const SOCIAL_ICON_ASSETS = new Map([
+  ["imagem_2024-03-06_162937509-removebg-preview.png", instagramIconAsset],
+  ["image.png", spotifyIconAsset],
+  ["imagem_2024-03-06_163201394-removebg-preview.png", tiktokIconAsset],
+]);
 
 const DEFAULT_SETTINGS = {
   palette: "basalto",
@@ -323,7 +332,7 @@ function applySettings(settings) {
     const image = button.querySelector("img");
     if (icon.href) button.href = icon.href;
     else button.removeAttribute("href");
-    if (image && icon.image) image.src = icon.image;
+    if (image && icon.image) image.src = SOCIAL_ICON_ASSETS.get(icon.image) || icon.image;
     button.style.setProperty("--social-icon-x", `${icon.x}px`);
     button.style.setProperty("--social-icon-y", `${icon.y}px`);
   });
