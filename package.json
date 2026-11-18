@@ -1,0 +1,8 @@
+{
+  "name": "y2kgangsite",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@upstash/redis": "1.41.0"
+  }
+}

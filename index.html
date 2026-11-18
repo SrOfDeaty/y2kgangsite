@@ -31,16 +31,30 @@
      <div class="discord-profile">
          <div class="profile">
               <div class="pfp">
-                  <img src="opium.jpg" alt="voce nao definiu uma imagem"> 
+                  <img src="opium.jpg" alt="Foto de perfil do Discord" data-discord-avatar>
               </div>
               
-                   <div class="nickr"> 
+                   <div class="nickr" data-discord-display-name>
                     Vinocas
                    </div>
 
-                   <div class="nick subnick">   
+                   <div class="nick subnick" data-discord-username>
                     Dodecaedrus
                    </div>
+
+                <section class="discord-presence" data-discord-presence aria-label="Presença no Discord">
+                  <p class="discord-presence-title">STATUS NO DISCORD</p>
+                  <div class="discord-presence-status">
+                    <span class="discord-presence-dot" data-discord-status-dot data-status="unknown" aria-hidden="true"></span>
+                    <span data-discord-status role="status" aria-live="polite">Verificando Discord…</span>
+                  </div>
+                  <div class="discord-track" data-discord-track hidden>
+                    <span class="discord-track-label">OUVINDO NO SPOTIFY</span>
+                    <p class="discord-track-title" data-discord-track-title></p>
+                    <p class="discord-track-artist" data-discord-track-artist></p>
+                  </div>
+                  <p class="discord-presence-note" data-discord-note>Carregando atividade…</p>
+                </section>
 
                <div class="badges">
 
@@ -126,5 +140,5 @@
       }
   }
   titlebar(0);
-  
   </script>
+<script src="js/discord-presence.js" defer></script>
