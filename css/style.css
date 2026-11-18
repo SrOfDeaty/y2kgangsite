@@ -1191,16 +1191,16 @@ body {
 .site-editor__preview-stage .discord-profile {
   left: var(--editor-card-x);
   top: var(--editor-card-y);
-  width: min(var(--editor-card-width), 100%);
+  width: min(var(--editor-card-width), calc(100vw - 24px));
   margin: var(--editor-card-margin-y) 0 0 var(--editor-card-margin-x);
   overflow: visible;
   touch-action: none;
 }
 
 .site-editor__preview-stage .discord-profile .discord-presence {
-  width: min(var(--presence-width), calc(100% - 16px));
-  max-width: calc(100% - 16px);
-  margin: 18px auto 0;
+  width: min(var(--presence-width), calc(100vw - 24px));
+  max-width: calc(100vw - 24px);
+  margin: 18px calc(0px - var(--profile-gutter)) 0;
 }
 
 .editor-drag-handle {
