@@ -819,6 +819,10 @@ function connectFormPreview() {
   });
 
   document.getElementById("test-music").addEventListener("click", async () => {
+    if (document.body.dataset.adminPage) {
+      showNotice("A música toca apenas na página do perfil.");
+      return;
+    }
     if (!audio) return;
     try {
       if (audio.paused) {
@@ -835,22 +839,37 @@ function connectFormPreview() {
 }
 
 async function loadPublicSettings() {
+  const isAdminPage = Boolean(document.body.dataset.adminPage);
+  let userInteracted = false;
+  let settingsLoaded = false;
+  const handleFirstInteraction = () => {
+    userInteracted = true;
+    if (settingsLoaded) void attemptPlayback();
+  };
+  const attemptPlayback = async () => {
+    if (!audio || isAdminPage || !audio.src) return;
+    try {
+      await audio.play();
+      document.removeEventListener("pointerdown", handleFirstInteraction);
+      document.removeEventListener("keydown", handleFirstInteraction);
+    } catch {}
+  };
+
+  if (audio && !isAdminPage) {
+    audio.autoplay = false;
+    document.addEventListener("pointerdown", handleFirstInteraction, { passive: true });
+    document.addEventListener("keydown", handleFirstInteraction);
+  }
+
   try {
     const payload = await fetchSettings();
     applySettings(payload.settings);
   } catch {
     applySettings(DEFAULT_SETTINGS);
   }
-  if (audio) {
-    audio.autoplay = true;
-    const attemptPlayback = () => {
-      audio.play().catch(() => {
-        document.addEventListener("pointerdown", attemptPlayback, { once: true });
-        document.addEventListener("keydown", attemptPlayback, { once: true });
-      });
-    };
-    attemptPlayback();
-  }
+
+  settingsLoaded = true;
+  if (audio && !isAdminPage) await attemptPlayback();
 }
 
 document.querySelector(".site-admin-trigger")?.addEventListener("click", () => void openEditor());
