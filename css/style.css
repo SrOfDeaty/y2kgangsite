@@ -261,6 +261,7 @@ video {
 
 .social-button {
     margin: 0 16px;
+    transform: translate(var(--social-icon-x, 0px), var(--social-icon-y, 0px));
     width: 40px;
     height: 40px;
     background-color: transparent; 

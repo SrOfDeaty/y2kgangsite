@@ -20,6 +20,11 @@ const DEFAULT_SETTINGS = {
   cardPositionY: 50,
   cardRadius: 50,
   avatarSize: 146,
+  socialIcons: [
+    { href: "https://www.instagram.com/vinocasof/", image: "imagem_2024-03-06_162937509-removebg-preview.png", x: 0, y: 0 },
+    { href: "https://open.spotify.com/user/31625fveyimletebkwekjkgmzz3y/", image: "image.png", x: 0, y: 0 },
+    { href: "https://www.tiktok.com/@vinocasof", image: "imagem_2024-03-06_163201394-removebg-preview.png", x: 0, y: 0 },
+  ],
   fontFamily: "arial",
   customFontFamily: "",
   customFontUrl: "",
@@ -161,6 +166,21 @@ function validateSettings(value) {
     cardPositionY: clampNumber(value.cardPositionY ?? DEFAULT_SETTINGS.cardPositionY, 0, 100, "card vertical position"),
     cardRadius: Math.round(clampNumber(value.cardRadius, 0, 64, "card radius")),
     avatarSize: Math.round(clampNumber(value.avatarSize, 96, 180, "avatar size")),
+    socialIcons: (() => {
+      const icons = value.socialIcons ?? DEFAULT_SETTINGS.socialIcons;
+      if (!Array.isArray(icons) || icons.length !== DEFAULT_SETTINGS.socialIcons.length) {
+        throw new TypeError("Invalid social icons");
+      }
+      return icons.map((icon, index) => {
+      if (!icon || typeof icon !== "object") throw new TypeError(`Invalid social icon ${index}`);
+      return {
+        href: validateMediaUrl(icon.href ?? "", `social icon ${index} link`),
+        image: validateMediaUrl(icon.image ?? "", `social icon ${index} image`),
+        x: Math.round(clampNumber(icon.x ?? 0, -120, 120, `social icon ${index} horizontal position`)),
+        y: Math.round(clampNumber(icon.y ?? 0, -120, 120, `social icon ${index} vertical position`)),
+      };
+      });
+    })(),
     fontFamily: ["arial", "yanone", "custom"].includes(value.fontFamily) ? value.fontFamily : "arial",
     customFontFamily: typeof value.customFontFamily === "string"
       ? value.customFontFamily.replace(/[^a-zA-Z0-9 _-]/g, "").slice(0, 80)
