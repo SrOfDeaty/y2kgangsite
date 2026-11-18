@@ -226,6 +226,13 @@
         <legend>Card e perfil</legend>
         <label for="setting-card-width">Largura do card <output data-output="cardWidth">320 px</output></label>
         <input id="setting-card-width" name="cardWidth" type="range" min="260" max="420" step="2">
+        <label for="setting-card-height">Altura do card <output data-output="cardHeight">620 px</output></label>
+        <input id="setting-card-height" name="cardHeight" type="range" min="360" max="760" step="4">
+        <label for="setting-card-position-x">Posição horizontal <output data-output="cardPositionX">50%</output></label>
+        <input id="setting-card-position-x" name="cardPositionX" type="range" min="5" max="95" step="1">
+        <label for="setting-card-position-y">Posição vertical <output data-output="cardPositionY">50%</output></label>
+        <input id="setting-card-position-y" name="cardPositionY" type="range" min="5" max="95" step="1">
+        <p class="site-editor__hint">Na prévia, arraste o card para posicionar e use o canto inferior direito para ajustar largura e altura.</p>
         <label for="setting-card-radius">Formato <output data-output="cardRadius">50 px</output></label>
         <input id="setting-card-radius" name="cardRadius" type="range" min="0" max="64" step="1">
         <label for="setting-avatar-size">Tamanho da foto <output data-output="avatarSize">146 px</output></label>
@@ -280,6 +287,9 @@
         <input id="setting-presence-y" name="presenceY" type="range" min="0" max="100" step="1">
         <label for="setting-presence-width">Largura <output data-output="presenceWidth">360 px</output></label>
         <input id="setting-presence-width" name="presenceWidth" type="range" min="240" max="520" step="4">
+        <label for="setting-presence-height">Altura <output data-output="presenceHeight">112 px</output></label>
+        <input id="setting-presence-height" name="presenceHeight" type="range" min="90" max="320" step="2">
+        <p class="site-editor__hint">Arraste o cartão Discord na prévia para movê-lo; o arraste o solta do perfil e o posiciona na tela.</p>
         <div class="site-editor__color-grid">
           <label for="setting-presence-background">Fundo <input id="setting-presence-background" name="presenceBackground" type="color"></label>
           <label for="setting-presence-text-color">Texto <input id="setting-presence-text-color" name="presenceTextColor" type="color"></label>
@@ -301,7 +311,7 @@
         <input id="upload-presence-background" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
         <label for="setting-presence-background-image">Ou usar link de imagem</label>
         <input id="setting-presence-background-image" name="presenceBackgroundImage" type="url" placeholder="https://...">
-        <p class="site-editor__hint">No modo livre, ajuste as posições horizontal e vertical para mover o cartão. Em telas pequenas, a posição é limitada à área visível.</p>
+        <p class="site-editor__hint">Na prévia, arraste o cartão Discord para movê-lo e use o canto inferior direito para mudar largura e altura.</p>
       </fieldset>
 
       <fieldset class="site-editor__group">

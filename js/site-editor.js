@@ -14,6 +14,9 @@ const DEFAULT_SETTINGS = {
   backgroundImage: "https://i.imgur.com/vMQx7AE.jpeg",
   backgroundShade: 0.16,
   cardWidth: 320,
+  cardHeight: 620,
+  cardPositionX: 50,
+  cardPositionY: 50,
   cardRadius: 50,
   avatarSize: 146,
   fontFamily: "arial",
@@ -24,6 +27,7 @@ const DEFAULT_SETTINGS = {
   presenceX: 50,
   presenceY: 50,
   presenceWidth: 360,
+  presenceHeight: 112,
   presenceBackground: "#17171d",
   presenceTextColor: "#f5f5f7",
   presenceBorderColor: "#ffffff",
@@ -70,12 +74,16 @@ let authMode = "sign-in";
 let verificationEmail = "";
 const previewStage = document.getElementById("editor-preview");
 
+let previewDrag = null;
+
 function renderEditorPreview(settings) {
   if (!previewStage) return;
   previewStage.dataset.presencePosition = settings.presencePositionMode;
   const originalCard = document.querySelector(".discord-profile");
   if (!originalCard) return;
   const previewCard = originalCard.cloneNode(true);
+  previewCard.style.marginLeft = `${-Math.min(settings.cardWidth, previewStage.clientWidth) / 2}px`;
+  previewCard.dataset.editorPreviewCard = "";
   previewCard.querySelectorAll("[data-discord-status]").forEach((element) => element.remove());
   previewCard.querySelectorAll("[data-discord-note]").forEach((element) => {
     element.textContent = "Atividade no Discord";
@@ -83,7 +91,79 @@ function renderEditorPreview(settings) {
   previewCard.querySelectorAll("[data-discord-display-name]").forEach((element) => {
     element.textContent = "Prévia do perfil";
   });
-  previewStage.replaceChildren(previewCard);
+
+  const moveCard = document.createElement("span");
+  moveCard.className = "editor-drag-handle";
+  moveCard.textContent = "Mover card";
+  moveCard.setAttribute("aria-hidden", "true");
+  previewCard.append(moveCard, createResizeHandle("card"));
+
+  const presenceCard = previewCard.querySelector(".discord-presence");
+  if (presenceCard) {
+    presenceCard.dataset.editorPreviewPresence = "";
+    const movePresence = document.createElement("span");
+    movePresence.className = "editor-drag-handle editor-drag-handle--presence";
+    movePresence.textContent = "";
+    movePresence.setAttribute("aria-hidden", "true");
+    presenceCard.append(movePresence, createResizeHandle("presence"));
+    if (settings.presencePositionMode === "floating") presenceCard.remove();
+  }
+  previewStage.replaceChildren(
+    previewCard,
+    ...(settings.presencePositionMode === "floating" && presenceCard ? [presenceCard] : []),
+  );
+}
+
+function createResizeHandle(target) {
+  const handle = document.createElement("button");
+  handle.type = "button";
+  handle.className = `editor-resize-handle editor-resize-handle--${target}`;
+  handle.dataset.editorResize = target;
+  handle.setAttribute("aria-label", `Redimensionar ${target === "card" ? "card principal" : "cartão do Discord"}`);
+  handle.title = "Arraste para redimensionar";
+  return handle;
+}
+
+function clamp(value, minimum, maximum) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+function updatePreviewDrag(event) {
+  if (!previewDrag || event.pointerId !== previewDrag.pointerId) return;
+  const bounds = previewStage.getBoundingClientRect();
+  const deltaX = event.clientX - previewDrag.startX;
+  const deltaY = event.clientY - previewDrag.startY;
+  const fields = settingsForm.elements;
+
+  if (previewDrag.target === "card") {
+    if (previewDrag.mode === "move") {
+      fields.namedItem("cardPositionX").value = String(clamp(previewDrag.startValueX + (deltaX / bounds.width) * 100, 5, 95));
+      fields.namedItem("cardPositionY").value = String(clamp(previewDrag.startValueY + (deltaY / bounds.height) * 100, 5, 95));
+    } else {
+      fields.namedItem("cardWidth").value = String(clamp(previewDrag.startWidth + deltaX, 260, 420));
+      fields.namedItem("cardHeight").value = String(clamp(previewDrag.startHeight + deltaY, 360, 760));
+    }
+  } else {
+    fields.namedItem("presencePositionMode").value = "floating";
+    if (previewDrag.mode === "move") {
+      fields.namedItem("presenceX").value = String(clamp(previewDrag.startValueX + (deltaX / bounds.width) * 100, 5, 95));
+      fields.namedItem("presenceY").value = String(clamp(previewDrag.startValueY + (deltaY / bounds.height) * 100, 5, 95));
+    } else {
+      fields.namedItem("presenceWidth").value = String(clamp(previewDrag.startWidth + deltaX, 240, 520));
+      fields.namedItem("presenceHeight").value = String(clamp(previewDrag.startHeight + deltaY, 90, 320));
+    }
+  }
+
+  const settings = readSettings();
+  updateOutputs(settings);
+  applySettings(settings);
+}
+
+function endPreviewDrag(event) {
+  if (!previewDrag || event.pointerId !== previewDrag.pointerId) return;
+  previewDrag = null;
+  previewStage.classList.remove("is-dragging");
+  if (previewStage.hasPointerCapture(event.pointerId)) previewStage.releasePointerCapture(event.pointerId);
 }
 
 async function uploadMedia(input, settingName, acceptedTypes) {
@@ -153,6 +233,11 @@ function applySettings(settings) {
   root.style.setProperty("--editor-card-opacity", `${activeSettings.cardOpacity * 100}%`);
   root.style.setProperty("--editor-background-shade", activeSettings.backgroundShade);
   root.style.setProperty("--editor-card-width", `${activeSettings.cardWidth}px`);
+  root.style.setProperty("--editor-card-height", `${activeSettings.cardHeight}px`);
+  root.style.setProperty("--editor-card-x", `${activeSettings.cardPositionX}%`);
+  root.style.setProperty("--editor-card-y", `${activeSettings.cardPositionY}%`);
+  root.style.setProperty("--editor-card-margin-x", `${-activeSettings.cardWidth / 2}px`);
+  root.style.setProperty("--editor-card-margin-y", `${-activeSettings.cardHeight / 2}px`);
   root.style.setProperty("--editor-card-radius", `${activeSettings.cardRadius}px`);
   root.style.setProperty("--editor-avatar-size", `${activeSettings.avatarSize}px`);
   root.style.setProperty(
@@ -172,6 +257,7 @@ function applySettings(settings) {
   root.style.setProperty("--presence-x", `${activeSettings.presenceX}%`);
   root.style.setProperty("--presence-y", `${activeSettings.presenceY}%`);
   root.style.setProperty("--presence-width", `${activeSettings.presenceWidth}px`);
+  root.style.setProperty("--presence-height", `${activeSettings.presenceHeight}px`);
   root.style.setProperty("--presence-background", activeSettings.presenceBackground);
   root.style.setProperty("--presence-text-color", activeSettings.presenceTextColor);
   root.style.setProperty("--presence-border-color", activeSettings.presenceBorderColor);
@@ -238,6 +324,9 @@ function readSettings() {
     backgroundImage: String(values.get("backgroundImage") || "").trim(),
     backgroundShade: Number(values.get("backgroundShade")),
     cardWidth: Number(values.get("cardWidth")),
+    cardHeight: Number(values.get("cardHeight")),
+    cardPositionX: Number(values.get("cardPositionX")),
+    cardPositionY: Number(values.get("cardPositionY")),
     cardRadius: Number(values.get("cardRadius")),
     avatarSize: Number(values.get("avatarSize")),
     fontFamily: values.get("fontFamily"),
@@ -248,6 +337,7 @@ function readSettings() {
     presenceX: Number(values.get("presenceX")),
     presenceY: Number(values.get("presenceY")),
     presenceWidth: Number(values.get("presenceWidth")),
+    presenceHeight: Number(values.get("presenceHeight")),
     presenceBackground: values.get("presenceBackground"),
     presenceTextColor: values.get("presenceTextColor"),
     presenceBorderColor: values.get("presenceBorderColor"),
@@ -267,6 +357,9 @@ function updateOutputs(settings) {
   const values = {
     backgroundShade: `${Math.round(settings.backgroundShade * 100)}%`,
     cardWidth: `${settings.cardWidth} px`,
+    cardHeight: `${settings.cardHeight} px`,
+    cardPositionX: `${Math.round(settings.cardPositionX)}%`,
+    cardPositionY: `${Math.round(settings.cardPositionY)}%`,
     cardRadius: `${settings.cardRadius} px`,
     avatarSize: `${settings.avatarSize} px`,
     cardOpacity: `${Math.round(settings.cardOpacity * 100)}%`,
@@ -274,6 +367,7 @@ function updateOutputs(settings) {
     presenceX: `${settings.presenceX}%`,
     presenceY: `${settings.presenceY}%`,
     presenceWidth: `${settings.presenceWidth} px`,
+    presenceHeight: `${settings.presenceHeight} px`,
     presenceOpacity: `${Math.round(settings.presenceOpacity * 100)}%`,
     presenceRadius: `${settings.presenceRadius} px`,
     presenceBorderWidth: `${settings.presenceBorderWidth} px`,
@@ -335,9 +429,9 @@ async function showEditorForSession() {
     }
 
     fillForm(payload.settings);
-    applySettings(payload.settings);
     authView.hidden = true;
     editorView.hidden = false;
+    applySettings(payload.settings);
     showNotice("Acesso administrativo confirmado.");
   } catch {
     authView.hidden = false;
@@ -484,7 +578,35 @@ async function signOut() {
 }
 
 function connectFormPreview() {
-  settingsForm.addEventListener("input", (event) => {
+  previewStage.addEventListener("pointerdown", (event) => {
+    if (!(event.target instanceof Element) || event.button !== 0) return;
+    const resizeHandle = event.target.closest("[data-editor-resize]");
+    const presence = event.target.closest("[data-editor-preview-presence]");
+    const card = event.target.closest("[data-editor-preview-card]");
+    const target = resizeHandle?.dataset.editorResize || (presence ? "presence" : card ? "card" : null);
+    if (!target) return;
+
+    const settings = readSettings();
+    previewDrag = {
+      pointerId: event.pointerId,
+      target,
+      mode: resizeHandle ? "resize" : "move",
+      startX: event.clientX,
+      startY: event.clientY,
+      startWidth: target === "card" ? settings.cardWidth : settings.presenceWidth,
+      startHeight: target === "card" ? settings.cardHeight : settings.presenceHeight,
+      startValueX: target === "card" ? settings.cardPositionX : settings.presenceX,
+      startValueY: target === "card" ? settings.cardPositionY : settings.presenceY,
+    };
+    event.preventDefault();
+    previewStage.setPointerCapture(event.pointerId);
+    previewStage.classList.add("is-dragging");
+  });
+  previewStage.addEventListener("pointermove", updatePreviewDrag);
+  previewStage.addEventListener("pointerup", endPreviewDrag);
+  previewStage.addEventListener("pointercancel", endPreviewDrag);
+
+  settingsForm.addEventListener("input",  (event) => {
     if (["backgroundColor", "accentColor", "cardColor"].includes(event.target.name)) {
       settingsForm.elements.namedItem("palette").value = "custom";
     }

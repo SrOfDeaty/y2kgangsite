@@ -722,6 +722,7 @@ body {
   --presence-x: 50%;
   --presence-y: 50%;
   --presence-width: 360px;
+  --presence-height: 112px;
   --presence-background: #17171d;
   --presence-text-color: #f5f5f7;
   --presence-border-color: #ffffff;
@@ -738,6 +739,11 @@ body {
   --editor-card-opacity: 78%;
   --editor-background-shade: 0.16;
   --editor-card-width: 320px;
+  --editor-card-height: 620px;
+  --editor-card-x: 50%;
+  --editor-card-y: 50%;
+  --editor-card-margin-x: -160px;
+  --editor-card-margin-y: -310px;
   --editor-card-radius: 50px;
   --editor-avatar-size: 146px;
   --editor-font: Arial, sans-serif;
@@ -836,14 +842,20 @@ body {
 }
 
 .discord-profile {
-  position: relative;
+  position: absolute;
+  top: var(--editor-card-y);
+  left: var(--editor-card-x);
   isolation: isolate;
   width: min(var(--editor-card-width), calc(100vw - 24px));
+  height: var(--editor-card-height);
+  min-height: 0;
+  margin-top: var(--editor-card-margin-y);
+  margin-left: var(--editor-card-margin-x);
   border: 1px solid color-mix(in srgb, var(--editor-accent) 28%, transparent);
   border-radius: var(--editor-card-radius);
   background: rgba(23, 23, 26, 0.78);
   background: color-mix(in srgb, var(--editor-card-color) var(--editor-card-opacity), transparent);
-  transition: width 180ms ease, border-radius 180ms ease, background 180ms ease;
+  transition: width 180ms ease, height 180ms ease, border-radius 180ms ease, background 180ms ease;
 }
 
 :root[data-card-fill-style="gradient"] .discord-profile {
@@ -879,6 +891,7 @@ body {
   position: relative;
   isolation: isolate;
   width: min(var(--presence-width), calc(100vw - 24px));
+  height: var(--presence-height);
   max-width: calc(100vw - 24px);
   box-sizing: border-box;
   margin: 18px calc(0px - var(--profile-gutter)) 0;
@@ -950,8 +963,11 @@ body {
 .site-editor__preview-stage[data-presence-position="floating"] .discord-presence {
   position: absolute;
   z-index: 2;
-  top: 50%;
-  left: 50%;
+  top: var(--presence-y);
+  left: var(--presence-x);
+  width: min(var(--presence-width), calc(100% - 16px));
+  height: var(--presence-height);
+  max-width: calc(100% - 16px);
   margin: 0;
   transform: translate(-50%, -50%);
 }
@@ -1132,20 +1148,98 @@ body {
 
 .site-editor__preview-stage {
   position: relative;
-  display: flex;
-  min-height: 390px;
-  align-items: center;
-  justify-content: center;
+  height: min(76dvh, 760px);
+  min-height: 600px;
   overflow: hidden;
   border-radius: 10px;
   background-image: var(--editor-background-image);
   background-size: cover;
   background-position: center;
+  touch-action: pan-y;
 }
 
 .site-editor__preview-stage .discord-profile {
+  left: var(--editor-card-x);
+  top: var(--editor-card-y);
   width: min(var(--editor-card-width), 100%);
-  margin: 10px auto;
+  margin: var(--editor-card-margin-y) 0 0 var(--editor-card-margin-x);
+  overflow: visible;
+  touch-action: none;
+}
+
+.site-editor__preview-stage .discord-profile .discord-presence {
+  width: min(var(--presence-width), calc(100% - 16px));
+  max-width: calc(100% - 16px);
+  margin: 18px auto 0;
+}
+
+.editor-drag-handle {
+  position: absolute;
+  z-index: 4;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  padding: 0 9px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  background: rgba(8, 8, 10, 0.82);
+  color: #fff;
+  font: 600 9px/1 Arial, sans-serif;
+  letter-spacing: 0.04em;
+  cursor: grab;
+  pointer-events: none;
+}
+
+.editor-drag-handle--presence {
+  top: 3px;
+  left: 50%;
+  width: 26px;
+  min-width: 26px;
+  min-height: 18px;
+  justify-content: center;
+  padding: 0 5px;
+  transform: translateX(-50%);
+}
+
+.editor-drag-handle--presence::after {
+  width: 10px;
+  height: 10px;
+  background-image: radial-gradient(circle, #fff 1px, transparent 1.5px);
+  background-size: 5px 5px;
+  content: "";
+}
+
+.editor-resize-handle {
+  position: absolute;
+  z-index: 5;
+  right: 7px;
+  bottom: 7px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 8px;
+  background: repeating-linear-gradient(135deg, #f5f5f7 0 2px, #34343b 2px 5px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.42);
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+.editor-resize-handle--presence {
+  width: 24px;
+  height: 24px;
+}
+
+.site-editor__preview-stage.is-dragging,
+.site-editor__preview-stage.is-dragging * {
+  user-select: none;
+}
+
+.site-editor__preview-stage.is-dragging .discord-profile,
+.site-editor__preview-stage.is-dragging .discord-presence {
+  transition: none !important;
 }
 
 .site-editor__preview-stage .site-card-gif {
