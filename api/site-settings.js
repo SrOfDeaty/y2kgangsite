@@ -21,6 +21,22 @@ const DEFAULT_SETTINGS = {
   cardRadius: 50,
   avatarSize: 146,
   fontFamily: "arial",
+  customFontFamily: "",
+  customFontUrl: "",
+  profileNameOverride: "",
+  profileUsernameOverride: "",
+  presenceNameOverride: "",
+  presenceNoteOverride: "",
+  profileNameSize: 16,
+  profileUsernameSize: 14,
+  presenceNameSize: 14,
+  presenceBodySize: 12,
+  profileNameX: 0,
+  profileNameY: 0,
+  profileUsernameX: 0,
+  profileUsernameY: 0,
+  presenceTextX: 0,
+  presenceTextY: 0,
   siteEffect: "none",
   cursorStyle: "default",
   cursorImageUrl: "",
@@ -144,7 +160,25 @@ function validateSettings(value) {
     cardPositionY: clampNumber(value.cardPositionY ?? DEFAULT_SETTINGS.cardPositionY, 0, 100, "card vertical position"),
     cardRadius: Math.round(clampNumber(value.cardRadius, 0, 64, "card radius")),
     avatarSize: Math.round(clampNumber(value.avatarSize, 96, 180, "avatar size")),
-    fontFamily: ["arial", "yanone"].includes(value.fontFamily) ? value.fontFamily : "arial",
+    fontFamily: ["arial", "yanone", "custom"].includes(value.fontFamily) ? value.fontFamily : "arial",
+    customFontFamily: typeof value.customFontFamily === "string"
+      ? value.customFontFamily.replace(/[^a-zA-Z0-9 _-]/g, "").slice(0, 80)
+      : "",
+    customFontUrl: validateMediaUrl(value.customFontUrl ?? "", "custom font URL"),
+    profileNameOverride: typeof value.profileNameOverride === "string" ? value.profileNameOverride.slice(0, 80) : "",
+    profileUsernameOverride: typeof value.profileUsernameOverride === "string" ? value.profileUsernameOverride.slice(0, 80) : "",
+    presenceNameOverride: typeof value.presenceNameOverride === "string" ? value.presenceNameOverride.slice(0, 80) : "",
+    presenceNoteOverride: typeof value.presenceNoteOverride === "string" ? value.presenceNoteOverride.slice(0, 160) : "",
+    profileNameSize: clampNumber(value.profileNameSize ?? DEFAULT_SETTINGS.profileNameSize, 10, 48, "profile name size"),
+    profileUsernameSize: clampNumber(value.profileUsernameSize ?? DEFAULT_SETTINGS.profileUsernameSize, 8, 36, "profile username size"),
+    presenceNameSize: clampNumber(value.presenceNameSize ?? DEFAULT_SETTINGS.presenceNameSize, 8, 36, "presence name size"),
+    presenceBodySize: clampNumber(value.presenceBodySize ?? DEFAULT_SETTINGS.presenceBodySize, 8, 28, "presence text size"),
+    profileNameX: clampNumber(value.profileNameX ?? 0, -60, 60, "profile name horizontal position"),
+    profileNameY: clampNumber(value.profileNameY ?? 0, -60, 60, "profile name vertical position"),
+    profileUsernameX: clampNumber(value.profileUsernameX ?? 0, -60, 60, "profile username horizontal position"),
+    profileUsernameY: clampNumber(value.profileUsernameY ?? 0, -60, 60, "profile username vertical position"),
+    presenceTextX: clampNumber(value.presenceTextX ?? 0, -80, 80, "presence text horizontal position"),
+    presenceTextY: clampNumber(value.presenceTextY ?? 0, -60, 60, "presence text vertical position"),
     siteEffect: SITE_EFFECTS.has(value.siteEffect) ? value.siteEffect : "none",
     cursorStyle: ["custom", ...CURSOR_STYLES].includes(value.cursorStyle) ? value.cursorStyle : "default",
     cursorImageUrl: validateMediaUrl(value.cursorImageUrl ?? "", "cursor image URL"),
@@ -168,6 +202,13 @@ function validateSettings(value) {
     musicUrl: validateMediaUrl(value.musicUrl, "music URL"),
     musicVolume: clampNumber(value.musicVolume, 0, 0.3, "music volume"),
   };
+
+  if (settings.customFontUrl) {
+    const fontUrl = new URL(settings.customFontUrl);
+    if (fontUrl.protocol !== "https:" || fontUrl.hostname !== "fonts.googleapis.com") {
+      throw new TypeError("Invalid custom font URL");
+    }
+  }
 
   if (
     !isHexColor(settings.backgroundColor) ||

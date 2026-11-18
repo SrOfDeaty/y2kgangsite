@@ -20,6 +20,22 @@ const DEFAULT_SETTINGS = {
   cardRadius: 50,
   avatarSize: 146,
   fontFamily: "arial",
+  customFontFamily: "",
+  customFontUrl: "",
+  profileNameOverride: "",
+  profileUsernameOverride: "",
+  presenceNameOverride: "",
+  presenceNoteOverride: "",
+  profileNameSize: 16,
+  profileUsernameSize: 14,
+  presenceNameSize: 14,
+  presenceBodySize: 12,
+  profileNameX: 0,
+  profileNameY: 0,
+  profileUsernameX: 0,
+  profileUsernameY: 0,
+  presenceTextX: 0,
+  presenceTextY: 0,
   siteEffect: "none",
   cursorStyle: "default",
   cursorImageUrl: "",
@@ -242,8 +258,44 @@ function applySettings(settings) {
   root.style.setProperty("--editor-avatar-size", `${activeSettings.avatarSize}px`);
   root.style.setProperty(
     "--editor-font",
-    activeSettings.fontFamily === "yanone" ? '"Yanone Kaffeesatz", sans-serif' : "Arial, sans-serif",
+    activeSettings.fontFamily === "custom" && activeSettings.customFontFamily
+      ? `"${activeSettings.customFontFamily.replace(/["\\\\]/g, "")}", sans-serif`
+      : activeSettings.fontFamily === "yanone" ? '"Yanone Kaffeesatz", sans-serif' : "Arial, sans-serif",
   );
+  const customFontStyle = document.getElementById("custom-site-font");
+  if (activeSettings.customFontUrl) {
+    const fontUrl = new URL(activeSettings.customFontUrl);
+    if (fontUrl.protocol === "https:" && fontUrl.hostname === "fonts.googleapis.com") {
+      const style = customFontStyle || Object.assign(document.createElement("link"), { id: "custom-site-font", rel: "stylesheet" });
+      style.href = fontUrl.href;
+      if (!style.isConnected) document.head.append(style);
+    }
+  } else {
+    customFontStyle?.remove();
+  }
+  root.style.setProperty("--profile-name-size", `${activeSettings.profileNameSize}px`);
+  root.style.setProperty("--profile-username-size", `${activeSettings.profileUsernameSize}px`);
+  root.style.setProperty("--presence-name-size", `${activeSettings.presenceNameSize}px`);
+  root.style.setProperty("--presence-body-size", `${activeSettings.presenceBodySize}px`);
+  root.style.setProperty("--profile-name-x", `${activeSettings.profileNameX}px`);
+  root.style.setProperty("--profile-name-y", `${activeSettings.profileNameY}px`);
+  root.style.setProperty("--profile-username-x", `${activeSettings.profileUsernameX}px`);
+  root.style.setProperty("--profile-username-y", `${activeSettings.profileUsernameY}px`);
+  root.style.setProperty("--presence-text-x", `${activeSettings.presenceTextX}px`);
+  root.style.setProperty("--presence-text-y", `${activeSettings.presenceTextY}px`);
+  window.siteCardTextOverrides = activeSettings;
+  document.querySelectorAll(".discord-profile > .profile > .nickr").forEach((node) => {
+    if (activeSettings.profileNameOverride) node.textContent = activeSettings.profileNameOverride;
+  });
+  document.querySelectorAll(".discord-profile > .profile > .subnick").forEach((node) => {
+    if (activeSettings.profileUsernameOverride) node.textContent = activeSettings.profileUsernameOverride;
+  });
+  document.querySelectorAll(".discord-presence-name").forEach((node) => {
+    if (activeSettings.presenceNameOverride) node.textContent = activeSettings.presenceNameOverride;
+  });
+  document.querySelectorAll(".discord-presence-note").forEach((node) => {
+    if (activeSettings.presenceNoteOverride) node.textContent = activeSettings.presenceNoteOverride;
+  });
   root.style.setProperty(
     "--editor-background-image",
     activeSettings.backgroundImage ? `url("${safeCssUrl(activeSettings.backgroundImage)}")` : "none",
@@ -330,6 +382,22 @@ function readSettings() {
     cardRadius: Number(values.get("cardRadius")),
     avatarSize: Number(values.get("avatarSize")),
     fontFamily: values.get("fontFamily"),
+    customFontFamily: String(values.get("customFontFamily") || "").trim(),
+    customFontUrl: String(values.get("customFontUrl") || "").trim(),
+    profileNameOverride: String(values.get("profileNameOverride") || "").trim(),
+    profileUsernameOverride: String(values.get("profileUsernameOverride") || "").trim(),
+    presenceNameOverride: String(values.get("presenceNameOverride") || "").trim(),
+    presenceNoteOverride: String(values.get("presenceNoteOverride") || "").trim(),
+    profileNameSize: Number(values.get("profileNameSize")),
+    profileUsernameSize: Number(values.get("profileUsernameSize")),
+    presenceNameSize: Number(values.get("presenceNameSize")),
+    presenceBodySize: Number(values.get("presenceBodySize")),
+    profileNameX: Number(values.get("profileNameX")),
+    profileNameY: Number(values.get("profileNameY")),
+    profileUsernameX: Number(values.get("profileUsernameX")),
+    profileUsernameY: Number(values.get("profileUsernameY")),
+    presenceTextX: Number(values.get("presenceTextX")),
+    presenceTextY: Number(values.get("presenceTextY")),
     siteEffect: values.get("siteEffect"),
     cursorStyle: values.get("cursorStyle"),
     cursorImageUrl: String(values.get("cursorImageUrl") || "").trim(),
@@ -364,6 +432,16 @@ function updateOutputs(settings) {
     avatarSize: `${settings.avatarSize} px`,
     cardOpacity: `${Math.round(settings.cardOpacity * 100)}%`,
     musicVolume: `${Math.round(settings.musicVolume * 100)}%`,
+    profileNameSize: `${settings.profileNameSize} px`,
+    profileUsernameSize: `${settings.profileUsernameSize} px`,
+    presenceNameSize: `${settings.presenceNameSize} px`,
+    presenceBodySize: `${settings.presenceBodySize} px`,
+    profileNameX: `${settings.profileNameX} px`,
+    profileNameY: `${settings.profileNameY} px`,
+    profileUsernameX: `${settings.profileUsernameX} px`,
+    profileUsernameY: `${settings.profileUsernameY} px`,
+    presenceTextX: `${settings.presenceTextX} px`,
+    presenceTextY: `${settings.presenceTextY} px`,
     presenceX: `${settings.presenceX}%`,
     presenceY: `${settings.presenceY}%`,
     presenceWidth: `${settings.presenceWidth} px`,

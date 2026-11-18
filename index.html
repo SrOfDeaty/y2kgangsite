@@ -243,7 +243,44 @@
         <select id="setting-font-family" name="fontFamily">
           <option value="arial">Arial</option>
           <option value="yanone">Yanone Kaffeesatz</option>
+          <option value="custom">Fonte personalizada</option>
         </select>
+        <label for="setting-custom-font-family">Nome da fonte personalizada</label>
+        <input id="setting-custom-font-family" name="customFontFamily" type="text" maxlength="80" placeholder="Ex.: Space Grotesk">
+        <label for="setting-custom-font-url">URL CSS do Google Fonts (opcional)</label>
+        <input id="setting-custom-font-url" name="customFontUrl" type="url" placeholder="https://fonts.googleapis.com/css2?family=...">
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Textos e tipografia dos cards</legend>
+        <label for="setting-profile-name">Nome no card principal</label>
+        <input id="setting-profile-name" name="profileNameOverride" type="text" maxlength="80" placeholder="Usar nome do Discord">
+        <label for="setting-profile-username">Usuário no card principal</label>
+        <input id="setting-profile-username" name="profileUsernameOverride" type="text" maxlength="80" placeholder="Usar usuário do Discord">
+        <label for="setting-presence-name">Nome no card do Discord</label>
+        <input id="setting-presence-name" name="presenceNameOverride" type="text" maxlength="80" placeholder="Usar nome do Discord">
+        <label for="setting-presence-note">Texto de atividade padrão</label>
+        <input id="setting-presence-note" name="presenceNoteOverride" type="text" maxlength="160" placeholder="Usar texto automático">
+        <label for="setting-profile-name-size">Tamanho do nome principal <output data-output="profileNameSize">16 px</output></label>
+        <input id="setting-profile-name-size" name="profileNameSize" type="range" min="10" max="48" step="1">
+        <label for="setting-profile-username-size">Tamanho do usuário principal <output data-output="profileUsernameSize">14 px</output></label>
+        <input id="setting-profile-username-size" name="profileUsernameSize" type="range" min="8" max="36" step="1">
+        <label for="setting-presence-name-size">Tamanho do nome Discord <output data-output="presenceNameSize">14 px</output></label>
+        <input id="setting-presence-name-size" name="presenceNameSize" type="range" min="8" max="36" step="1">
+        <label for="setting-presence-body-size">Tamanho da atividade/música <output data-output="presenceBodySize">12 px</output></label>
+        <input id="setting-presence-body-size" name="presenceBodySize" type="range" min="8" max="28" step="1">
+        <label for="setting-profile-name-x">Deslocamento horizontal do nome <output data-output="profileNameX">0 px</output></label>
+        <input id="setting-profile-name-x" name="profileNameX" type="range" min="-60" max="60" step="1">
+        <label for="setting-profile-name-y">Deslocamento vertical do nome <output data-output="profileNameY">0 px</output></label>
+        <input id="setting-profile-name-y" name="profileNameY" type="range" min="-60" max="60" step="1">
+        <label for="setting-profile-username-x">Deslocamento horizontal do usuário <output data-output="profileUsernameX">0 px</output></label>
+        <input id="setting-profile-username-x" name="profileUsernameX" type="range" min="-60" max="60" step="1">
+        <label for="setting-profile-username-y">Deslocamento vertical do usuário <output data-output="profileUsernameY">0 px</output></label>
+        <input id="setting-profile-username-y" name="profileUsernameY" type="range" min="-60" max="60" step="1">
+        <label for="setting-presence-text-x">Deslocamento horizontal do texto Discord <output data-output="presenceTextX">0 px</output></label>
+        <input id="setting-presence-text-x" name="presenceTextX" type="range" min="-80" max="80" step="1">
+        <label for="setting-presence-text-y">Deslocamento vertical do texto Discord <output data-output="presenceTextY">0 px</output></label>
+        <input id="setting-presence-text-y" name="presenceTextY" type="range" min="-60" max="60" step="1">
       </fieldset>
 
       <fieldset class="site-editor__group">
@@ -319,7 +356,7 @@
         <label for="upload-music">Enviar música do computador</label>
         <input id="upload-music" type="file" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/aac,.mp3,.wav,.ogg,.m4a">
         <label for="setting-music-url">Ou usar link de áudio</label>
-        <input id="setting-music-url" name="musicUrl" type="url" autocomplete="off" placeholder="https://...">
+        <input id="setting-music-url" name="musicUrl" type="text" inputmode="url" autocomplete="off" placeholder="URL https:// ou caminho local; deixe vazio para desativar">
         <label for="setting-music-volume">Volume <output data-output="musicVolume">8%</output></label>
         <input id="setting-music-volume" name="musicVolume" type="range" min="0" max="0.3" step="0.01">
         <button class="site-editor__secondary" id="test-music" type="button">Testar música</button>

@@ -30,7 +30,7 @@ if (presenceCard) {
   }
 
   function setNote(message) {
-    setText(noteNode, message);
+    setText(noteNode, window.siteCardTextOverrides?.presenceNoteOverride || message);
     noteNode.hidden = false;
     trackNode.hidden = true;
     trackCoverNode.hidden = true;
@@ -67,11 +67,17 @@ if (presenceCard) {
     setStatus(statusLabels[status] ?? "Status desconhecido", status);
 
     if (presence.displayName) {
-      displayNameNodes.forEach((node) => setText(node, presence.displayName));
+      displayNameNodes.forEach((node) => {
+        const overrides = window.siteCardTextOverrides;
+        const customName = node.closest(".discord-presence")
+          ? overrides?.presenceNameOverride
+          : overrides?.profileNameOverride;
+        setText(node, customName || presence.displayName);
+      });
     }
 
     if (presence.username) {
-      setText(usernameNode, `@${presence.username}`);
+      setText(usernameNode, window.siteCardTextOverrides?.profileUsernameOverride || `@${presence.username}`);
     }
 
     if (presence.avatarUrl) {
