@@ -98,21 +98,7 @@ function renderEditorPreview(settings) {
   const originalCard = document.querySelector(".discord-profile");
   if (!originalCard) return;
   const previewCard = originalCard.cloneNode(true);
-  previewCard.style.marginLeft = `${-Math.min(settings.cardWidth, previewStage.clientWidth) / 2}px`;
   previewCard.dataset.editorPreviewCard = "";
-  previewCard.querySelectorAll("[data-discord-status]").forEach((element) => element.remove());
-  previewCard.querySelectorAll("[data-discord-note]").forEach((element) => {
-    element.textContent = settings.presenceNoteOverride || "Atividade no Discord";
-  });
-  previewCard.querySelector(".profile .nickr")?.replaceChildren(
-    document.createTextNode(settings.profileNameOverride || "Prévia do perfil"),
-  );
-  previewCard.querySelector(".profile .subnick")?.replaceChildren(
-    document.createTextNode(settings.profileUsernameOverride || "@nothing2lie"),
-  );
-  previewCard.querySelectorAll(".discord-presence-name").forEach((element) => {
-    element.textContent = settings.presenceNameOverride || "Prévia do perfil";
-  });
 
   const moveCard = document.createElement("span");
   moveCard.className = "editor-drag-handle";
@@ -526,7 +512,7 @@ async function showEditorForSession() {
 
 async function openEditor() {
   if (!document.body.dataset.adminPage) {
-    window.location.assign("/admin.html");
+    window.open("/admin.html", "_blank", "noopener,noreferrer");
     return;
   }
   if (!dialog.open) dialog.showModal();
