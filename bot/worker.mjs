@@ -59,6 +59,15 @@ async function savePresence(presence) {
     (activity) =>
       activity.type === ActivityType.Listening && activity.name === "Spotify",
   );
+  const spotifyImageKey = spotifyActivity?.assets?.largeImage;
+  const spotifyImageId =
+    typeof spotifyImageKey === "string" && spotifyImageKey.startsWith("spotify:")
+      ? spotifyImageKey.slice("spotify:".length)
+      : null;
+  const spotifyCoverUrl =
+    spotifyImageId && /^[a-zA-Z0-9]+$/.test(spotifyImageId)
+      ? `https://i.scdn.co/image/${spotifyImageId}`
+      : null;
   const payload = {
     userId: presence.userId,
     username: user?.username ?? null,
@@ -71,6 +80,7 @@ async function savePresence(presence) {
           title: spotifyActivity.details ?? null,
           artist: spotifyActivity.state ?? null,
           album: spotifyActivity.assets?.largeText ?? null,
+          coverUrl: spotifyCoverUrl,
         }
       : null,
     updatedAt: new Date().toISOString(),
