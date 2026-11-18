@@ -93,7 +93,7 @@
 <script>
 
   const audio = document.getElementById("audio");
-  audio.volume = 0.08;
+  if (audio) audio.volume = 0.08;
 
   function play() {
     if (!audio) return;
@@ -271,6 +271,41 @@
         <label for="setting-card-gif-url">GIF sobre o card</label>
         <input id="setting-card-gif-url" name="cardGifUrl" type="text" autocomplete="off" placeholder="https://... ou /arquivo.gif">
         <p class="site-editor__hint">Use um link HTTPS ou um arquivo GIF publicado no site.</p>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Cartão de integração do Discord</legend>
+        <label for="setting-presence-position-mode">Posicionamento</label>
+        <select id="setting-presence-position-mode" name="presencePositionMode">
+          <option value="inline">Dentro do perfil</option>
+          <option value="floating">Livre pela tela</option>
+        </select>
+        <label for="setting-presence-x">Posição horizontal <output data-output="presenceX">50%</output></label>
+        <input id="setting-presence-x" name="presenceX" type="range" min="0" max="100" step="1">
+        <label for="setting-presence-y">Posição vertical <output data-output="presenceY">50%</output></label>
+        <input id="setting-presence-y" name="presenceY" type="range" min="0" max="100" step="1">
+        <label for="setting-presence-width">Largura <output data-output="presenceWidth">360 px</output></label>
+        <input id="setting-presence-width" name="presenceWidth" type="range" min="240" max="520" step="4">
+        <div class="site-editor__color-grid">
+          <label for="setting-presence-background">Fundo <input id="setting-presence-background" name="presenceBackground" type="color"></label>
+          <label for="setting-presence-text-color">Texto <input id="setting-presence-text-color" name="presenceTextColor" type="color"></label>
+          <label for="setting-presence-border-color">Borda <input id="setting-presence-border-color" name="presenceBorderColor" type="color"></label>
+        </div>
+        <label for="setting-presence-opacity">Opacidade <output data-output="presenceOpacity">82%</output></label>
+        <input id="setting-presence-opacity" name="presenceOpacity" type="range" min="0.2" max="1" step="0.01">
+        <label for="setting-presence-radius">Arredondamento <output data-output="presenceRadius">24 px</output></label>
+        <input id="setting-presence-radius" name="presenceRadius" type="range" min="0" max="48" step="1">
+        <label for="setting-presence-border-width">Espessura da borda <output data-output="presenceBorderWidth">1 px</output></label>
+        <input id="setting-presence-border-width" name="presenceBorderWidth" type="range" min="0" max="8" step="1">
+        <label for="setting-presence-padding">Espaçamento interno <output data-output="presencePadding">12 px</output></label>
+        <input id="setting-presence-padding" name="presencePadding" type="range" min="6" max="32" step="1">
+        <label for="setting-presence-avatar-size">Tamanho do avatar <output data-output="presenceAvatarSize">50 px</output></label>
+        <input id="setting-presence-avatar-size" name="presenceAvatarSize" type="range" min="32" max="96" step="2">
+        <label for="setting-presence-blur">Desfoque do fundo <output data-output="presenceBlur">18 px</output></label>
+        <input id="setting-presence-blur" name="presenceBlur" type="range" min="0" max="32" step="1">
+        <label for="setting-presence-background-image">Imagem de fundo (opcional)</label>
+        <input id="setting-presence-background-image" name="presenceBackgroundImage" type="url" placeholder="https://...">
+        <p class="site-editor__hint">No modo livre, ajuste as posições horizontal e vertical para mover o cartão. Em telas pequenas, a posição é limitada à área visível.</p>
       </fieldset>
 
       <fieldset class="site-editor__group">

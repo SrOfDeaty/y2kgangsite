@@ -19,6 +19,20 @@ const DEFAULT_SETTINGS = {
   fontFamily: "arial",
   siteEffect: "none",
   cursorStyle: "default",
+  presencePositionMode: "inline",
+  presenceX: 50,
+  presenceY: 50,
+  presenceWidth: 360,
+  presenceBackground: "#17171d",
+  presenceTextColor: "#f5f5f7",
+  presenceBorderColor: "#ffffff",
+  presenceOpacity: 0.82,
+  presenceRadius: 24,
+  presenceBorderWidth: 1,
+  presencePadding: 12,
+  presenceAvatarSize: 50,
+  presenceBlur: 18,
+  presenceBackgroundImage: "",
   musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
   musicVolume: 0.08,
 };
@@ -90,6 +104,25 @@ function applySettings(settings) {
   root.style.setProperty("--editor-card-gradient-direction", activeSettings.cardGradientDirection);
   root.dataset.cardFillStyle = activeSettings.cardFillStyle;
   root.dataset.siteEffect = activeSettings.siteEffect;
+  root.dataset.presencePosition = activeSettings.presencePositionMode;
+  root.style.setProperty("--presence-x", `${activeSettings.presenceX}%`);
+  root.style.setProperty("--presence-y", `${activeSettings.presenceY}%`);
+  root.style.setProperty("--presence-width", `${activeSettings.presenceWidth}px`);
+  root.style.setProperty("--presence-background", activeSettings.presenceBackground);
+  root.style.setProperty("--presence-text-color", activeSettings.presenceTextColor);
+  root.style.setProperty("--presence-border-color", activeSettings.presenceBorderColor);
+  root.style.setProperty("--presence-opacity", `${activeSettings.presenceOpacity * 100}%`);
+  root.style.setProperty("--presence-radius", `${activeSettings.presenceRadius}px`);
+  root.style.setProperty("--presence-border-width", `${activeSettings.presenceBorderWidth}px`);
+  root.style.setProperty("--presence-padding", `${activeSettings.presencePadding}px`);
+  root.style.setProperty("--presence-avatar-size", `${activeSettings.presenceAvatarSize}px`);
+  root.style.setProperty("--presence-blur", `${activeSettings.presenceBlur}px`);
+  root.style.setProperty(
+    "--presence-background-image",
+    activeSettings.presenceBackgroundImage
+      ? `url("${safeCssUrl(activeSettings.presenceBackgroundImage)}")`
+      : "none",
+  );
 
   if (activeSettings.cursorStyle === "default") {
     delete root.dataset.editorCursor;
@@ -141,6 +174,20 @@ function readSettings() {
     fontFamily: values.get("fontFamily"),
     siteEffect: values.get("siteEffect"),
     cursorStyle: values.get("cursorStyle"),
+    presencePositionMode: values.get("presencePositionMode"),
+    presenceX: Number(values.get("presenceX")),
+    presenceY: Number(values.get("presenceY")),
+    presenceWidth: Number(values.get("presenceWidth")),
+    presenceBackground: values.get("presenceBackground"),
+    presenceTextColor: values.get("presenceTextColor"),
+    presenceBorderColor: values.get("presenceBorderColor"),
+    presenceOpacity: Number(values.get("presenceOpacity")),
+    presenceRadius: Number(values.get("presenceRadius")),
+    presenceBorderWidth: Number(values.get("presenceBorderWidth")),
+    presencePadding: Number(values.get("presencePadding")),
+    presenceAvatarSize: Number(values.get("presenceAvatarSize")),
+    presenceBlur: Number(values.get("presenceBlur")),
+    presenceBackgroundImage: String(values.get("presenceBackgroundImage") || "").trim(),
     musicUrl: String(values.get("musicUrl") || "").trim(),
     musicVolume: Number(values.get("musicVolume")),
   };
@@ -154,6 +201,15 @@ function updateOutputs(settings) {
     avatarSize: `${settings.avatarSize} px`,
     cardOpacity: `${Math.round(settings.cardOpacity * 100)}%`,
     musicVolume: `${Math.round(settings.musicVolume * 100)}%`,
+    presenceX: `${settings.presenceX}%`,
+    presenceY: `${settings.presenceY}%`,
+    presenceWidth: `${settings.presenceWidth} px`,
+    presenceOpacity: `${Math.round(settings.presenceOpacity * 100)}%`,
+    presenceRadius: `${settings.presenceRadius} px`,
+    presenceBorderWidth: `${settings.presenceBorderWidth} px`,
+    presencePadding: `${settings.presencePadding} px`,
+    presenceAvatarSize: `${settings.presenceAvatarSize} px`,
+    presenceBlur: `${settings.presenceBlur} px`,
   };
 
   Object.entries(values).forEach(([name, value]) => {

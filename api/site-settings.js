@@ -20,6 +20,20 @@ const DEFAULT_SETTINGS = {
   fontFamily: "arial",
   siteEffect: "none",
   cursorStyle: "default",
+  presencePositionMode: "inline",
+  presenceX: 50,
+  presenceY: 50,
+  presenceWidth: 360,
+  presenceBackground: "#17171d",
+  presenceTextColor: "#f5f5f7",
+  presenceBorderColor: "#ffffff",
+  presenceOpacity: 0.82,
+  presenceRadius: 24,
+  presenceBorderWidth: 1,
+  presencePadding: 12,
+  presenceAvatarSize: 50,
+  presenceBlur: 18,
+  presenceBackgroundImage: "",
   musicUrl: "/lil-peep-wanna-be-lyrics_1T09YWa6.mp3",
   musicVolume: 0.08,
 };
@@ -125,6 +139,22 @@ function validateSettings(value) {
     fontFamily: ["arial", "yanone"].includes(value.fontFamily) ? value.fontFamily : "arial",
     siteEffect: SITE_EFFECTS.has(value.siteEffect) ? value.siteEffect : "none",
     cursorStyle: CURSOR_STYLES.has(value.cursorStyle) ? value.cursorStyle : "default",
+    presencePositionMode: ["inline", "floating"].includes(value.presencePositionMode)
+      ? value.presencePositionMode
+      : DEFAULT_SETTINGS.presencePositionMode,
+    presenceX: Math.round(clampNumber(value.presenceX ?? DEFAULT_SETTINGS.presenceX, 0, 100, "Discord card horizontal position")),
+    presenceY: Math.round(clampNumber(value.presenceY ?? DEFAULT_SETTINGS.presenceY, 0, 100, "Discord card vertical position")),
+    presenceWidth: Math.round(clampNumber(value.presenceWidth ?? DEFAULT_SETTINGS.presenceWidth, 240, 520, "Discord card width")),
+    presenceBackground: value.presenceBackground ?? DEFAULT_SETTINGS.presenceBackground,
+    presenceTextColor: value.presenceTextColor ?? DEFAULT_SETTINGS.presenceTextColor,
+    presenceBorderColor: value.presenceBorderColor ?? DEFAULT_SETTINGS.presenceBorderColor,
+    presenceOpacity: clampNumber(value.presenceOpacity ?? DEFAULT_SETTINGS.presenceOpacity, 0.2, 1, "Discord card opacity"),
+    presenceRadius: Math.round(clampNumber(value.presenceRadius ?? DEFAULT_SETTINGS.presenceRadius, 0, 48, "Discord card radius")),
+    presenceBorderWidth: Math.round(clampNumber(value.presenceBorderWidth ?? DEFAULT_SETTINGS.presenceBorderWidth, 0, 8, "Discord card border width")),
+    presencePadding: Math.round(clampNumber(value.presencePadding ?? DEFAULT_SETTINGS.presencePadding, 6, 32, "Discord card padding")),
+    presenceAvatarSize: Math.round(clampNumber(value.presenceAvatarSize ?? DEFAULT_SETTINGS.presenceAvatarSize, 32, 96, "Discord avatar size")),
+    presenceBlur: Math.round(clampNumber(value.presenceBlur ?? DEFAULT_SETTINGS.presenceBlur, 0, 32, "Discord card blur")),
+    presenceBackgroundImage: validateMediaUrl(value.presenceBackgroundImage ?? "", "Discord card background image"),
     musicUrl: validateMediaUrl(value.musicUrl, "music URL"),
     musicVolume: clampNumber(value.musicVolume, 0, 0.3, "music volume"),
   };
@@ -134,7 +164,10 @@ function validateSettings(value) {
     !isHexColor(settings.accentColor) ||
     !isHexColor(settings.cardColor) ||
     !isHexColor(settings.cardGradientStart) ||
-    !isHexColor(settings.cardGradientEnd)
+    !isHexColor(settings.cardGradientEnd) ||
+    !isHexColor(settings.presenceBackground) ||
+    !isHexColor(settings.presenceTextColor) ||
+    !isHexColor(settings.presenceBorderColor)
   ) {
     throw new TypeError("Invalid color");
   }
