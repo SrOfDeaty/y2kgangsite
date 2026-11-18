@@ -9,6 +9,11 @@ const SOCIAL_ICON_ASSETS = new Map([
   ["imagem_2024-03-06_163201394-removebg-preview.png", tiktokIconAsset],
 ]);
 
+function resolveSocialIconImage(image) {
+  const legacyPath = typeof image === "string" ? image.replace(/^\/+/, "") : "";
+  return SOCIAL_ICON_ASSETS.get(legacyPath) || image;
+}
+
 const DEFAULT_SETTINGS = {
   palette: "basalto",
   backgroundColor: "#000001",
@@ -332,7 +337,7 @@ function applySettings(settings) {
     const image = button.querySelector("img");
     if (icon.href) button.href = icon.href;
     else button.removeAttribute("href");
-    if (image && icon.image) image.src = SOCIAL_ICON_ASSETS.get(icon.image) || icon.image;
+    if (image && icon.image) image.src = resolveSocialIconImage(icon.image);
     button.style.setProperty("--social-icon-x", `${icon.x}px`);
     button.style.setProperty("--social-icon-y", `${icon.y}px`);
   });
