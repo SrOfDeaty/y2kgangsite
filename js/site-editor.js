@@ -202,6 +202,7 @@ async function uploadMedia(input, settingName, acceptedTypes) {
   }
 
   input.disabled = true;
+  let uploadSucceeded = false;
   showNotice("Enviando arquivo para o armazenamento…");
   try {
     const token = await getSessionToken();
@@ -215,8 +216,10 @@ async function uploadMedia(input, settingName, acceptedTypes) {
     });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || "upload_failed");
+    if (typeof payload.url !== "string" || !payload.url) throw new Error("upload_failed");
     const field = settingsForm.elements.namedItem(settingName);
     field.value = payload.url;
+    uploadSucceeded = true;
     if (settingName === "cursorImageUrl") {
       settingsForm.elements.namedItem("cursorStyle").value = "custom";
     }
@@ -235,7 +238,7 @@ async function uploadMedia(input, settingName, acceptedTypes) {
     showNotice(messages[error?.message] || "Não foi possível enviar a imagem. Verifique sua sessão e tente novamente.", true);
   } finally {
     input.disabled = false;
-    input.value = "";
+    if (!uploadSucceeded) input.value = "";
   }
 }
 
