@@ -32,7 +32,8 @@ function getJwks() {
   if (!jwks) {
     const authBaseUrl = process.env.NEON_AUTH_BASE_URL;
     if (!authBaseUrl) throw new Error("Auth is not configured");
-    jwks = createRemoteJWKSet(new URL("/.well-known/jwks.json", authBaseUrl));
+    const baseUrl = authBaseUrl.endsWith("/") ? authBaseUrl : `${authBaseUrl}/`;
+    jwks = createRemoteJWKSet(new URL(".well-known/jwks.json", baseUrl));
   }
   return jwks;
 }
