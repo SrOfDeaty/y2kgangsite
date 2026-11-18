@@ -102,10 +102,16 @@ function renderEditorPreview(settings) {
   previewCard.dataset.editorPreviewCard = "";
   previewCard.querySelectorAll("[data-discord-status]").forEach((element) => element.remove());
   previewCard.querySelectorAll("[data-discord-note]").forEach((element) => {
-    element.textContent = "Atividade no Discord";
+    element.textContent = settings.presenceNoteOverride || "Atividade no Discord";
   });
-  previewCard.querySelectorAll("[data-discord-display-name]").forEach((element) => {
-    element.textContent = "Prévia do perfil";
+  previewCard.querySelector(".profile .nickr")?.replaceChildren(
+    document.createTextNode(settings.profileNameOverride || "Prévia do perfil"),
+  );
+  previewCard.querySelector(".profile .subnick")?.replaceChildren(
+    document.createTextNode(settings.profileUsernameOverride || "@nothing2lie"),
+  );
+  previewCard.querySelectorAll(".discord-presence-name").forEach((element) => {
+    element.textContent = settings.presenceNameOverride || "Prévia do perfil";
   });
 
   const moveCard = document.createElement("span");
@@ -519,6 +525,10 @@ async function showEditorForSession() {
 }
 
 async function openEditor() {
+  if (!document.body.dataset.adminPage) {
+    window.location.assign("/admin.html");
+    return;
+  }
   if (!dialog.open) dialog.showModal();
   await showEditorForSession();
 }
@@ -655,6 +665,73 @@ async function signOut() {
   }
 }
 
+function createEditorTabs() {
+  const groups = [
+    { id: "appearance", label: "Aparência", description: "Fundo, cores e dimensões" },
+    { id: "text", label: "Textos", description: "Conteúdo e tipografia" },
+    { id: "discord", label: "Discord", description: "Cartão de presença" },
+    { id: "music", label: "Música", description: "Áudio e volume" },
+  ];
+  const form = settingsForm;
+  const fieldsets = [...form.querySelectorAll(":scope > .site-editor__group")];
+  if (!fieldsets.length) return;
+  const navigation = document.createElement("div");
+  navigation.className = "site-editor__tabs";
+  navigation.setAttribute("role", "tablist");
+  navigation.setAttribute("aria-label", "Categorias de personalização");
+  const panels = new Map();
+
+  groups.forEach((group, index) => {
+    const button = document.createElement("button");
+    button.className = "site-editor__tab";
+    button.type = "button";
+    button.id = `editor-tab-${group.id}`;
+    button.setAttribute("role", "tab");
+    button.setAttribute("aria-controls", `editor-panel-${group.id}`);
+    button.setAttribute("aria-selected", String(index === 0));
+    button.tabIndex = index === 0 ? 0 : -1;
+    button.innerHTML = `<span>${group.label}</span><small>${group.description}</small>`;
+    navigation.append(button);
+
+    const panel = document.createElement("section");
+    panel.className = "site-editor__tab-panel";
+    panel.id = `editor-panel-${group.id}`;
+    panel.setAttribute("role", "tabpanel");
+    panel.setAttribute("aria-labelledby", button.id);
+    panel.hidden = index !== 0;
+    panels.set(group.id, panel);
+    const activateTab = () => {
+      navigation.querySelectorAll('[role="tab"]').forEach((tab) => {
+        const active = tab === button;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+      panels.forEach((item) => { item.hidden = item !== panel; });
+    };
+    button.addEventListener("click", activateTab);
+    button.addEventListener("keydown", (event) => {
+      const tabs = [...navigation.querySelectorAll('[role="tab"]')];
+      const currentIndex = tabs.indexOf(button);
+      const nextIndex = event.key === "ArrowRight" ? (currentIndex + 1) % tabs.length
+        : event.key === "ArrowLeft" ? (currentIndex - 1 + tabs.length) % tabs.length
+        : event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : -1;
+      if (nextIndex < 0) return;
+      event.preventDefault();
+      tabs[nextIndex].focus();
+      tabs[nextIndex].click();
+    });
+  });
+
+  fieldsets.forEach((fieldset) => {
+    const legend = fieldset.querySelector("legend")?.textContent || "";
+    const group = legend.includes("Textos") ? "text"
+      : legend.includes("integração") ? "discord"
+      : legend === "Música" ? "music" : "appearance";
+    panels.get(group).append(fieldset);
+  });
+  form.prepend(navigation, ...panels.values());
+}
+
 function connectFormPreview() {
   previewStage.addEventListener("pointerdown", (event) => {
     if (!(event.target instanceof Element) || event.button !== 0) return;
@@ -765,8 +842,11 @@ async function loadPublicSettings() {
   }
 }
 
-document.querySelector(".site-admin-trigger").addEventListener("click", () => void openEditor());
-document.querySelector("[data-close-editor]").addEventListener("click", () => dialog.close());
+document.querySelector(".site-admin-trigger")?.addEventListener("click", () => void openEditor());
+document.querySelector("[data-close-editor]").addEventListener("click", () => {
+  if (document.body.dataset.adminPage) window.location.assign("/");
+  else dialog.close();
+});
 authForm.addEventListener("submit", handleAuthSubmit);
 verifyForm.addEventListener("submit", handleVerification);
 authModeToggle.addEventListener("click", () => setAuthMode(authMode === "sign-in" ? "sign-up" : "sign-in"));
@@ -780,9 +860,15 @@ document.addEventListener("keydown", (event) => {
 });
 
 dialog.addEventListener("click", (event) => {
-  if (event.target === dialog) dialog.close();
+  if (event.target === dialog && !document.body.dataset.adminPage) dialog.close();
 });
 
+if (document.body.dataset.adminPage) {
+  document.title = "Y2KGANG — painel ADM";
+  void openEditor();
+}
+
+createEditorTabs();
 connectFormPreview();
 fillForm(DEFAULT_SETTINGS);
 void loadPublicSettings();

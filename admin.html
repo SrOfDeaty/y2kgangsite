@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y2KGANG — painel ADM</title>
+    <meta name="description" content="Painel administrativo para personalizar o perfil Y2KGANG.">
+
+    <link rel="icon" href="berserk.png" />
+    <meta property="og:title" content="fodase">
+    <meta property="og:description" content="Fvck all">
+    <meta property="og:image" content="https://cdn.discordapp.com/attachments/1214741533983510578/1214776561354543155/Captura_de_Tela_2024-03-04_as_05.47.25.png?ex=65fa57d5&is=65e7e2d5&hm=6f25a5d268558eded77d85315faa747773ecbca443d633d204e9afef9bab1a66&  ">
+    <meta property="og:url" content="https://www.y2kgang.tech">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="admin-page" data-admin-page="true">
+  <div class="site-background-shade" aria-hidden="true"></div>
+  <div class="site-effects-layer" aria-hidden="true"></div>
+
+  <main class="divcont">
+
+
+
+     <div class="discord-profile">
+         <img class="site-card-gif" data-card-gif alt="" aria-hidden="true" hidden>
+         <div class="profile">
+              <div class="pfp">
+                  <img src="opium.jpg" alt="Foto de perfil do Discord" data-discord-avatar>
+              </div>
+
+                   <div class="nickr" data-discord-display-name>
+                    Vinocas
+                   </div>
+
+                   <div class="nick subnick" data-discord-username>
+                    Dodecaedrus
+                   </div>
+
+                <section class="discord-presence" data-discord-presence aria-label="Presença no Discord">
+                  <div class="discord-presence-layout">
+                    <div class="discord-presence-avatar-wrap">
+                      <img class="discord-presence-avatar" src="opium.jpg" alt="Foto de perfil do Discord" data-discord-avatar>
+                      <span class="discord-presence-dot" data-discord-status-dot data-status="unknown" aria-hidden="true"></span>
+                    </div>
+                    <div class="discord-presence-copy">
+                      <p class="discord-presence-name" data-discord-display-name>Carregando perfil…</p>
+                      <span class="sr-only" data-discord-status role="status" aria-live="polite">Verificando Discord…</span>
+                      <div class="discord-track" data-discord-track hidden>
+                        <p class="discord-track-title"><span>Ouvindo </span><span data-discord-track-title></span></p>
+                        <p class="discord-track-artist"><span>por </span><span data-discord-track-artist></span></p>
+                      </div>
+                      <p class="discord-presence-note" data-discord-note>Carregando atividade…</p>
+                    </div>
+                    <img class="discord-track-cover" data-discord-cover alt="" hidden>
+                  </div>
+                </section>
+
+               <div class="badges">
+
+                    <div class="badge" role="img" aria-label="Emblema FuckYou" style="background-image: url('https://i.imgur.com/9jCPaux.png');" data-tooltip="FuckYou"></div>
+
+                </div>
+
+
+
+                <div class="social-buttons">
+
+<a href="https://www.instagram.com/vinocasof/" target="_blank" rel="noopener noreferrer" class="social-button" aria-label="Instagram">
+                              <img src="imagem_2024-03-06_162937509-removebg-preview.png" width="115%" alt="Instagram">
+
+                         </a>
+
+<a href="https://open.spotify.com/user/31625fveyimletebkwekjkgmzz3y/" target="_blank" rel="noopener noreferrer" class="social-button" aria-label="Spotify">
+                              <img src="image.png" width="70%" alt="Spotify">
+
+                          </a>
+<a href="https://www.tiktok.com/@vinocasof" target="_blank" rel="noopener noreferrer" class="social-button" aria-label="TikTok">
+                              <img src="imagem_2024-03-06_163201394-removebg-preview.png" width="70%" alt="TikTok">
+
+                          </a>
+                </div>
+                <div class="server-button">
+                 <div class="server-button-text">金
+                    性
+                    我</div>
+                </div>
+
+       </div>
+     </main>
+
+<audio id="audio" autoplay loop preload="auto" playsinline></audio>
+<script>
+  var rev = "fwd";
+  function titlebar(val){
+      var msg  = "y2kgang";
+      var res = "";
+      var speed = 100;
+      var pos = val;
+      msg = ""+msg+"";
+      var le = msg.length;
+      if(rev == "fwd"){
+          if(pos < le){
+              pos = pos+1;
+              scroll = msg.substr(0,pos);
+              document.title = scroll;
+              timer = window.setTimeout("titlebar("+pos+")",speed);
+          }
+          else {
+              rev = "bwd";
+              timer = window.setTimeout("titlebar("+pos+")",speed);
+          }
+      }
+      else {
+          if(pos > 0) {
+              pos = pos-1;
+              var ale = le-pos;
+              scrol = msg.substr(ale,le);
+              document.title = scrol;
+              timer = window.setTimeout("titlebar("+pos+")",speed);
+          }
+          else {
+              rev = "fwd";
+              timer = window.setTimeout("titlebar("+pos+")",speed);
+          }
+      }
+  }
+  if (!document.body.dataset.adminPage) titlebar(0);
+  </script>
+<script type="module" src="/js/discord-presence.js"></script>
+<script type="module" src="/js/site-editor.js"></script>
+
+<button class="site-admin-trigger" type="button" aria-label="Abrir painel de administração" title="Abrir editor do site">
+  ADM
+</button>
+
+<dialog class="site-editor" id="site-editor" aria-labelledby="editor-title">
+  <div class="site-editor__header">
+    <div>
+      <p class="site-editor__eyebrow">Y2KGANG / SISTEMA</p>
+      <h2 id="editor-title">Editor de aparência</h2>
+    </div>
+    <button class="site-editor__icon-button" type="button" data-close-editor aria-label="Voltar ao perfil">Voltar ao perfil</button>
+  </div>
+
+  <p class="site-editor__notice" id="editor-notice" role="status" aria-live="polite"></p>
+
+  <section class="site-editor__auth" data-auth-view>
+    <p class="site-editor__intro">Entre com sua conta administrativa para personalizar o site.</p>
+    <form class="site-editor__form" id="admin-auth-form">
+      <label for="admin-email">Email</label>
+      <input id="admin-email" name="email" type="email" autocomplete="email" required>
+      <label for="admin-password">Senha</label>
+      <input id="admin-password" name="password" type="password" autocomplete="current-password" minlength="8" required>
+      <button class="site-editor__primary" id="auth-submit" type="submit">Entrar</button>
+    </form>
+    <button class="site-editor__text-button" id="auth-mode-toggle" type="button">Primeiro acesso? Criar conta</button>
+    <form class="site-editor__form" id="verify-email-form" hidden>
+      <label for="admin-otp">Código enviado por email</label>
+      <input id="admin-otp" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="12" required>
+      <button class="site-editor__primary" type="submit">Verificar email</button>
+    </form>
+  </section>
+
+  <section class="site-editor__workspace" data-editor-view hidden>
+    <p class="site-editor__intro">Ajuste os controles e veja a prévia ao vivo. As mudanças só ficam públicas depois de salvar.</p>
+    <section class="site-editor__preview" aria-label="Prévia ao vivo do perfil">
+      <p class="site-editor__preview-label">PRÉVIA DO PERFIL</p>
+      <div class="site-editor__preview-stage" id="editor-preview"></div>
+    </section>
+    <form class="site-editor__form" id="site-settings-form">
+      <fieldset class="site-editor__group">
+        <legend>Paleta e cores</legend>
+        <label for="setting-palette">Paleta rápida</label>
+        <select id="setting-palette" name="palette">
+          <option value="basalto">Basalto</option>
+          <option value="sangue">Sangue</option>
+          <option value="violeta">Violeta</option>
+          <option value="gelo">Gelo</option>
+          <option value="custom">Personalizada</option>
+        </select>
+        <div class="site-editor__color-grid">
+          <label for="setting-background-color">Fundo <input id="setting-background-color" name="backgroundColor" type="color"></label>
+          <label for="setting-accent-color">Destaque <input id="setting-accent-color" name="accentColor" type="color"></label>
+          <label for="setting-card-color">Card <input id="setting-card-color" name="cardColor" type="color"></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Imagem de fundo</legend>
+        <label for="upload-background-image">Enviar imagem de fundo</label>
+        <input id="upload-background-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-background-image">Ou usar link da imagem</label>
+        <input id="setting-background-image" name="backgroundImage" type="url" placeholder="https://...">
+        <label for="setting-background-shade">Escurecimento <output data-output="backgroundShade">16%</output></label>
+        <input id="setting-background-shade" name="backgroundShade" type="range" min="0" max="0.65" step="0.01">
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Efeitos do site</legend>
+        <label for="setting-site-effect">Efeito global</label>
+        <select id="setting-site-effect" name="siteEffect">
+          <option value="none">Sem efeito</option>
+          <option value="snow">Neve</option>
+          <option value="rain">Chuva</option>
+          <option value="glitch">Glitch</option>
+        </select>
+        <label for="setting-cursor-style">Cursor</label>
+        <select id="setting-cursor-style" name="cursorStyle">
+          <option value="default">Padrão do navegador</option>
+          <option value="pointer">Mão</option>
+          <option value="crosshair">Mira</option>
+          <option value="text">Texto</option>
+          <option value="wait">Aguardar</option>
+          <option value="custom">Imagem personalizada</option>
+        </select>
+        <label for="upload-cursor-image">Enviar imagem para o cursor</label>
+        <input id="upload-cursor-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-cursor-image">Ou usar link da imagem</label>
+        <input id="setting-cursor-image" name="cursorImageUrl" type="url" placeholder="https://...">
+        <p class="site-editor__hint">Use um PNG pequeno e transparente (ideal: 32 × 32 px). Ele será aplicado como cursor personalizado.</p>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Card e perfil</legend>
+        <label for="setting-card-width">Largura do card <output data-output="cardWidth">320 px</output></label>
+        <input id="setting-card-width" name="cardWidth" type="range" min="260" max="420" step="2">
+        <label for="setting-card-height">Altura do card <output data-output="cardHeight">620 px</output></label>
+        <input id="setting-card-height" name="cardHeight" type="range" min="360" max="760" step="4">
+        <label for="setting-card-position-x">Posição horizontal <output data-output="cardPositionX">50%</output></label>
+        <input id="setting-card-position-x" name="cardPositionX" type="range" min="5" max="95" step="1">
+        <label for="setting-card-position-y">Posição vertical <output data-output="cardPositionY">50%</output></label>
+        <input id="setting-card-position-y" name="cardPositionY" type="range" min="5" max="95" step="1">
+        <p class="site-editor__hint">Na prévia, arraste o card para posicionar e use o canto inferior direito para ajustar largura e altura.</p>
+        <label for="setting-card-radius">Formato <output data-output="cardRadius">50 px</output></label>
+        <input id="setting-card-radius" name="cardRadius" type="range" min="0" max="64" step="1">
+        <label for="setting-avatar-size">Tamanho da foto <output data-output="avatarSize">146 px</output></label>
+        <input id="setting-avatar-size" name="avatarSize" type="range" min="96" max="180" step="2">
+        <label for="setting-card-opacity">Transparência do card <output data-output="cardOpacity">78%</output></label>
+        <input id="setting-card-opacity" name="cardOpacity" type="range" min="0.35" max="1" step="0.01">
+        <label for="setting-font-family">Tipografia</label>
+        <select id="setting-font-family" name="fontFamily">
+          <option value="arial">Arial</option>
+          <option value="yanone">Yanone Kaffeesatz</option>
+          <option value="custom">Fonte personalizada</option>
+        </select>
+        <label for="setting-custom-font-family">Nome da fonte personalizada</label>
+        <input id="setting-custom-font-family" name="customFontFamily" type="text" maxlength="80" placeholder="Ex.: Space Grotesk">
+        <label for="setting-custom-font-url">URL CSS do Google Fonts (opcional)</label>
+        <input id="setting-custom-font-url" name="customFontUrl" type="url" placeholder="https://fonts.googleapis.com/css2?family=...">
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Textos e tipografia dos cards</legend>
+        <label for="setting-profile-name">Nome no card principal</label>
+        <input id="setting-profile-name" name="profileNameOverride" type="text" maxlength="80" placeholder="Usar nome do Discord">
+        <label for="setting-profile-username">Usuário no card principal</label>
+        <input id="setting-profile-username" name="profileUsernameOverride" type="text" maxlength="80" placeholder="Usar usuário do Discord">
+        <label for="setting-presence-name">Nome no card do Discord</label>
+        <input id="setting-presence-name" name="presenceNameOverride" type="text" maxlength="80" placeholder="Usar nome do Discord">
+        <label for="setting-presence-note">Texto de atividade padrão</label>
+        <input id="setting-presence-note" name="presenceNoteOverride" type="text" maxlength="160" placeholder="Usar texto automático">
+        <label for="setting-profile-name-size">Tamanho do nome principal <output data-output="profileNameSize">16 px</output></label>
+        <input id="setting-profile-name-size" name="profileNameSize" type="range" min="10" max="48" step="1">
+        <label for="setting-profile-username-size">Tamanho do usuário principal <output data-output="profileUsernameSize">14 px</output></label>
+        <input id="setting-profile-username-size" name="profileUsernameSize" type="range" min="8" max="36" step="1">
+        <label for="setting-presence-name-size">Tamanho do nome Discord <output data-output="presenceNameSize">14 px</output></label>
+        <input id="setting-presence-name-size" name="presenceNameSize" type="range" min="8" max="36" step="1">
+        <label for="setting-presence-body-size">Tamanho da atividade/música <output data-output="presenceBodySize">12 px</output></label>
+        <input id="setting-presence-body-size" name="presenceBodySize" type="range" min="8" max="28" step="1">
+        <label for="setting-profile-name-x">Deslocamento horizontal do nome <output data-output="profileNameX">0 px</output></label>
+        <input id="setting-profile-name-x" name="profileNameX" type="range" min="-60" max="60" step="1">
+        <label for="setting-profile-name-y">Deslocamento vertical do nome <output data-output="profileNameY">0 px</output></label>
+        <input id="setting-profile-name-y" name="profileNameY" type="range" min="-60" max="60" step="1">
+        <label for="setting-profile-username-x">Deslocamento horizontal do usuário <output data-output="profileUsernameX">0 px</output></label>
+        <input id="setting-profile-username-x" name="profileUsernameX" type="range" min="-60" max="60" step="1">
+        <label for="setting-profile-username-y">Deslocamento vertical do usuário <output data-output="profileUsernameY">0 px</output></label>
+        <input id="setting-profile-username-y" name="profileUsernameY" type="range" min="-60" max="60" step="1">
+        <label for="setting-presence-text-x">Deslocamento horizontal do texto Discord <output data-output="presenceTextX">0 px</output></label>
+        <input id="setting-presence-text-x" name="presenceTextX" type="range" min="-80" max="80" step="1">
+        <label for="setting-presence-text-y">Deslocamento vertical do texto Discord <output data-output="presenceTextY">0 px</output></label>
+        <input id="setting-presence-text-y" name="presenceTextY" type="range" min="-60" max="60" step="1">
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Visual do card</legend>
+        <label for="setting-card-fill-style">Preenchimento do card</label>
+        <select id="setting-card-fill-style" name="cardFillStyle">
+          <option value="solid">Cor sólida</option>
+          <option value="gradient">Gradiente</option>
+        </select>
+        <div class="site-editor__color-grid site-editor__gradient-colors">
+          <label for="setting-card-gradient-start">Cor inicial <input id="setting-card-gradient-start" name="cardGradientStart" type="color"></label>
+          <label for="setting-card-gradient-end">Cor final <input id="setting-card-gradient-end" name="cardGradientEnd" type="color"></label>
+        </div>
+        <label for="setting-card-gradient-direction">Direção do gradiente</label>
+        <select id="setting-card-gradient-direction" name="cardGradientDirection">
+          <option value="to right">Esquerda para direita</option>
+          <option value="to bottom right">Diagonal para baixo à direita</option>
+          <option value="to bottom">De cima para baixo</option>
+          <option value="to bottom left">Diagonal para baixo à esquerda</option>
+          <option value="to left">Direita para esquerda</option>
+          <option value="to top left">Diagonal para cima à esquerda</option>
+          <option value="to top">De baixo para cima</option>
+          <option value="to top right">Diagonal para cima à direita</option>
+        </select>
+        <label for="upload-card-media">Enviar imagem ou GIF para o card</label>
+        <input id="upload-card-media" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-card-gif-url">Ou usar link de imagem/GIF</label>
+        <input id="setting-card-gif-url" name="cardGifUrl" type="url" autocomplete="off" placeholder="https://...">
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Cartão de integração do Discord</legend>
+        <label for="setting-presence-position-mode">Posicionamento</label>
+        <select id="setting-presence-position-mode" name="presencePositionMode">
+          <option value="inline">Dentro do perfil</option>
+          <option value="floating">Livre pela tela</option>
+        </select>
+        <label for="setting-presence-x">Posição horizontal <output data-output="presenceX">50%</output></label>
+        <input id="setting-presence-x" name="presenceX" type="range" min="0" max="100" step="1">
+        <label for="setting-presence-y">Posição vertical <output data-output="presenceY">50%</output></label>
+        <input id="setting-presence-y" name="presenceY" type="range" min="0" max="100" step="1">
+        <label for="setting-presence-width">Largura <output data-output="presenceWidth">360 px</output></label>
+        <input id="setting-presence-width" name="presenceWidth" type="range" min="240" max="520" step="4">
+        <label for="setting-presence-height">Altura <output data-output="presenceHeight">112 px</output></label>
+        <input id="setting-presence-height" name="presenceHeight" type="range" min="90" max="320" step="2">
+        <p class="site-editor__hint">Arraste o cartão Discord na prévia para movê-lo; o arraste o solta do perfil e o posiciona na tela.</p>
+        <div class="site-editor__color-grid">
+          <label for="setting-presence-background">Fundo <input id="setting-presence-background" name="presenceBackground" type="color"></label>
+          <label for="setting-presence-text-color">Texto <input id="setting-presence-text-color" name="presenceTextColor" type="color"></label>
+          <label for="setting-presence-border-color">Borda <input id="setting-presence-border-color" name="presenceBorderColor" type="color"></label>
+        </div>
+        <label for="setting-presence-opacity">Opacidade <output data-output="presenceOpacity">82%</output></label>
+        <input id="setting-presence-opacity" name="presenceOpacity" type="range" min="0.2" max="1" step="0.01">
+        <label for="setting-presence-radius">Arredondamento <output data-output="presenceRadius">24 px</output></label>
+        <input id="setting-presence-radius" name="presenceRadius" type="range" min="0" max="48" step="1">
+        <label for="setting-presence-border-width">Espessura da borda <output data-output="presenceBorderWidth">1 px</output></label>
+        <input id="setting-presence-border-width" name="presenceBorderWidth" type="range" min="0" max="8" step="1">
+        <label for="setting-presence-padding">Espaçamento interno <output data-output="presencePadding">12 px</output></label>
+        <input id="setting-presence-padding" name="presencePadding" type="range" min="6" max="32" step="1">
+        <label for="setting-presence-avatar-size">Tamanho do avatar <output data-output="presenceAvatarSize">50 px</output></label>
+        <input id="setting-presence-avatar-size" name="presenceAvatarSize" type="range" min="32" max="96" step="2">
+        <label for="setting-presence-blur">Desfoque do fundo <output data-output="presenceBlur">18 px</output></label>
+        <input id="setting-presence-blur" name="presenceBlur" type="range" min="0" max="32" step="1">
+        <label for="upload-presence-background">Enviar imagem de fundo</label>
+        <input id="upload-presence-background" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+        <label for="setting-presence-background-image">Ou usar link de imagem</label>
+        <input id="setting-presence-background-image" name="presenceBackgroundImage" type="url" placeholder="https://...">
+        <p class="site-editor__hint">Na prévia, arraste o cartão Discord para movê-lo e use o canto inferior direito para mudar largura e altura.</p>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Música</legend>
+        <label for="upload-music">Enviar música do computador</label>
+        <input id="upload-music" type="file" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/aac,.mp3,.wav,.ogg,.m4a">
+        <label for="setting-music-url">Ou usar link de áudio</label>
+        <input id="setting-music-url" name="musicUrl" type="text" inputmode="url" autocomplete="off" placeholder="URL https:// ou caminho local; deixe vazio para desativar">
+        <label for="setting-music-volume">Volume <output data-output="musicVolume">8%</output></label>
+        <input id="setting-music-volume" name="musicVolume" type="range" min="0" max="0.3" step="0.01">
+        <button class="site-editor__secondary" id="test-music" type="button">Testar música</button>
+      </fieldset>
+
+      <div class="site-editor__actions">
+        <button class="site-editor__secondary" id="reset-settings" type="button">Restaurar padrão</button>
+        <button class="site-editor__primary" type="submit">Salvar alterações</button>
+      </div>
+    </form>
+    <button class="site-editor__text-button" id="admin-sign-out" type="button">Sair da conta</button>
+  </section>
+</dialog>
+</body>
+</html>
