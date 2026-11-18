@@ -984,6 +984,36 @@ body {
 
 .nickr {
   background-image: linear-gradient(125deg, var(--editor-accent), #fff 35%, var(--editor-accent) 72%);
+  font-size: var(--profile-name-size, inherit);
+  transform: translate(var(--profile-name-x, 0px), var(--profile-name-y, 0px));
+}
+
+.discord-profile > .profile > .subnick {
+  font-size: var(--profile-username-size, inherit);
+  transform: translate(var(--profile-username-x, 0px), var(--profile-username-y, 0px));
+}
+
+.discord-profile > .profile > .nickr {
+  font-family: var(--editor-font);
+}
+
+.discord-profile > .profile > .subnick,
+.discord-presence {
+  font-family: var(--editor-font);
+}
+
+.discord-presence-copy {
+  transform: translate(var(--presence-text-x, 0px), var(--presence-text-y, 0px));
+}
+
+.discord-presence-name {
+  font-size: var(--presence-name-size, 14px);
+}
+
+.discord-track-title,
+.discord-track-artist,
+.discord-presence-note {
+  font-size: var(--presence-body-size, 12px);
 }
 
 .social-button:hover {
