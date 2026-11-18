@@ -1,0 +1,9 @@
+{
+  "name": "discord-presence-daemon",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@upstash/redis": "1.41.0",
+    "discord.js": "14.28.1"
+  }
+}

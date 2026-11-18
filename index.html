@@ -18,7 +18,7 @@
 </body>
 
 
-  <audio autoplay loop>
+  <audio id="audio" loop preload="auto">
     <source src="lil-peep-wanna-be-lyrics_1T09YWa6.mp3" type="audio/mp3">
     Seu navegador não suporta o elemento de áudio.
   </audio>
@@ -31,16 +31,30 @@
      <div class="discord-profile">
          <div class="profile">
               <div class="pfp">
-                  <img src="opium.jpg" alt="voce nao definiu uma imagem"> 
+                  <img src="opium.jpg" alt="Foto de perfil do Discord" data-discord-avatar>
               </div>
               
-                   <div class="nickr"> 
+                   <div class="nickr" data-discord-display-name>
                     Vinocas
                    </div>
 
-                   <div class="nick subnick">   
+                   <div class="nick subnick" data-discord-username>
                     Dodecaedrus
                    </div>
+
+                <section class="discord-presence" data-discord-presence aria-label="Presença no Discord">
+                  <p class="discord-presence-title">STATUS NO DISCORD</p>
+                  <div class="discord-presence-status">
+                    <span class="discord-presence-dot" data-discord-status-dot data-status="unknown" aria-hidden="true"></span>
+                    <span data-discord-status role="status" aria-live="polite">Verificando Discord…</span>
+                  </div>
+                  <div class="discord-track" data-discord-track hidden>
+                    <span class="discord-track-label">OUVINDO NO SPOTIFY</span>
+                    <p class="discord-track-title" data-discord-track-title></p>
+                    <p class="discord-track-artist" data-discord-track-artist></p>
+                  </div>
+                  <p class="discord-presence-note" data-discord-note>Carregando atividade…</p>
+                </section>
 
                <div class="badges">
 
@@ -70,74 +84,21 @@
                 
        </div> 
      </div>
-     <div class="discord-profile">
-      <div class="profile">
-           <div class="pfp">
-               <img src="Imagem_do_WhatsApp_de_2025-02-08_as_12.08.38_bf55a197.jpg" alt="voce nao definiu uma imagem"> 
-           </div>
-           
-                <div class="nickr"> 
-                 Felipe 
-                </div>
 
-                <div class="nick subnick">   
-                  Hxnnxz 
-                </div>
-
-            <div class="badges">
-
-                 <div class="badge" style="background-image: url('https://i.imgur.com/7lBGpgL.png');" data-tooltip="FuckYou"></div>
-             </div>
-
-
-
-             <div class="social-buttons"> 
-
-                      <a href="https://www.instagram.com/_hxnnxz/" target="_blank" class="social-button">
-                           <img src="imagem_2024-03-06_162937509-removebg-preview.png" width="115%" >
-                      </a>
-                      
-                      <a href="https://open.spotify.com/user/anmn1717yp1oaysnpzah9vmpz?si=3f98cfa88db64cf5" target="_blank" class="social-button">
-                           <img src="image.png" width="70%" >
-                       </a>
-                       <a href="https://x.com/irrepriimivel" target="_blank" class="social-button">
-                           <img src="icons8-x-logo-50.png" width="70%" >
-                       </a>   
-             </div>
-             <div class="server-button">
-              <div class="server-button-text">пустой</div>
-</div>  
-</body>
-<body oncontextmenu="return false" onkeydown="return false;" onmousedown="return false;"> 
- 
-</body>   
- <html>
-  <head>
-    <title>Play audio</title>
-  </head>
-  <body onload="addEvent()">
-
-    <script>
-      function addEvent(){
-         document.body.addEventListener("click", play)
-       }
-      function play() {
-        var audio = document.getElementById("audio");
-        audio.play();
-      }
-</script>
-      
-      
-<audio loop preload="auto" id="audio">
-  <source src="lil-peep-wanna-be-lyrics_1T09YWa6.mp3" type="audio/mpeg">
-</audio>
 <script>
-  var audio = document.getElementById("audio");
+  const audio = document.getElementById("audio");
   audio.volume = 0.08;
+
+  function play() {
+    if (!audio) return;
+    const playback = audio.play();
+    if (playback) playback.catch(() => {});
+  }
 </script>
+
 <input type="checkbox" autocomplete="off" id="overlay-toggle">
 <div class="overlay fullscreen">
-    <label for="overlay-toggle" onclick="audioPlay(); ">
+    <label for="overlay-toggle" onclick="play()">
         <span class="overlayno-hover hover" style="font-family: monospace; font-size: 0.6em;"></span>
         <span class="overlayhover hover" style="font-family: monospace; font-size: 0.6em;">click here</span>         
         
@@ -179,5 +140,5 @@
       }
   }
   titlebar(0);
-  
   </script>
+<script src="js/discord-presence.js" defer></script>
