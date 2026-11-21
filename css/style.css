@@ -1796,3 +1796,65 @@ body {
     margin-left: 0;
   }
 }
+
+body.has-entry-overlay {
+  overflow: hidden;
+}
+
+.entry-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
+  padding: 24px;
+  border: 0;
+  background: rgba(11, 8, 13, 0.48);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 420ms ease;
+}
+
+.entry-overlay__label {
+  padding: 14px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 999px;
+  background: rgba(24, 18, 23, 0.38);
+  font: 500 16px/1.2 Arial, sans-serif;
+  letter-spacing: 0.14em;
+  animation: entry-prompt-fade 1.8s ease-in-out infinite;
+}
+
+.entry-overlay:focus-visible .entry-overlay__label {
+  outline: 2px solid #fff;
+  outline-offset: 5px;
+}
+
+.entry-overlay.is-closing {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes entry-prompt-fade {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry-overlay,
+  .entry-overlay__label {
+    animation: none;
+    transition-duration: 1ms;
+  }
+}
