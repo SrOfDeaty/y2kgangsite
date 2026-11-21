@@ -15,9 +15,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
+<body class="has-entry-overlay">
   <div class="site-background-shade" aria-hidden="true"></div>
   <div class="site-effects-layer" aria-hidden="true"></div>
+
+  <button class="entry-overlay" id="entry-overlay" type="button" aria-label="Clique para ver o site">
+    <span class="entry-overlay__wordmark" aria-hidden="true">Y2KGANG</span>
+    <span class="entry-overlay__portal">
+      <span class="entry-overlay__label">click here</span>
+      <span class="entry-overlay__hint" aria-hidden="true">TOQUE OU CLIQUE PARA ENTRAR</span>
+    </span>
+  </button>
 
   <main class="divcont">
 
@@ -92,6 +100,13 @@
 
 <audio id="audio" loop preload="auto" playsinline></audio>
 <script>
+  const entryOverlay = document.getElementById("entry-overlay");
+  entryOverlay?.addEventListener("click", () => {
+    entryOverlay.classList.add("is-closing");
+    document.body.classList.remove("has-entry-overlay");
+    window.setTimeout(() => entryOverlay.remove(), 450);
+  }, { once: true });
+
   var rev = "fwd";
   function titlebar(val){
       var msg  = "y2kgang";
