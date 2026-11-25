@@ -875,6 +875,7 @@ body {
   z-index: 1;
 }
 
+
 .site-card-gif {
   position: absolute;
   z-index: 0;
@@ -1904,7 +1905,68 @@ body.has-entry-overlay {
   font: 400 20px/1.2 'Yanone Kaffeesatz', Arial, sans-serif;
   letter-spacing: 0.2em;
   text-shadow: 0 0 18px rgba(255, 255, 255, 0.58);
-  animation: entry-prompt-fade 2.2s ease-in-out infinite;
+  animation: entry-prompt-fade var(--entry-overlay-fade-duration, 2.2s) ease-in-out infinite;
+}
+
+:root[data-entry-overlay-style="neon"] .entry-overlay__label {
+  border-color: rgba(244, 114, 182, 0.78);
+  background: rgba(15, 8, 19, 0.55);
+  box-shadow: 0 0 12px rgba(244, 114, 182, 0.5), inset 0 0 20px rgba(244, 114, 182, 0.16);
+  text-shadow: 0 0 8px #f472b6, 0 0 24px #f472b6;
+}
+
+:root[data-entry-overlay-style="outline"] .entry-overlay__label {
+  border-color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  background: rgba(10, 10, 12, 0.34);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-entry-overlay-style="underline"] .entry-overlay__label {
+  padding: 12px 4px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-entry-overlay-style="minimal"] .entry-overlay__label {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  letter-spacing: 0.28em;
+}
+
+:root[data-entry-overlay-style="tag"] .entry-overlay__label {
+  border-radius: 5px;
+  background: #f4f1ee;
+  color: #171318;
+  box-shadow: 5px 5px 0 rgba(244, 114, 182, 0.74);
+  text-shadow: none;
+}
+
+:root[data-entry-overlay-style="tag"] .entry-overlay__label::before,
+:root[data-entry-overlay-style="minimal"] .entry-overlay__label::before,
+:root[data-entry-overlay-style="underline"] .entry-overlay__label::before {
+  opacity: 0.25;
+}
+
+:root[data-entry-overlay-fade="fade"] .entry-overlay__label {
+  animation-name: entry-prompt-soft-fade;
+}
+
+:root[data-entry-overlay-fade="steady"] .entry-overlay__label {
+  animation: none;
+  opacity: 1;
 }
 
 .entry-overlay__label::before {
@@ -1977,6 +2039,12 @@ body.has-entry-overlay {
     opacity: 1;
     transform: translateY(-1px) scale(1.02);
   }
+}
+
+@keyframes entry-prompt-soft-fade {
+  0%,
+  100% { opacity: 0.32; }
+  50% { opacity: 1; }
 }
 
 @keyframes entry-label-glow {

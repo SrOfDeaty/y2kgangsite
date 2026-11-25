@@ -71,7 +71,13 @@ const DEFAULT_SETTINGS = {
   entryOverlayTitle: "Y2KGANG",
   entryOverlayMessage: "click here",
   entryOverlayHint: "TOQUE OU CLIQUE PARA ENTRAR",
+  entryOverlayStyle: "pill",
+  entryOverlayFade: "pulse",
+  entryOverlayFadeDuration: 2.2,
   entryOverlayOpacity: 0.52,
+  textGlowEnabled: false,
+  textGlowColor: "#f472b6",
+  textGlowIntensity: 0.45,
   musicPlayerEnabled: true,
   musicTitle: "Wanna Be",
   musicArtist: "Lil Peep",
@@ -316,6 +322,13 @@ function applySettings(settings) {
   root.style.setProperty("--editor-avatar-size", `${activeSettings.avatarSize}px`);
   root.style.setProperty("--editor-avatar-radius", `${activeSettings.avatarRadius}px`);
   root.style.setProperty("--entry-overlay-opacity", String(activeSettings.entryOverlayOpacity));
+  root.style.setProperty("--entry-overlay-fade-duration", `${activeSettings.entryOverlayFadeDuration}s`);
+  root.style.setProperty("--text-glow-color", activeSettings.textGlowColor);
+  root.style.setProperty("--text-glow-intensity", String(activeSettings.textGlowIntensity));
+  root.style.setProperty("--text-glow-strength", `${Math.round(activeSettings.textGlowIntensity * 100)}%`);
+  root.dataset.textGlow = String(activeSettings.textGlowEnabled);
+  root.dataset.entryOverlayStyle = activeSettings.entryOverlayStyle;
+  root.dataset.entryOverlayFade = activeSettings.entryOverlayFade;
   root.style.setProperty(
     "--editor-font",
     activeSettings.fontFamily === "custom" && activeSettings.customFontFamily
@@ -520,7 +533,13 @@ function readSettings() {
     entryOverlayTitle: String(values.get("entryOverlayTitle") || "").trim(),
     entryOverlayMessage: String(values.get("entryOverlayMessage") || "").trim(),
     entryOverlayHint: String(values.get("entryOverlayHint") || "").trim(),
+    entryOverlayStyle: values.get("entryOverlayStyle"),
+    entryOverlayFade: values.get("entryOverlayFade"),
+    entryOverlayFadeDuration: Number(values.get("entryOverlayFadeDuration")),
     entryOverlayOpacity: Number(values.get("entryOverlayOpacity")),
+    textGlowEnabled: settingsForm.elements.namedItem("textGlowEnabled").checked,
+    textGlowColor: values.get("textGlowColor"),
+    textGlowIntensity: Number(values.get("textGlowIntensity")),
     musicPlayerEnabled: settingsForm.elements.namedItem("musicPlayerEnabled").checked,
     musicTitle: String(values.get("musicTitle") || "").trim(),
     musicArtist: String(values.get("musicArtist") || "").trim(),
@@ -563,6 +582,8 @@ function updateOutputs(settings) {
     avatarRadius: `${settings.avatarRadius} px`,
     cardOpacity: `${Math.round(settings.cardOpacity * 100)}%`,
     entryOverlayOpacity: `${Math.round(settings.entryOverlayOpacity * 100)}%`,
+    entryOverlayFadeDuration: `${settings.entryOverlayFadeDuration.toFixed(1).replace(".", ",")} s`,
+    textGlowIntensity: `${Math.round(settings.textGlowIntensity * 100)}%`,
     musicVolume: `${Math.round(settings.musicVolume * 100)}%`,
     profileNameSize: `${settings.profileNameSize} px`,
     profileUsernameSize: `${settings.profileUsernameSize} px`,

@@ -25,6 +25,7 @@ if (waveform) {
   for (let index = 0; index < 44; index += 1) {
     const bar = document.createElement("span");
     bar.style.setProperty("--bar-height", `${2 + Math.random() * 10}px`);
+    bar.style.setProperty("--bar-delay", `${Math.random() * 640}ms`);
     bars.append(bar);
   }
   waveform.append(bars);

@@ -58,7 +58,13 @@ const DEFAULT_SETTINGS = {
   entryOverlayTitle: "Y2KGANG",
   entryOverlayMessage: "click here",
   entryOverlayHint: "TOQUE OU CLIQUE PARA ENTRAR",
+  entryOverlayStyle: "pill",
+  entryOverlayFade: "pulse",
+  entryOverlayFadeDuration: 2.2,
   entryOverlayOpacity: 0.52,
+  textGlowEnabled: false,
+  textGlowColor: "#f472b6",
+  textGlowIntensity: 0.45,
   musicPlayerEnabled: true,
   musicTitle: "Wanna Be",
   musicArtist: "Lil Peep",
@@ -250,7 +256,17 @@ function validateSettings(value) {
     entryOverlayTitle: validateText(value.entryOverlayTitle, DEFAULT_SETTINGS.entryOverlayTitle, 50, "overlay title"),
     entryOverlayMessage: validateText(value.entryOverlayMessage, DEFAULT_SETTINGS.entryOverlayMessage, 80, "overlay message"),
     entryOverlayHint: validateText(value.entryOverlayHint, DEFAULT_SETTINGS.entryOverlayHint, 120, "overlay hint"),
+    entryOverlayStyle: ["pill", "neon", "outline", "underline", "minimal", "tag"].includes(value.entryOverlayStyle)
+      ? value.entryOverlayStyle
+      : DEFAULT_SETTINGS.entryOverlayStyle,
+    entryOverlayFade: ["pulse", "fade", "steady"].includes(value.entryOverlayFade)
+      ? value.entryOverlayFade
+      : DEFAULT_SETTINGS.entryOverlayFade,
+    entryOverlayFadeDuration: clampNumber(value.entryOverlayFadeDuration ?? DEFAULT_SETTINGS.entryOverlayFadeDuration, 0.8, 6, "overlay fade duration"),
     entryOverlayOpacity: clampNumber(value.entryOverlayOpacity ?? DEFAULT_SETTINGS.entryOverlayOpacity, 0.15, 1, "overlay opacity"),
+    textGlowEnabled: validateBoolean(value.textGlowEnabled, DEFAULT_SETTINGS.textGlowEnabled, "text glow"),
+    textGlowColor: value.textGlowColor ?? DEFAULT_SETTINGS.textGlowColor,
+    textGlowIntensity: clampNumber(value.textGlowIntensity ?? DEFAULT_SETTINGS.textGlowIntensity, 0, 1, "text glow intensity"),
     musicPlayerEnabled: validateBoolean(value.musicPlayerEnabled, DEFAULT_SETTINGS.musicPlayerEnabled, "music player"),
     musicTitle: validateText(value.musicTitle, DEFAULT_SETTINGS.musicTitle, 100, "music title"),
     musicArtist: validateText(value.musicArtist, DEFAULT_SETTINGS.musicArtist, 100, "music artist"),
@@ -296,7 +312,8 @@ function validateSettings(value) {
     !isHexColor(settings.cardGradientEnd) ||
     !isHexColor(settings.presenceBackground) ||
     !isHexColor(settings.presenceTextColor) ||
-    !isHexColor(settings.presenceBorderColor)
+    !isHexColor(settings.presenceBorderColor) ||
+    !isHexColor(settings.textGlowColor)
   ) {
     throw new TypeError("Invalid color");
   }
