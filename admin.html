@@ -14,6 +14,7 @@
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/profile-showcase.css">
 </head>
 <body class="admin-page" data-admin-page="true">
   <div class="site-background-shade" aria-hidden="true"></div>
@@ -195,10 +196,16 @@
         <input id="setting-background-image" name="backgroundImage" type="url" placeholder="https://...">
         <label for="setting-background-shade">Escurecimento <output data-output="backgroundShade">16%</output></label>
         <input id="setting-background-shade" name="backgroundShade" type="range" min="0" max="0.65" step="0.01">
+        <label for="setting-background-blur">Desfoque <output data-output="backgroundBlur">1.2 px</output></label>
+        <input id="setting-background-blur" name="backgroundBlur" type="range" min="0" max="8" step="0.1">
       </fieldset>
 
       <fieldset class="site-editor__group">
         <legend>Efeitos do site</legend>
+        <label class="site-editor__toggle" for="setting-background-grayscale"><span><strong>Fundo em preto e branco</strong><small>Aplicar o tratamento monocromático da referência.</small></span><input id="setting-background-grayscale" name="backgroundGrayscaleEnabled" type="checkbox"></label>
+        <label class="site-editor__toggle" for="setting-background-texture"><span><strong>Textura pontilhada</strong><small>Ativar a camada de halftone e grão.</small></span><input id="setting-background-texture" name="backgroundTextureEnabled" type="checkbox"></label>
+        <label class="site-editor__toggle" for="setting-background-motion"><span><strong>Movimento do fundo</strong><small>Aplicar uma aproximação lenta na imagem.</small></span><input id="setting-background-motion" name="backgroundMotionEnabled" type="checkbox"></label>
+        <label class="site-editor__toggle" for="setting-floating-glyphs"><span><strong>Caracteres flutuantes</strong><small>Exibir fragmentos japoneses animados.</small></span><input id="setting-floating-glyphs" name="floatingGlyphsEnabled" type="checkbox"></label>
         <label for="setting-site-effect">Efeito global</label>
         <select id="setting-site-effect" name="siteEffect">
           <option value="none">Sem efeito</option>
@@ -220,6 +227,28 @@
         <label for="setting-cursor-image">Ou usar link da imagem</label>
         <input id="setting-cursor-image" name="cursorImageUrl" type="url" placeholder="https://...">
         <p class="site-editor__hint">Use um PNG pequeno e transparente (ideal: 32 × 32 px). Ele será aplicado como cursor personalizado.</p>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Overlay de entrada</legend>
+        <label class="site-editor__toggle" for="setting-entry-overlay-enabled"><span><strong>Exibir overlay</strong><small>Mostrar a tela de entrada antes do perfil.</small></span><input id="setting-entry-overlay-enabled" name="entryOverlayEnabled" type="checkbox"></label>
+        <label for="setting-entry-overlay-title">Marca ao fundo</label>
+        <input id="setting-entry-overlay-title" name="entryOverlayTitle" type="text" maxlength="50" placeholder="Y2KGANG">
+        <label for="setting-entry-overlay-message">Mensagem principal</label>
+        <input id="setting-entry-overlay-message" name="entryOverlayMessage" type="text" maxlength="80" placeholder="click here">
+        <label for="setting-entry-overlay-hint">Texto auxiliar</label>
+        <input id="setting-entry-overlay-hint" name="entryOverlayHint" type="text" maxlength="120" placeholder="TOQUE OU CLIQUE PARA ENTRAR">
+        <label for="setting-entry-overlay-opacity">Opacidade do overlay <output data-output="entryOverlayOpacity">52%</output></label>
+        <input id="setting-entry-overlay-opacity" name="entryOverlayOpacity" type="range" min="0.15" max="1" step="0.01">
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Elementos do perfil</legend>
+        <label class="site-editor__toggle" for="setting-reference-style-enabled"><span><strong>Composição monocromática</strong><small>Usar a colagem e os efeitos da referência; desligue para restaurar seu fundo configurado.</small></span><input id="setting-reference-style-enabled" name="referenceStyleEnabled" type="checkbox"></label>
+        <label class="site-editor__toggle" for="setting-profile-card-enabled"><span><strong>Fundo do card</strong><small>Mostrar uma superfície translúcida atrás do perfil.</small></span><input id="setting-profile-card-enabled" name="profileCardEnabled" type="checkbox"></label>
+        <label class="site-editor__toggle" for="setting-profile-badges-enabled"><span><strong>Emblemas</strong><small>Mostrar os emblemas configurados no perfil.</small></span><input id="setting-profile-badges-enabled" name="profileBadgesEnabled" type="checkbox"></label>
+        <label class="site-editor__toggle" for="setting-social-links-enabled"><span><strong>Links sociais</strong><small>Exibir os ícones de redes sociais.</small></span><input id="setting-social-links-enabled" name="socialLinksEnabled" type="checkbox"></label>
+        <label class="site-editor__toggle" for="setting-discord-presence-enabled"><span><strong>Presença do Discord</strong><small>Exibir o status e a atividade do perfil.</small></span><input id="setting-discord-presence-enabled" name="discordPresenceEnabled" type="checkbox"></label>
       </fieldset>
 
       <fieldset class="site-editor__group">
@@ -264,8 +293,10 @@
         <p class="site-editor__hint">Na prévia, arraste o card para posicionar e use o canto inferior direito para ajustar largura e altura.</p>
         <label for="setting-card-radius">Formato <output data-output="cardRadius">50 px</output></label>
         <input id="setting-card-radius" name="cardRadius" type="range" min="0" max="64" step="1">
-        <label for="setting-avatar-size">Tamanho da foto <output data-output="avatarSize">146 px</output></label>
+        <label for="setting-avatar-size">Tamanho da foto <output data-output="avatarSize">120 px</output></label>
         <input id="setting-avatar-size" name="avatarSize" type="range" min="96" max="180" step="2">
+        <label for="setting-avatar-radius">Arredondamento da foto <output data-output="avatarRadius">18 px</output></label>
+        <input id="setting-avatar-radius" name="avatarRadius" type="range" min="0" max="50" step="1">
         <label for="setting-card-opacity">Transparência do card <output data-output="cardOpacity">78%</output></label>
         <input id="setting-card-opacity" name="cardOpacity" type="range" min="0.35" max="1" step="0.01">
         <label for="setting-font-family">Tipografia</label>
@@ -290,7 +321,7 @@
         <input id="setting-presence-name" name="presenceNameOverride" type="text" maxlength="80" placeholder="Usar nome do Discord">
         <label for="setting-presence-note">Texto de atividade padrão</label>
         <input id="setting-presence-note" name="presenceNoteOverride" type="text" maxlength="160" placeholder="Usar texto automático">
-        <label for="setting-profile-name-size">Tamanho do nome principal <output data-output="profileNameSize">16 px</output></label>
+        <label for="setting-profile-name-size">Tamanho do nome principal <output data-output="profileNameSize">32 px</output></label>
         <input id="setting-profile-name-size" name="profileNameSize" type="range" min="10" max="48" step="1">
         <label for="setting-profile-username-size">Tamanho do usuário principal <output data-output="profileUsernameSize">14 px</output></label>
         <input id="setting-profile-username-size" name="profileUsernameSize" type="range" min="8" max="36" step="1">
@@ -372,7 +403,7 @@
         <input id="setting-presence-border-width" name="presenceBorderWidth" type="range" min="0" max="8" step="1">
         <label for="setting-presence-padding">Espaçamento interno <output data-output="presencePadding">12 px</output></label>
         <input id="setting-presence-padding" name="presencePadding" type="range" min="6" max="32" step="1">
-        <label for="setting-presence-avatar-size">Tamanho do avatar <output data-output="presenceAvatarSize">50 px</output></label>
+        <label for="setting-presence-avatar-size">Tamanho do avatar <output data-output="presenceAvatarSize">32 px</output></label>
         <input id="setting-presence-avatar-size" name="presenceAvatarSize" type="range" min="32" max="96" step="2">
         <label for="setting-presence-blur">Desfoque do fundo <output data-output="presenceBlur">18 px</output></label>
         <input id="setting-presence-blur" name="presenceBlur" type="range" min="0" max="32" step="1">
@@ -385,13 +416,30 @@
 
       <fieldset class="site-editor__group">
         <legend>Música</legend>
+        <label class="site-editor__toggle" for="setting-music-player-enabled"><span><strong>Exibir player</strong><small>Mostrar os controles flutuantes de áudio.</small></span><input id="setting-music-player-enabled" name="musicPlayerEnabled" type="checkbox"></label>
+        <label for="setting-music-title">Título da faixa</label>
+        <input id="setting-music-title" name="musicTitle" type="text" maxlength="100" placeholder="Wanna Be">
+        <label for="setting-music-artist">Artista</label>
+        <input id="setting-music-artist" name="musicArtist" type="text" maxlength="100" placeholder="Lil Peep">
+        <label for="upload-music-cover">Enviar capa do player</label>
+        <input id="upload-music-cover" type="file" accept="image/*">
+        <label for="setting-music-cover-url">Ou usar link da capa</label>
+        <input id="setting-music-cover-url" name="musicCoverUrl" type="text" inputmode="url" autocomplete="off" placeholder="URL https:// ou caminho local">
         <label for="upload-music">Enviar música do computador</label>
         <input id="upload-music" type="file" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/aac,.mp3,.wav,.ogg,.m4a">
         <label for="setting-music-url">Ou usar link de áudio</label>
         <input id="setting-music-url" name="musicUrl" type="text" inputmode="url" autocomplete="off" placeholder="URL https:// ou caminho local; deixe vazio para desativar">
-        <label for="setting-music-volume">Volume <output data-output="musicVolume">8%</output></label>
+        <label for="setting-music-volume">Volume padrão <output data-output="musicVolume">8%</output></label>
         <input id="setting-music-volume" name="musicVolume" type="range" min="0" max="0.3" step="0.01">
         <button class="site-editor__secondary" id="test-music" type="button">Testar música</button>
+      </fieldset>
+
+      <fieldset class="site-editor__group">
+        <legend>Contador de visitas</legend>
+        <label class="site-editor__toggle" for="setting-visitor-counter-enabled"><span><strong>Exibir contador</strong><small>Contar uma visita por IP único.</small></span><input id="setting-visitor-counter-enabled" name="visitorCounterEnabled" type="checkbox"></label>
+        <label for="setting-visitor-counter-label">Rótulo</label>
+        <input id="setting-visitor-counter-label" name="visitorCounterLabel" type="text" maxlength="32" placeholder="VISITAS">
+        <p class="site-editor__hint">Os endereços IP não são armazenados; o contador usa uma identificação criptográfica para evitar duplicatas.</p>
       </fieldset>
 
       <div class="site-editor__actions">

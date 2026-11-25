@@ -25,14 +25,25 @@ const DEFAULT_SETTINGS = {
   cardGradientEnd: "#3a1a26",
   cardGradientDirection: "to bottom right",
   cardGifUrl: "",
-  backgroundImage: "https://i.imgur.com/vMQx7AE.jpeg",
+  backgroundImage: "/mwa-monochrome-collage.png",
   backgroundShade: 0.16,
+  backgroundBlur: 1.2,
+  referenceStyleEnabled: true,
+  backgroundTextureEnabled: true,
+  backgroundGrayscaleEnabled: true,
+  backgroundMotionEnabled: true,
+  floatingGlyphsEnabled: true,
+  profileCardEnabled: false,
+  profileBadgesEnabled: false,
+  socialLinksEnabled: true,
+  discordPresenceEnabled: true,
   cardWidth: 320,
   cardHeight: 620,
   cardPositionX: 50,
   cardPositionY: 50,
   cardRadius: 50,
-  avatarSize: 146,
+  avatarSize: 120,
+  avatarRadius: 18,
   socialIcons: [
     { href: "https://www.instagram.com/vinocasof/", image: "imagem_2024-03-06_162937509-removebg-preview.png", x: 0, y: 0 },
     { href: "https://open.spotify.com/user/31625fveyimletebkwekjkgmzz3y/", image: "image.png", x: 0, y: 0 },
@@ -45,7 +56,7 @@ const DEFAULT_SETTINGS = {
   profileUsernameOverride: "",
   presenceNameOverride: "",
   presenceNoteOverride: "",
-  profileNameSize: 16,
+  profileNameSize: 32,
   profileUsernameSize: 14,
   presenceNameSize: 14,
   presenceBodySize: 12,
@@ -56,6 +67,24 @@ const DEFAULT_SETTINGS = {
   presenceTextX: 0,
   presenceTextY: 0,
   siteEffect: "none",
+  entryOverlayEnabled: true,
+  entryOverlayTitle: "Y2KGANG",
+  entryOverlayMessage: "click here",
+  entryOverlayHint: "TOQUE OU CLIQUE PARA ENTRAR",
+  entryOverlayStyle: "pill",
+  entryOverlayFade: "pulse",
+  entryOverlayFadeDuration: 2.2,
+  entryOverlayExitAnimation: "dissolve",
+  entryOverlayOpacity: 0.52,
+  textGlowEnabled: false,
+  textGlowColor: "#f472b6",
+  textGlowIntensity: 0.45,
+  musicPlayerEnabled: true,
+  musicTitle: "Wanna Be",
+  musicArtist: "Lil Peep",
+  musicCoverUrl: "/mwa-music-cover.png",
+  visitorCounterEnabled: true,
+  visitorCounterLabel: "VISITAS",
   cursorStyle: "default",
   cursorImageUrl: "",
   presencePositionMode: "inline",
@@ -70,7 +99,7 @@ const DEFAULT_SETTINGS = {
   presenceRadius: 24,
   presenceBorderWidth: 1,
   presencePadding: 12,
-  presenceAvatarSize: 50,
+  presenceAvatarSize: 32,
   presenceCoverSize: 88,
   presenceBlur: 18,
   presenceBackgroundImage: "",
@@ -283,6 +312,7 @@ function applySettings(settings) {
   root.style.setProperty("--editor-card-color", activeSettings.cardColor);
   root.style.setProperty("--editor-card-opacity", `${activeSettings.cardOpacity * 100}%`);
   root.style.setProperty("--editor-background-shade", activeSettings.backgroundShade);
+  root.style.setProperty("--editor-background-blur", `${activeSettings.backgroundBlur}px`);
   root.style.setProperty("--editor-card-width", `${activeSettings.cardWidth}px`);
   root.style.setProperty("--editor-card-height", `${activeSettings.cardHeight}px`);
   root.style.setProperty("--editor-card-x", `${activeSettings.cardPositionX}%`);
@@ -291,6 +321,16 @@ function applySettings(settings) {
   root.style.setProperty("--editor-card-margin-y", `${-activeSettings.cardHeight / 2}px`);
   root.style.setProperty("--editor-card-radius", `${activeSettings.cardRadius}px`);
   root.style.setProperty("--editor-avatar-size", `${activeSettings.avatarSize}px`);
+  root.style.setProperty("--editor-avatar-radius", `${activeSettings.avatarRadius}px`);
+  root.style.setProperty("--entry-overlay-opacity", String(activeSettings.entryOverlayOpacity));
+  root.style.setProperty("--entry-overlay-fade-duration", `${activeSettings.entryOverlayFadeDuration}s`);
+  root.style.setProperty("--text-glow-color", activeSettings.textGlowColor);
+  root.style.setProperty("--text-glow-intensity", String(activeSettings.textGlowIntensity));
+  root.style.setProperty("--text-glow-strength", `${Math.round(activeSettings.textGlowIntensity * 100)}%`);
+  root.dataset.textGlow = String(activeSettings.textGlowEnabled);
+  root.dataset.entryOverlayStyle = activeSettings.entryOverlayStyle;
+  root.dataset.entryOverlayFade = activeSettings.entryOverlayFade;
+  root.dataset.entryOverlayExit = activeSettings.entryOverlayExitAnimation;
   root.style.setProperty(
     "--editor-font",
     activeSettings.fontFamily === "custom" && activeSettings.customFontFamily
@@ -341,16 +381,41 @@ function applySettings(settings) {
     button.style.setProperty("--social-icon-x", `${icon.x}px`);
     button.style.setProperty("--social-icon-y", `${icon.y}px`);
   });
+  const backgroundImage = activeSettings.referenceStyleEnabled
+    ? DEFAULT_SETTINGS.backgroundImage
+    : activeSettings.backgroundImage;
   root.style.setProperty(
     "--editor-background-image",
-    activeSettings.backgroundImage ? `url("${safeCssUrl(activeSettings.backgroundImage)}")` : "none",
+    backgroundImage ? `url("${safeCssUrl(backgroundImage)}")` : "none",
   );
   root.style.setProperty("--editor-card-gradient-start", activeSettings.cardGradientStart);
   root.style.setProperty("--editor-card-gradient-end", activeSettings.cardGradientEnd);
   root.style.setProperty("--editor-card-gradient-direction", activeSettings.cardGradientDirection);
   root.dataset.cardFillStyle = activeSettings.cardFillStyle;
   root.dataset.siteEffect = activeSettings.siteEffect;
+  root.dataset.referenceStyle = String(activeSettings.referenceStyleEnabled);
+  root.dataset.backgroundTexture = String(activeSettings.backgroundTextureEnabled);
+  root.dataset.backgroundGrayscale = String(activeSettings.backgroundGrayscaleEnabled);
+  root.dataset.backgroundMotion = String(activeSettings.backgroundMotionEnabled);
+  root.dataset.floatingGlyphs = String(activeSettings.floatingGlyphsEnabled);
+  root.dataset.profileCard = String(activeSettings.profileCardEnabled);
+  root.dataset.profileBadges = String(activeSettings.profileBadgesEnabled);
+  root.dataset.socialLinks = String(activeSettings.socialLinksEnabled);
+  root.dataset.discordPresence = String(activeSettings.discordPresenceEnabled);
+  root.dataset.musicPlayer = String(activeSettings.musicPlayerEnabled);
+  root.dataset.visitorCounter = String(activeSettings.visitorCounterEnabled);
   root.dataset.presencePosition = activeSettings.presencePositionMode;
+
+  const entryOverlay = document.getElementById("entry-overlay");
+  if (entryOverlay && !document.body.dataset.adminPage) {
+    const dismissed = document.body.dataset.entryOverlayDismissed === "true";
+    entryOverlay.hidden = !activeSettings.entryOverlayEnabled || dismissed;
+    document.body.classList.toggle("has-entry-overlay", !entryOverlay.hidden);
+    entryOverlay.setAttribute("aria-label", activeSettings.entryOverlayMessage || "Entrar no site");
+    entryOverlay.querySelector(".entry-overlay__wordmark").textContent = activeSettings.entryOverlayTitle;
+    entryOverlay.querySelector(".entry-overlay__label").textContent = activeSettings.entryOverlayMessage;
+    entryOverlay.querySelector(".entry-overlay__hint").textContent = activeSettings.entryOverlayHint;
+  }
   root.style.setProperty("--presence-x", `${activeSettings.presenceX}%`);
   root.style.setProperty("--presence-y", `${activeSettings.presenceY}%`);
   root.style.setProperty("--presence-width", `${activeSettings.presenceWidth}px`);
@@ -385,7 +450,7 @@ function applySettings(settings) {
 
   const cardGif = document.querySelector("[data-card-gif]");
   if (cardGif) {
-    if (activeSettings.cardGifUrl) {
+    if (activeSettings.cardGifUrl && activeSettings.profileCardEnabled) {
       cardGif.src = activeSettings.cardGifUrl;
       cardGif.hidden = false;
     } else {
@@ -402,8 +467,10 @@ function applySettings(settings) {
       audio.removeAttribute("src");
     }
     audio.volume = activeSettings.musicVolume;
+    if (!activeSettings.musicPlayerEnabled) audio.pause();
   }
   renderEditorPreview(activeSettings);
+  window.dispatchEvent(new CustomEvent("site:settings-applied", { detail: activeSettings }));
 }
 
 function readSettings() {
@@ -421,12 +488,23 @@ function readSettings() {
     cardGifUrl: String(values.get("cardGifUrl") || "").trim(),
     backgroundImage: String(values.get("backgroundImage") || "").trim(),
     backgroundShade: Number(values.get("backgroundShade")),
+    backgroundBlur: Number(values.get("backgroundBlur")),
+    referenceStyleEnabled: settingsForm.elements.namedItem("referenceStyleEnabled").checked,
+    backgroundTextureEnabled: settingsForm.elements.namedItem("backgroundTextureEnabled").checked,
+    backgroundGrayscaleEnabled: settingsForm.elements.namedItem("backgroundGrayscaleEnabled").checked,
+    backgroundMotionEnabled: settingsForm.elements.namedItem("backgroundMotionEnabled").checked,
+    floatingGlyphsEnabled: settingsForm.elements.namedItem("floatingGlyphsEnabled").checked,
+    profileCardEnabled: settingsForm.elements.namedItem("profileCardEnabled").checked,
+    profileBadgesEnabled: settingsForm.elements.namedItem("profileBadgesEnabled").checked,
+    socialLinksEnabled: settingsForm.elements.namedItem("socialLinksEnabled").checked,
+    discordPresenceEnabled: settingsForm.elements.namedItem("discordPresenceEnabled").checked,
     cardWidth: Number(values.get("cardWidth")),
     cardHeight: Number(values.get("cardHeight")),
     cardPositionX: Number(values.get("cardPositionX")),
     cardPositionY: Number(values.get("cardPositionY")),
     cardRadius: Number(values.get("cardRadius")),
     avatarSize: Number(values.get("avatarSize")),
+    avatarRadius: Number(values.get("avatarRadius")),
     socialIcons: [0, 1, 2].map((index) => {
       return {
         href: String(values.get(`socialIcon${index}Href`) || "").trim(),
@@ -453,6 +531,24 @@ function readSettings() {
     presenceTextX: Number(values.get("presenceTextX")),
     presenceTextY: Number(values.get("presenceTextY")),
     siteEffect: values.get("siteEffect"),
+    entryOverlayEnabled: settingsForm.elements.namedItem("entryOverlayEnabled").checked,
+    entryOverlayTitle: String(values.get("entryOverlayTitle") || "").trim(),
+    entryOverlayMessage: String(values.get("entryOverlayMessage") || "").trim(),
+    entryOverlayHint: String(values.get("entryOverlayHint") || "").trim(),
+    entryOverlayStyle: values.get("entryOverlayStyle"),
+    entryOverlayFade: values.get("entryOverlayFade"),
+    entryOverlayFadeDuration: Number(values.get("entryOverlayFadeDuration")),
+    entryOverlayExitAnimation: values.get("entryOverlayExitAnimation"),
+    entryOverlayOpacity: Number(values.get("entryOverlayOpacity")),
+    textGlowEnabled: settingsForm.elements.namedItem("textGlowEnabled").checked,
+    textGlowColor: values.get("textGlowColor"),
+    textGlowIntensity: Number(values.get("textGlowIntensity")),
+    musicPlayerEnabled: settingsForm.elements.namedItem("musicPlayerEnabled").checked,
+    musicTitle: String(values.get("musicTitle") || "").trim(),
+    musicArtist: String(values.get("musicArtist") || "").trim(),
+    musicCoverUrl: String(values.get("musicCoverUrl") || "").trim(),
+    visitorCounterEnabled: settingsForm.elements.namedItem("visitorCounterEnabled").checked,
+    visitorCounterLabel: String(values.get("visitorCounterLabel") || "").trim(),
     cursorStyle: values.get("cursorStyle"),
     cursorImageUrl: String(values.get("cursorImageUrl") || "").trim(),
     presencePositionMode: values.get("presencePositionMode"),
@@ -479,13 +575,18 @@ function readSettings() {
 function updateOutputs(settings) {
   const values = {
     backgroundShade: `${Math.round(settings.backgroundShade * 100)}%`,
+    backgroundBlur: `${settings.backgroundBlur.toFixed(1)} px`,
     cardWidth: `${settings.cardWidth} px`,
     cardHeight: `${settings.cardHeight} px`,
     cardPositionX: `${Math.round(settings.cardPositionX)}%`,
     cardPositionY: `${Math.round(settings.cardPositionY)}%`,
     cardRadius: `${settings.cardRadius} px`,
     avatarSize: `${settings.avatarSize} px`,
+    avatarRadius: `${settings.avatarRadius} px`,
     cardOpacity: `${Math.round(settings.cardOpacity * 100)}%`,
+    entryOverlayOpacity: `${Math.round(settings.entryOverlayOpacity * 100)}%`,
+    entryOverlayFadeDuration: `${settings.entryOverlayFadeDuration.toFixed(1).replace(".", ",")} s`,
+    textGlowIntensity: `${Math.round(settings.textGlowIntensity * 100)}%`,
     musicVolume: `${Math.round(settings.musicVolume * 100)}%`,
     profileNameSize: `${settings.profileNameSize} px`,
     profileUsernameSize: `${settings.profileUsernameSize} px`,
@@ -524,7 +625,9 @@ function fillForm(settings) {
   const activeSettings = { ...DEFAULT_SETTINGS, ...settings };
   Object.entries(activeSettings).forEach(([name, value]) => {
     const field = settingsForm.elements.namedItem(name);
-    if (field) field.value = String(value);
+    if (!field) return;
+    if (field.type === "checkbox") field.checked = Boolean(value);
+    else field.value = String(value);
   });
   activeSettings.socialIcons.forEach((icon, index) => {
     ["Href", "Image", "X", "Y"].forEach((field) => {
@@ -731,9 +834,11 @@ async function signOut() {
 function createEditorTabs() {
   const groups = [
     { id: "appearance", label: "Aparência", description: "Fundo, cores e dimensões" },
+    { id: "effects", label: "Efeitos", description: "Overlay e animações" },
     { id: "text", label: "Textos", description: "Conteúdo e tipografia" },
     { id: "discord", label: "Discord", description: "Cartão de presença" },
-    { id: "music", label: "Música", description: "Áudio e volume" },
+    { id: "music", label: "Música", description: "Player e áudio" },
+    { id: "statistics", label: "Visitas", description: "Contador por IP único" },
   ];
   const form = settingsForm;
   const fieldsets = [...form.querySelectorAll(":scope > .site-editor__group")];
@@ -789,7 +894,10 @@ function createEditorTabs() {
     const legend = fieldset.querySelector("legend")?.textContent || "";
     const group = legend.includes("Textos") ? "text"
       : legend.includes("integração") ? "discord"
-      : legend === "Música" ? "music" : "appearance";
+      : legend.includes("Música") ? "music"
+      : legend.includes("Contador") ? "statistics"
+      : legend.includes("Efeitos") || legend.includes("Overlay") || legend.includes("Elementos do perfil") ? "effects"
+      : "appearance";
     panels.get(group).append(fieldset);
   });
   form.prepend(navigation, ...panels.values());
@@ -862,6 +970,7 @@ function connectFormPreview() {
     ["upload-card-media", "cardGifUrl", ["image/*"]],
     ["upload-presence-background", "presenceBackgroundImage", ["image/*"]],
     ["upload-cursor-image", "cursorImageUrl", ["image/*"]],
+    ["upload-music-cover", "musicCoverUrl", ["image/*"]],
     ["upload-music", "musicUrl", ["audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/ogg", "audio/mp4", "audio/aac"]],
   ];
   uploadFields.forEach(([inputId, settingName, acceptedTypes]) => {
@@ -899,7 +1008,7 @@ async function loadPublicSettings() {
     if (settingsLoaded) void attemptPlayback();
   };
   const attemptPlayback = async () => {
-    if (!audio || isAdminPage || !audio.src) return;
+    if (!audio || isAdminPage || !audio.src || root.dataset.musicPlayer === "false") return;
     try {
       await audio.play();
       document.removeEventListener("pointerdown", handleFirstInteraction);
