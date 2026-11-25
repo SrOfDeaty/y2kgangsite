@@ -74,6 +74,7 @@ const DEFAULT_SETTINGS = {
   entryOverlayStyle: "pill",
   entryOverlayFade: "pulse",
   entryOverlayFadeDuration: 2.2,
+  entryOverlayExitAnimation: "dissolve",
   entryOverlayOpacity: 0.52,
   textGlowEnabled: false,
   textGlowColor: "#f472b6",
@@ -329,6 +330,7 @@ function applySettings(settings) {
   root.dataset.textGlow = String(activeSettings.textGlowEnabled);
   root.dataset.entryOverlayStyle = activeSettings.entryOverlayStyle;
   root.dataset.entryOverlayFade = activeSettings.entryOverlayFade;
+  root.dataset.entryOverlayExit = activeSettings.entryOverlayExitAnimation;
   root.style.setProperty(
     "--editor-font",
     activeSettings.fontFamily === "custom" && activeSettings.customFontFamily
@@ -536,6 +538,7 @@ function readSettings() {
     entryOverlayStyle: values.get("entryOverlayStyle"),
     entryOverlayFade: values.get("entryOverlayFade"),
     entryOverlayFadeDuration: Number(values.get("entryOverlayFadeDuration")),
+    entryOverlayExitAnimation: values.get("entryOverlayExitAnimation"),
     entryOverlayOpacity: Number(values.get("entryOverlayOpacity")),
     textGlowEnabled: settingsForm.elements.namedItem("textGlowEnabled").checked,
     textGlowColor: values.get("textGlowColor"),

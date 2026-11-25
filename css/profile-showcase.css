@@ -765,6 +765,7 @@ body:not(.admin-page) .discord-profile .server-button {
   .entry-overlay__label,
   .entry-overlay__label::before,
   .entry-overlay__label::after,
+  .entry-overlay.is-closing,
   .music-player__waveform span {
     animation: none !important;
     transition-duration: 1ms !important;

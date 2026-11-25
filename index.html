@@ -150,10 +150,21 @@
 <script>
   const entryOverlay = document.getElementById("entry-overlay");
   entryOverlay?.addEventListener("click", () => {
-    entryOverlay.classList.add("is-closing");
     document.body.dataset.entryOverlayDismissed = "true";
     document.body.classList.remove("has-entry-overlay");
-    window.setTimeout(() => { entryOverlay.hidden = true; }, 450);
+
+    let hasClosed = false;
+    const finishClosing = () => {
+      if (hasClosed) return;
+      hasClosed = true;
+      entryOverlay.hidden = true;
+    };
+
+    entryOverlay.addEventListener("animationend", (event) => {
+      if (event.target === entryOverlay) finishClosing();
+    }, { once: true });
+    entryOverlay.classList.add("is-closing");
+    window.setTimeout(finishClosing, 1200);
   }, { once: true });
 
   var rev = "fwd";
@@ -319,6 +330,19 @@
         </select>
         <label for="setting-entry-overlay-fade-duration">Velocidade do fade <output data-output="entryOverlayFadeDuration">2,2 s</output></label>
         <input id="setting-entry-overlay-fade-duration" name="entryOverlayFadeDuration" type="range" min="0.8" max="6" step="0.1">
+        <label for="setting-entry-overlay-exit">Animação ao entrar no site</label>
+        <select id="setting-entry-overlay-exit" name="entryOverlayExitAnimation">
+          <option value="dissolve">1. Dissolução cinematográfica</option>
+          <option value="zoom">2. Zoom para outra dimensão</option>
+          <option value="drift">3. Deriva fantasma</option>
+          <option value="glitch">4. Ruptura glitch</option>
+          <option value="blur">5. Névoa que se desfaz</option>
+          <option value="iris">6. Íris que se fecha</option>
+          <option value="fold">7. Dobra dimensional</option>
+          <option value="vortex">8. Vórtice cósmico</option>
+          <option value="shutter">9. Cortina de cinema</option>
+          <option value="pixel">10. Desintegração digital</option>
+        </select>
         <label for="setting-entry-overlay-opacity">Opacidade do overlay <output data-output="entryOverlayOpacity">52%</output></label>
         <input id="setting-entry-overlay-opacity" name="entryOverlayOpacity" type="range" min="0.15" max="1" step="0.01">
       </fieldset>

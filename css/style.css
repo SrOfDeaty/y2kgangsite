@@ -2005,8 +2005,67 @@ body.has-entry-overlay {
 }
 
 .entry-overlay.is-closing {
-  opacity: 0;
   pointer-events: none;
+  animation-duration: 820ms;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.22, 0.75, 0.2, 1);
+}
+
+:root[data-entry-overlay-exit="dissolve"] .entry-overlay.is-closing { animation-name: overlay-exit-dissolve; }
+:root[data-entry-overlay-exit="zoom"] .entry-overlay.is-closing { animation-name: overlay-exit-zoom; }
+:root[data-entry-overlay-exit="drift"] .entry-overlay.is-closing { animation-name: overlay-exit-drift; }
+:root[data-entry-overlay-exit="glitch"] .entry-overlay.is-closing { animation-name: overlay-exit-glitch; }
+:root[data-entry-overlay-exit="blur"] .entry-overlay.is-closing { animation-name: overlay-exit-blur; }
+:root[data-entry-overlay-exit="iris"] .entry-overlay.is-closing { animation-name: overlay-exit-iris; }
+:root[data-entry-overlay-exit="fold"] .entry-overlay.is-closing { animation-name: overlay-exit-fold; }
+:root[data-entry-overlay-exit="vortex"] .entry-overlay.is-closing { animation-name: overlay-exit-vortex; }
+:root[data-entry-overlay-exit="shutter"] .entry-overlay.is-closing { animation-name: overlay-exit-shutter; }
+:root[data-entry-overlay-exit="pixel"] .entry-overlay.is-closing { animation-name: overlay-exit-pixel; }
+
+@keyframes overlay-exit-dissolve {
+  to { opacity: 0; }
+}
+
+@keyframes overlay-exit-zoom {
+  to { opacity: 0; transform: scale(1.32); filter: blur(8px); }
+}
+
+@keyframes overlay-exit-drift {
+  to { opacity: 0; transform: translate3d(0, -11vh, 0) rotate(-2deg); filter: blur(5px); }
+}
+
+@keyframes overlay-exit-glitch {
+  18% { transform: translateX(-12px); clip-path: inset(12% 0 68%); }
+  36% { transform: translateX(10px); clip-path: inset(58% 0 18%); }
+  54% { transform: translateX(-6px); clip-path: inset(30% 0 42%); opacity: 0.8; }
+  to { opacity: 0; transform: translateX(14px); clip-path: inset(50% 50% 50% 50%); }
+}
+
+@keyframes overlay-exit-blur {
+  to { opacity: 0; filter: blur(32px) saturate(0.2); transform: scale(1.08); }
+}
+
+@keyframes overlay-exit-iris {
+  to { opacity: 0; clip-path: circle(0 at 50% 50%); }
+}
+
+@keyframes overlay-exit-fold {
+  to { opacity: 0; transform: perspective(900px) rotateX(-78deg) scaleY(0.08); transform-origin: top center; }
+}
+
+@keyframes overlay-exit-vortex {
+  to { opacity: 0; transform: rotate(24deg) scale(0.08); filter: blur(14px); }
+}
+
+@keyframes overlay-exit-shutter {
+  55% { clip-path: inset(48% 0 48%); opacity: 0.9; }
+  to { clip-path: inset(50% 0 50%); opacity: 0; }
+}
+
+@keyframes overlay-exit-pixel {
+  25% { opacity: 0.8; filter: grayscale(1) contrast(1.8); }
+  60% { opacity: 0.45; filter: grayscale(1) blur(3px) contrast(2); transform: scale(0.98); }
+  to { opacity: 0; filter: grayscale(1) blur(14px); transform: scale(0.94); }
 }
 
 @keyframes entry-orbit {

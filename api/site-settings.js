@@ -61,6 +61,7 @@ const DEFAULT_SETTINGS = {
   entryOverlayStyle: "pill",
   entryOverlayFade: "pulse",
   entryOverlayFadeDuration: 2.2,
+  entryOverlayExitAnimation: "dissolve",
   entryOverlayOpacity: 0.52,
   textGlowEnabled: false,
   textGlowColor: "#f472b6",
@@ -263,6 +264,9 @@ function validateSettings(value) {
       ? value.entryOverlayFade
       : DEFAULT_SETTINGS.entryOverlayFade,
     entryOverlayFadeDuration: clampNumber(value.entryOverlayFadeDuration ?? DEFAULT_SETTINGS.entryOverlayFadeDuration, 0.8, 6, "overlay fade duration"),
+    entryOverlayExitAnimation: ["dissolve", "zoom", "drift", "glitch", "blur", "iris", "fold", "vortex", "shutter", "pixel"].includes(value.entryOverlayExitAnimation)
+      ? value.entryOverlayExitAnimation
+      : DEFAULT_SETTINGS.entryOverlayExitAnimation,
     entryOverlayOpacity: clampNumber(value.entryOverlayOpacity ?? DEFAULT_SETTINGS.entryOverlayOpacity, 0.15, 1, "overlay opacity"),
     textGlowEnabled: validateBoolean(value.textGlowEnabled, DEFAULT_SETTINGS.textGlowEnabled, "text glow"),
     textGlowColor: value.textGlowColor ?? DEFAULT_SETTINGS.textGlowColor,
