@@ -1,0 +1,737 @@
+:root {
+  --editor-background-image: url("/mwa-monochrome-collage.png");
+  --editor-avatar-radius: 18px;
+  --entry-overlay-opacity: 0.52;
+}
+
+body:not(.admin-page) {
+  min-height: 100svh;
+  overflow: hidden;
+  background-image: none !important;
+  color: #f7f7f7;
+}
+
+body:not(.admin-page)::before {
+  position: fixed;
+  z-index: -1;
+  inset: -2%;
+  background-image: var(--editor-background-image);
+  background-position: center;
+  background-size: cover;
+  content: "";
+  filter: grayscale(1) contrast(1.08) blur(var(--editor-background-blur, 1.2px));
+  transform: scale(1.03);
+  animation: profile-wallpaper-drift 36s ease-in-out infinite alternate;
+}
+
+:root[data-background-grayscale="false"] body:not(.admin-page)::before {
+  filter: contrast(1.04) blur(var(--editor-background-blur, 1.2px));
+}
+
+:root[data-background-motion="false"] body:not(.admin-page)::before {
+  animation: none;
+  transform: scale(1.03);
+}
+
+body:not(.admin-page) .site-background-shade {
+  background: rgb(0 0 0 / var(--editor-background-shade, 0.16));
+}
+
+body:not(.admin-page) .site-background-shade::after {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgb(245 245 245 / 0.24) 0.55px, transparent 0.9px);
+  background-size: 3px 3px;
+  content: "";
+  opacity: 0.48;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+:root[data-background-texture="false"] body:not(.admin-page) .site-background-shade::after {
+  display: none;
+}
+
+body:not(.admin-page) .divcont {
+  min-height: 100svh;
+  height: 100svh;
+  padding: 0;
+  overflow: hidden;
+}
+
+body:not(.admin-page) .discord-profile {
+  top: var(--editor-card-y, 50%);
+  left: var(--editor-card-x, 50%);
+  width: min(var(--editor-card-width, 360px), calc(100vw - 32px));
+  height: min(var(--editor-card-height, 620px), calc(100svh - 32px));
+  min-height: min(360px, calc(100svh - 32px));
+  margin: 0;
+  padding: 20px 18px;
+  overflow: visible;
+  border: 1px solid transparent;
+  border-radius: var(--editor-card-radius, 50px);
+  background: transparent;
+  box-shadow: none;
+  transform: translate(-50%, -50%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-profile-card="false"] body:not(.admin-page) .discord-profile {
+  border-color: transparent;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+:root[data-profile-card="true"] body:not(.admin-page) .discord-profile {
+  border-color: color-mix(in srgb, var(--editor-accent) 28%, transparent);
+  background: color-mix(in srgb, var(--editor-card-color) var(--editor-card-opacity), transparent);
+  box-shadow: 0 20px 80px rgb(0 0 0 / 0.28), inset 0 1px rgb(255 255 255 / 0.08);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+:root[data-profile-card="true"][data-card-fill-style="gradient"] body:not(.admin-page) .discord-profile {
+  background: linear-gradient(
+    var(--editor-card-gradient-direction),
+    color-mix(in srgb, var(--editor-card-gradient-start) var(--editor-card-opacity), transparent),
+    color-mix(in srgb, var(--editor-card-gradient-end) var(--editor-card-opacity), transparent)
+  );
+}
+
+body:not(.admin-page) .discord-profile > .profile {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  text-align: center;
+}
+
+body:not(.admin-page) .discord-profile .pfp {
+  order: 1;
+  margin: 0 0 20px;
+}
+
+body:not(.admin-page) .discord-profile .pfp img {
+  display: block;
+  width: var(--editor-avatar-size, 120px);
+  height: var(--editor-avatar-size, 120px);
+  margin: 0;
+  border: 2px solid rgb(255 255 255 / 0.58);
+  border-radius: var(--editor-avatar-radius, 18px);
+  object-fit: cover;
+  box-shadow: 0 10px 36px rgb(0 0 0 / 0.42);
+}
+
+body:not(.admin-page) .discord-profile > .profile > .nickr {
+  order: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  background: none;
+  color: #fff;
+  font-family: var(--editor-font);
+  font-size: var(--profile-name-size, 32px);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
+  text-transform: none;
+  -webkit-text-fill-color: currentColor;
+  animation: none;
+  filter: drop-shadow(0 3px 12px rgb(0 0 0 / 0.5));
+}
+
+body:not(.admin-page) .discord-profile > .profile > .subnick {
+  display: none;
+}
+
+body:not(.admin-page) .discord-profile .badges {
+  order: 3;
+  margin-top: 6px;
+}
+
+body:not(.admin-page) .discord-profile .social-buttons {
+  order: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 22px 0 0;
+}
+
+:root[data-profile-badges="false"] body:not(.admin-page) .discord-profile .badges {
+  display: none;
+}
+
+:root[data-social-links="false"] body:not(.admin-page) .social-buttons {
+  display: none;
+}
+
+body:not(.admin-page) .discord-profile .social-button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  transition: background-color 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+body:not(.admin-page) .discord-profile .social-button:hover {
+  border-color: rgb(255 255 255 / 0.48);
+  background: rgb(255 255 255 / 0.12);
+  transform: translateY(-2px);
+}
+
+body:not(.admin-page) .discord-profile .social-button img {
+  display: block;
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+  filter: grayscale(1) brightness(0) invert(1);
+}
+
+body:not(.admin-page) .discord-profile .discord-presence {
+  order: 5;
+  width: min(280px, calc(100vw - 48px));
+  min-height: 0;
+  max-width: 100%;
+  margin: 18px 0 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+body:not(.admin-page) .discord-profile .discord-presence::before {
+  display: none;
+}
+
+body:not(.admin-page) .discord-profile .discord-presence-layout {
+  display: grid;
+  grid-template-columns: var(--presence-avatar-size, 32px) minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+body:not(.admin-page) .discord-profile .discord-presence-avatar-wrap,
+body:not(.admin-page) .discord-profile .discord-presence-avatar {
+  width: var(--presence-avatar-size, 32px);
+  height: var(--presence-avatar-size, 32px);
+}
+
+body:not(.admin-page) .discord-profile .discord-presence-avatar {
+  border: 1px solid rgb(255 255 255 / 0.3);
+  border-radius: 50%;
+}
+
+body:not(.admin-page) .discord-profile .discord-presence-copy {
+  min-width: 0;
+  text-align: left;
+}
+
+body:not(.admin-page) .discord-profile .discord-presence-name {
+  margin: 0;
+  color: #fff;
+  font-size: var(--presence-name-size, 14px);
+  font-weight: 700;
+}
+
+body:not(.admin-page) .discord-profile .discord-presence-note,
+body:not(.admin-page) .discord-profile .discord-track-title,
+body:not(.admin-page) .discord-profile .discord-track-artist {
+  margin: 2px 0 0;
+  color: rgb(255 255 255 / 0.72);
+  font-size: var(--presence-body-size, 12px);
+}
+
+body:not(.admin-page) .discord-profile .discord-track-cover {
+  display: none;
+}
+
+:root[data-discord-presence="false"] body:not(.admin-page) .discord-presence {
+  display: none;
+}
+
+body:not(.admin-page) .discord-profile .server-button {
+  display: none;
+}
+
+.site-floating-glyphs {
+  position: fixed;
+  z-index: 3;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-floating-glyph {
+  position: absolute;
+  color: rgb(255 255 255 / 0.66);
+  font-family: "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: clamp(12px, 1.4vw, 19px);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.76);
+  white-space: nowrap;
+  animation: glyph-drift var(--glyph-duration, 26s) ease-in-out var(--glyph-delay, 0s) infinite alternate;
+}
+
+:root[data-floating-glyphs="false"] .site-floating-glyphs {
+  display: none;
+}
+
+.music-player {
+  position: fixed;
+  z-index: 12;
+  top: max(10px, env(safe-area-inset-top));
+  left: max(10px, env(safe-area-inset-left));
+  display: grid;
+  width: min(314px, calc(100vw - 24px));
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgb(255 255 255 / 0.11);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgb(35 35 35 / 0.74), rgb(15 15 15 / 0.6));
+  box-shadow: 0 12px 36px rgb(0 0 0 / 0.25), inset 0 1px rgb(255 255 255 / 0.09);
+  color: #f7f7f7;
+  -webkit-backdrop-filter: blur(18px) saturate(0.7);
+  backdrop-filter: blur(18px) saturate(0.7);
+}
+
+.music-player[hidden],
+.visitor-counter[hidden] {
+  display: none;
+}
+
+.music-player__cover {
+  width: 54px;
+  height: 54px;
+  align-self: center;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.music-player__content {
+  min-width: 0;
+}
+
+.music-player__heading,
+.music-player__meta,
+.music-player__volume {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.music-player__heading {
+  min-height: 32px;
+  gap: 8px;
+}
+
+.music-player__track {
+  min-width: 0;
+}
+
+.music-player__title,
+.music-player__artist {
+  overflow: hidden;
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.music-player__title {
+  color: rgb(255 255 255 / 0.94);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+}
+
+.music-player__artist {
+  margin-top: 2px;
+  color: rgb(255 255 255 / 0.58);
+  font-size: 10px;
+}
+
+.music-player__toggle {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.music-player__toggle:hover,
+.music-player__toggle:focus-visible {
+  background: rgb(255 255 255 / 0.12);
+  outline: none;
+}
+
+.music-player__toggle span {
+  width: 0;
+  height: 0;
+  margin-left: 2px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid currentColor;
+}
+
+.music-player__toggle[data-playing="true"] span {
+  width: 9px;
+  height: 12px;
+  margin: 0;
+  border: 0;
+  background: linear-gradient(to right, currentColor 0 3px, transparent 3px 6px, currentColor 6px 9px);
+}
+
+.music-player__seek {
+  position: relative;
+  height: 18px;
+  margin-top: 5px;
+}
+
+.music-player__waveform {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  display: flex;
+  height: 12px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  opacity: 0.46;
+  transform: translateY(-50%);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 94%, transparent);
+}
+
+.music-player__waveform span {
+  width: 1px;
+  height: var(--bar-height, 4px);
+  flex: 0 0 1px;
+  border-radius: 2px;
+  background: #fff;
+}
+
+.music-player__progress,
+.music-player__volume input {
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.music-player__progress {
+  position: absolute;
+  inset: 0;
+}
+
+.music-player__progress::-webkit-slider-runnable-track,
+.music-player__volume input::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #fff var(--progress, 0%), rgb(255 255 255 / 0.24) var(--progress, 0%));
+}
+
+.music-player__progress::-moz-range-track,
+.music-player__volume input::-moz-range-track {
+  height: 2px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.24);
+}
+
+.music-player__progress::-moz-range-progress,
+.music-player__volume input::-moz-range-progress {
+  height: 2px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.music-player__progress::-webkit-slider-thumb,
+.music-player__volume input::-webkit-slider-thumb {
+  width: 7px;
+  height: 7px;
+  margin-top: -2.5px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px rgb(255 255 255 / 0.65);
+}
+
+.music-player__progress::-moz-range-thumb,
+.music-player__volume input::-moz-range-thumb {
+  width: 7px;
+  height: 7px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px rgb(255 255 255 / 0.65);
+}
+
+.music-player__meta {
+  gap: 8px;
+  color: rgb(255 255 255 / 0.62);
+  font: 9px/1.2 Arial, sans-serif;
+}
+
+.music-player__volume {
+  width: 92px;
+  gap: 5px;
+}
+
+.music-player__volume > svg {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  opacity: 0.72;
+}
+
+.music-player__volume input {
+  height: 12px;
+}
+
+.music-player__volume input::-webkit-slider-runnable-track {
+  height: 2px;
+}
+
+.music-player__volume input::-webkit-slider-thumb {
+  width: 6px;
+  height: 6px;
+  margin-top: -2px;
+}
+
+.visitor-counter {
+  position: fixed;
+  z-index: 8;
+  top: calc(50% + 144px);
+  left: max(20px, calc(50% - 232px));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgb(255 255 255 / 0.84);
+  font: 600 12px/1.2 Arial, sans-serif;
+  text-shadow: 0 1px 10px rgb(0 0 0 / 0.72);
+}
+
+.visitor-counter svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0.78;
+}
+
+.visitor-counter__label {
+  color: rgb(255 255 255 / 0.56);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+:root[data-visitor-counter="false"] .visitor-counter {
+  display: none;
+}
+
+:root[data-music-player="false"] .music-player {
+  display: none;
+}
+
+.entry-overlay[hidden] {
+  display: none !important;
+}
+
+.entry-overlay {
+  background: rgb(6 6 7 / var(--entry-overlay-opacity, 0.52));
+  -webkit-backdrop-filter: blur(15px) grayscale(1);
+  backdrop-filter: blur(15px) grayscale(1);
+}
+
+.entry-overlay::before {
+  border-top-color: var(--editor-accent, #c7c7c7);
+  border-left-color: color-mix(in srgb, var(--editor-accent, #c7c7c7) 72%, transparent);
+  box-shadow: inset 0 0 48px rgb(255 255 255 / 0.035), 0 0 38px rgb(255 255 255 / 0.08);
+}
+
+.entry-overlay::after {
+  border-right-color: color-mix(in srgb, var(--editor-accent, #c7c7c7) 76%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--editor-accent, #c7c7c7) 52%, transparent);
+}
+
+.entry-overlay__wordmark {
+  background: linear-gradient(100deg, rgb(255 255 255 / 0.9), var(--editor-accent, #c7c7c7) 48%, rgb(255 255 255 / 0.9));
+  background-clip: text;
+  -webkit-background-clip: text;
+  filter: drop-shadow(0 0 24px rgb(255 255 255 / 0.14));
+}
+
+.entry-overlay__label {
+  background:
+    linear-gradient(rgb(19 19 20 / 0.76), rgb(19 19 20 / 0.76)) padding-box,
+    linear-gradient(125deg, rgb(255 255 255 / 0.7), var(--editor-accent, #c7c7c7) 48%, rgb(255 255 255 / 0.65)) border-box;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 8px 36px rgb(0 0 0 / 0.4);
+  text-shadow: 0 0 18px rgb(255 255 255 / 0.4);
+}
+
+.entry-overlay__label::before {
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--editor-accent, #c7c7c7) 32%, transparent), rgb(255 255 255 / 0.12) 42%, transparent 72%);
+}
+
+.entry-overlay__label::after {
+  border-color: rgb(255 255 255 / 0.2);
+}
+
+.site-editor__toggle {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 12px;
+  background: rgb(255 255 255 / 0.035);
+  cursor: pointer;
+}
+
+.site-editor__toggle > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.site-editor__toggle strong {
+  color: #f5f5f7;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.site-editor__toggle small {
+  color: rgb(255 255 255 / 0.58);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.site-editor__form .site-editor__toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  margin: 0;
+  padding: 0;
+  accent-color: #e8e8e8;
+  cursor: pointer;
+}
+
+.site-editor__toggle:focus-within {
+  border-color: rgb(255 255 255 / 0.42);
+  outline: 2px solid rgb(255 255 255 / 0.16);
+  outline-offset: 2px;
+}
+
+@keyframes profile-wallpaper-drift {
+  from {
+    transform: scale(1.03) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.08) translate3d(-0.7%, 0.4%, 0);
+  }
+}
+
+@keyframes glyph-drift {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) rotate(-4deg);
+  }
+  18%, 78% {
+    opacity: 0.72;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--glyph-drift, 24px), -68px, 0) rotate(5deg);
+  }
+}
+
+@media (max-width: 600px) {
+  body:not(.admin-page) .discord-profile {
+    width: min(var(--editor-card-width, 320px), calc(100vw - 28px));
+    height: min(var(--editor-card-height, 620px), calc(100svh - 28px));
+    min-height: min(360px, calc(100svh - 28px));
+    padding: 14px 12px;
+  }
+
+  body:not(.admin-page) .discord-profile .pfp img {
+    width: min(var(--editor-avatar-size, 120px), 112px);
+    height: min(var(--editor-avatar-size, 120px), 112px);
+  }
+
+  body:not(.admin-page) .discord-profile > .profile > .nickr {
+    font-size: min(var(--profile-name-size, 32px), 30px);
+  }
+
+  .music-player {
+    top: max(8px, env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+    width: min(308px, calc(100vw - 16px));
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .music-player__cover {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+  }
+
+  .visitor-counter {
+    top: auto;
+    right: auto;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    left: max(16px, env(safe-area-inset-left));
+  }
+
+  .site-floating-glyph {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:not(.admin-page)::before,
+  .site-floating-glyph,
+  .entry-overlay::before,
+  .entry-overlay::after,
+  .entry-overlay__wordmark,
+  .entry-overlay__label,
+  .entry-overlay__label::before,
+  .entry-overlay__label::after {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+
+  .site-floating-glyph {
+    opacity: 0.28;
+  }
+}

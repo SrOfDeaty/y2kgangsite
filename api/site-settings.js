@@ -12,14 +12,25 @@ const DEFAULT_SETTINGS = {
   cardGradientEnd: "#3a1a26",
   cardGradientDirection: "to bottom right",
   cardGifUrl: "",
-  backgroundImage: "https://i.imgur.com/vMQx7AE.jpeg",
+  backgroundImage: "/mwa-monochrome-collage.png",
   backgroundShade: 0.16,
+  backgroundBlur: 1.2,
+  referenceStyleEnabled: true,
+  backgroundTextureEnabled: true,
+  backgroundGrayscaleEnabled: true,
+  backgroundMotionEnabled: true,
+  floatingGlyphsEnabled: true,
+  profileCardEnabled: false,
+  profileBadgesEnabled: false,
+  socialLinksEnabled: true,
+  discordPresenceEnabled: true,
   cardWidth: 320,
   cardHeight: 620,
   cardPositionX: 50,
   cardPositionY: 50,
   cardRadius: 50,
-  avatarSize: 146,
+  avatarSize: 120,
+  avatarRadius: 18,
   socialIcons: [
     { href: "https://www.instagram.com/vinocasof/", image: "imagem_2024-03-06_162937509-removebg-preview.png", x: 0, y: 0 },
     { href: "https://open.spotify.com/user/31625fveyimletebkwekjkgmzz3y/", image: "image.png", x: 0, y: 0 },
@@ -32,7 +43,7 @@ const DEFAULT_SETTINGS = {
   profileUsernameOverride: "",
   presenceNameOverride: "",
   presenceNoteOverride: "",
-  profileNameSize: 16,
+  profileNameSize: 32,
   profileUsernameSize: 14,
   presenceNameSize: 14,
   presenceBodySize: 12,
@@ -43,6 +54,17 @@ const DEFAULT_SETTINGS = {
   presenceTextX: 0,
   presenceTextY: 0,
   siteEffect: "none",
+  entryOverlayEnabled: true,
+  entryOverlayTitle: "Y2KGANG",
+  entryOverlayMessage: "click here",
+  entryOverlayHint: "TOQUE OU CLIQUE PARA ENTRAR",
+  entryOverlayOpacity: 0.52,
+  musicPlayerEnabled: true,
+  musicTitle: "Wanna Be",
+  musicArtist: "Lil Peep",
+  musicCoverUrl: "/mwa-music-cover.png",
+  visitorCounterEnabled: true,
+  visitorCounterLabel: "VISITAS",
   cursorStyle: "default",
   cursorImageUrl: "",
   presencePositionMode: "inline",
@@ -57,7 +79,7 @@ const DEFAULT_SETTINGS = {
   presenceRadius: 24,
   presenceBorderWidth: 1,
   presencePadding: 12,
-  presenceAvatarSize: 50,
+  presenceAvatarSize: 32,
   presenceCoverSize: 88,
   presenceBlur: 18,
   presenceBackgroundImage: "",
@@ -111,6 +133,18 @@ function clampNumber(value, minimum, maximum, name) {
   return number;
 }
 
+function validateBoolean(value, fallback, name) {
+  if (value === undefined || value === null) return fallback;
+  if (typeof value !== "boolean") throw new TypeError(`Invalid ${name}`);
+  return value;
+}
+
+function validateText(value, fallback, maximumLength, name) {
+  if (value === undefined || value === null) return fallback;
+  if (typeof value !== "string") throw new TypeError(`Invalid ${name}`);
+  return value.trim().slice(0, maximumLength);
+}
+
 function validateMediaUrl(value, name) {
   if (typeof value !== "string" || value.length > 2048) {
     throw new TypeError(`Invalid ${name}`);
@@ -160,12 +194,23 @@ function validateSettings(value) {
     cardGifUrl: validateMediaUrl(value.cardGifUrl ?? "", "card GIF URL"),
     backgroundImage: validateMediaUrl(value.backgroundImage, "background image"),
     backgroundShade: clampNumber(value.backgroundShade, 0, 0.65, "background shade"),
+    backgroundBlur: clampNumber(value.backgroundBlur ?? DEFAULT_SETTINGS.backgroundBlur, 0, 8, "background blur"),
+    referenceStyleEnabled: validateBoolean(value.referenceStyleEnabled, DEFAULT_SETTINGS.referenceStyleEnabled, "reference style"),
+    backgroundTextureEnabled: validateBoolean(value.backgroundTextureEnabled, DEFAULT_SETTINGS.backgroundTextureEnabled, "background texture"),
+    backgroundGrayscaleEnabled: validateBoolean(value.backgroundGrayscaleEnabled, DEFAULT_SETTINGS.backgroundGrayscaleEnabled, "background grayscale"),
+    backgroundMotionEnabled: validateBoolean(value.backgroundMotionEnabled, DEFAULT_SETTINGS.backgroundMotionEnabled, "background motion"),
+    floatingGlyphsEnabled: validateBoolean(value.floatingGlyphsEnabled, DEFAULT_SETTINGS.floatingGlyphsEnabled, "floating glyphs"),
+    profileCardEnabled: validateBoolean(value.profileCardEnabled, DEFAULT_SETTINGS.profileCardEnabled, "profile card"),
+    profileBadgesEnabled: validateBoolean(value.profileBadgesEnabled, DEFAULT_SETTINGS.profileBadgesEnabled, "profile badges"),
+    socialLinksEnabled: validateBoolean(value.socialLinksEnabled, DEFAULT_SETTINGS.socialLinksEnabled, "social links"),
+    discordPresenceEnabled: validateBoolean(value.discordPresenceEnabled, DEFAULT_SETTINGS.discordPresenceEnabled, "Discord presence"),
     cardWidth: Math.round(clampNumber(value.cardWidth, 260, 420, "card width")),
     cardHeight: Math.round(clampNumber(value.cardHeight ?? DEFAULT_SETTINGS.cardHeight, 360, 760, "card height")),
     cardPositionX: clampNumber(value.cardPositionX ?? DEFAULT_SETTINGS.cardPositionX, 0, 100, "card horizontal position"),
     cardPositionY: clampNumber(value.cardPositionY ?? DEFAULT_SETTINGS.cardPositionY, 0, 100, "card vertical position"),
     cardRadius: Math.round(clampNumber(value.cardRadius, 0, 64, "card radius")),
     avatarSize: Math.round(clampNumber(value.avatarSize, 96, 180, "avatar size")),
+    avatarRadius: Math.round(clampNumber(value.avatarRadius ?? DEFAULT_SETTINGS.avatarRadius, 0, 50, "avatar radius")),
     socialIcons: (() => {
       const icons = value.socialIcons ?? DEFAULT_SETTINGS.socialIcons;
       if (!Array.isArray(icons) || icons.length !== DEFAULT_SETTINGS.socialIcons.length) {
@@ -201,6 +246,17 @@ function validateSettings(value) {
     presenceTextX: clampNumber(value.presenceTextX ?? 0, -80, 80, "presence text horizontal position"),
     presenceTextY: clampNumber(value.presenceTextY ?? 0, -60, 60, "presence text vertical position"),
     siteEffect: SITE_EFFECTS.has(value.siteEffect) ? value.siteEffect : "none",
+    entryOverlayEnabled: validateBoolean(value.entryOverlayEnabled, DEFAULT_SETTINGS.entryOverlayEnabled, "entry overlay"),
+    entryOverlayTitle: validateText(value.entryOverlayTitle, DEFAULT_SETTINGS.entryOverlayTitle, 50, "overlay title"),
+    entryOverlayMessage: validateText(value.entryOverlayMessage, DEFAULT_SETTINGS.entryOverlayMessage, 80, "overlay message"),
+    entryOverlayHint: validateText(value.entryOverlayHint, DEFAULT_SETTINGS.entryOverlayHint, 120, "overlay hint"),
+    entryOverlayOpacity: clampNumber(value.entryOverlayOpacity ?? DEFAULT_SETTINGS.entryOverlayOpacity, 0.15, 1, "overlay opacity"),
+    musicPlayerEnabled: validateBoolean(value.musicPlayerEnabled, DEFAULT_SETTINGS.musicPlayerEnabled, "music player"),
+    musicTitle: validateText(value.musicTitle, DEFAULT_SETTINGS.musicTitle, 100, "music title"),
+    musicArtist: validateText(value.musicArtist, DEFAULT_SETTINGS.musicArtist, 100, "music artist"),
+    musicCoverUrl: validateMediaUrl(value.musicCoverUrl ?? DEFAULT_SETTINGS.musicCoverUrl, "music cover URL"),
+    visitorCounterEnabled: validateBoolean(value.visitorCounterEnabled, DEFAULT_SETTINGS.visitorCounterEnabled, "visitor counter"),
+    visitorCounterLabel: validateText(value.visitorCounterLabel, DEFAULT_SETTINGS.visitorCounterLabel, 32, "visitor counter label"),
     cursorStyle: ["custom", ...CURSOR_STYLES].includes(value.cursorStyle) ? value.cursorStyle : "default",
     cursorImageUrl: validateMediaUrl(value.cursorImageUrl ?? "", "cursor image URL"),
     presencePositionMode: ["inline", "floating"].includes(value.presencePositionMode)
@@ -306,7 +362,7 @@ export default async function handler(request, response) {
         "SELECT config FROM site_aesthetic_settings WHERE id = $1 LIMIT 1",
         ["site"],
       );
-      const settings = result.rows[0]?.config ?? DEFAULT_SETTINGS;
+      const settings = { ...DEFAULT_SETTINGS, ...(result.rows[0]?.config ?? {}) };
       const userId = await getAdminIdentity(request);
 
       return response.status(200).json({
