@@ -45,6 +45,7 @@ function updateProgress() {
   const fraction = duration > 0 ? audio.currentTime / duration : 0;
   progressInput.value = String(Math.round(fraction * Number(progressInput.max)));
   progressInput.style.setProperty("--progress", `${fraction * 100}%`);
+  waveform?.style.setProperty("--progress", `${fraction * 100}%`);
   if (currentTimeLabel) currentTimeLabel.textContent = formatTime(audio.currentTime);
   if (durationLabel) durationLabel.textContent = formatTime(duration);
 }

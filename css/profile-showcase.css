@@ -293,19 +293,21 @@ body:not(.admin-page) .discord-profile .server-button {
 }
 
 .music-player {
+  box-sizing: border-box;
   position: fixed;
   z-index: 12;
-  top: max(14px, env(safe-area-inset-top));
-  left: max(14px, env(safe-area-inset-left));
+  top: max(8px, env(safe-area-inset-top));
+  left: max(8px, env(safe-area-inset-left));
   display: grid;
-  width: min(336px, calc(100vw - 28px));
-  grid-template-columns: 60px minmax(0, 1fr);
-  gap: 13px;
-  padding: 14px;
+  width: min(320px, calc(100vw - 16px));
+  min-height: 136px;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 6px 12px;
+  padding: 11px 12px 10px;
   border: 1px solid rgb(255 255 255 / 0.16);
-  border-radius: 20px;
-  background: linear-gradient(135deg, rgb(27 27 30 / 0.88), rgb(9 9 11 / 0.76));
-  box-shadow: 0 16px 48px rgb(0 0 0 / 0.42), inset 0 1px rgb(255 255 255 / 0.12);
+  border-radius: 19px;
+  background: linear-gradient(145deg, rgb(92 93 94 / 0.68), rgb(20 21 23 / 0.84));
+  box-shadow: 0 16px 44px rgb(0 0 0 / 0.48), inset 0 1px rgb(255 255 255 / 0.16);
   color: #f7f7f7;
   -webkit-backdrop-filter: blur(22px) saturate(0.85);
   backdrop-filter: blur(22px) saturate(0.85);
@@ -313,8 +315,8 @@ body:not(.admin-page) .discord-profile .server-button {
 }
 
 .music-player:has(.music-player__toggle[data-playing="true"]) {
-  border-color: rgb(244 114 182 / 0.38);
-  box-shadow: 0 16px 48px rgb(0 0 0 / 0.45), 0 0 28px rgb(244 114 182 / 0.12), inset 0 1px rgb(255 255 255 / 0.14);
+  border-color: rgb(255 255 255 / 0.24);
+  box-shadow: 0 16px 44px rgb(0 0 0 / 0.48), 0 0 22px rgb(255 255 255 / 0.06), inset 0 1px rgb(255 255 255 / 0.16);
 }
 
 .music-player[hidden],
@@ -323,19 +325,20 @@ body:not(.admin-page) .discord-profile .server-button {
 }
 
 .music-player__cover {
-  width: 60px;
-  height: 60px;
-  align-self: center;
-  border: 1px solid rgb(255 255 255 / 0.22);
-  border-radius: 14px;
+  width: 52px;
+  height: 52px;
+  align-self: start;
+  margin-top: 15px;
+  border: 1px solid rgb(255 255 255 / 0.24);
+  border-radius: 13px;
   object-fit: cover;
   box-shadow: 0 5px 18px rgb(0 0 0 / 0.34);
   transition: transform 320ms ease, box-shadow 320ms ease;
 }
 
 .music-player:has(.music-player__toggle[data-playing="true"]) .music-player__cover {
-  transform: scale(1.04);
-  box-shadow: 0 0 18px rgb(244 114 182 / 0.24);
+  transform: scale(1.02);
+  box-shadow: 0 0 16px rgb(255 255 255 / 0.14);
 }
 
 .music-player__content {
@@ -368,10 +371,11 @@ body:not(.admin-page) .discord-profile .server-button {
 }
 
 .music-player__title {
-  color: rgb(255 255 255 / 0.94);
+  color: rgb(255 255 255 / 0.96);
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.035em;
+  font-weight: 750;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
 }
 
 .music-player__artist {
@@ -420,24 +424,43 @@ body:not(.admin-page) .discord-profile .server-button {
 }
 
 .music-player__seek {
+  display: grid;
+  height: 22px;
+  grid-template-columns: 30px minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  color: rgb(255 255 255 / 0.66);
+  font: 600 9px/1 Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.music-player__waveform-wrap {
   position: relative;
-  height: 18px;
-  margin-top: 5px;
+  height: 22px;
+  min-width: 0;
 }
 
 .music-player__waveform {
   position: absolute;
-  top: 50%;
-  right: 0;
-  left: 0;
+  inset: 0;
   display: flex;
-  height: 12px;
   align-items: center;
   justify-content: space-between;
-  gap: 2px;
-  opacity: 0.46;
-  transform: translateY(-50%);
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 94%, transparent);
+  gap: 1px;
+  opacity: 0.78;
+  pointer-events: none;
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 96%, transparent);
+}
+
+.music-player__waveform::after {
+  position: absolute;
+  right: 0;
+  bottom: 1px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(to right, rgb(255 255 255 / 0.9) var(--progress, 0%), rgb(255 255 255 / 0.15) var(--progress, 0%));
+  content: "";
 }
 
 .music-player__waveform span {
@@ -473,7 +496,15 @@ body:not(.admin-page) .discord-profile .server-button {
 
 .music-player__progress {
   position: absolute;
+  z-index: 1;
   inset: 0;
+  opacity: 0;
+}
+
+.music-player__waveform-wrap:focus-within {
+  outline: 1px solid rgb(255 255 255 / 0.8);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 .music-player__progress::-webkit-slider-runnable-track,
@@ -521,14 +552,16 @@ body:not(.admin-page) .discord-profile .server-button {
 }
 
 .music-player__meta {
-  gap: 8px;
+  display: flex;
+  min-height: 12px;
+  justify-content: flex-end;
   color: rgb(255 255 255 / 0.62);
   font: 9px/1.2 Arial, sans-serif;
 }
 
 .music-player__volume {
-  width: 92px;
-  gap: 5px;
+  width: 68px;
+  gap: 6px;
 }
 
 .music-player__volume > svg {
@@ -721,10 +754,11 @@ body:not(.admin-page) .discord-profile .server-button {
     top: max(8px, env(safe-area-inset-top));
     left: max(8px, env(safe-area-inset-left));
     width: min(308px, calc(100vw - 16px));
+    min-height: 128px;
     grid-template-columns: 48px minmax(0, 1fr);
-    gap: 10px;
+    gap: 5px 10px;
     padding: 10px;
-    border-radius: 18px;
+    border-radius: 17px;
   }
 
   .music-player__cover {
